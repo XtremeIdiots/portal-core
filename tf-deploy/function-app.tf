@@ -44,3 +44,8 @@ resource "azurerm_function_app" "function_app" {
         "WEBSITE_RUN_FROM_PACKAGE" = 1
     }
 }
+
+data "azurerm_function_app_host_keys" "function_app_host_key" {
+  name                = azurerm_function_app.function_app.name
+  resource_group_name = azurerm_resource_group.core_resource_group.name
+}
