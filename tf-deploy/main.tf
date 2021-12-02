@@ -15,5 +15,11 @@ provider "azurerm" {
   subscription_id = var.subscriptionId
 }
 
+provider "azurerm" {
+  features {}
+  alias = "mgmt"
+  subscription_id = "b2b3132f-92b4-448c-adf3-c763056f8e94"
+}
+
 data "azurerm_client_config" "current" {
 }
