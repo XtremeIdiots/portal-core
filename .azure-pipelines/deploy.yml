@@ -1,0 +1,61 @@
+trigger:
+  branches:
+    include:
+    - 'main'
+
+pr: none
+
+variables:
+  terraformWorkingDirectory: '$(Build.sourcesDirectory)/tf-deploy'
+  backendServiceArm: 'arm-portal-core-dev'
+  backendAzureRmResourceGroupName: 'rg-portal_tfstate-dev-eastus-01'
+  backendAzureRmStorageAccountName: 'saportaltfdeveastus01'
+  backendAzureRmContainerName: 'tfstate'
+  backendAzureRmKey: 'portal-core-dev.tfstate'
+  environmentServiceNameAzureRM: 'arm-portal-core-dev'
+  varFile: './../tf-vars/dev.tfvars'
+
+resources:
+  repositories:
+    - repository: ado-pipeline-templates
+      type: github
+      name: XtremeIdiots/ado-pipeline-templates
+      endpoint: XtremeIdiots
+
+stages:
+- stage: Deploy
+
+  jobs:
+  - template: jobs/terraform-validate-and-plan.yml@ado-pipeline-templates
+    parameters:
+      jobName: TerraformValidateAndPlan
+      workingDirectory: '$(terraformWorkingDirectory)'
+      backendServiceArm: '$(backendServiceArm)'
+      backendAzureRmResourceGroupName: '$(backendAzureRmResourceGroupName)'
+      backendAzureRmStorageAccountName: '$(backendAzureRmStorageAccountName)'
+      backendAzureRmContainerName: '$(backendAzureRmContainerName)'
+      backendAzureRmKey: '$(backendAzureRmKey)'
+      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
+      varFile: '$(varFile)'
+
+  - job: ReviewAndApproveTerraform
+    dependsOn: TerraformValidateAndPlan
+    pool: server
+    timeoutInMinutes: 60
+    steps:   
+    - task: ManualValidation@0
+      inputs:
+          instructions: 'Validate the terraform plan from previous stage and either resume/reject.'
+
+  - template: jobs/terraform-plan-and-apply.yml@ado-pipeline-templates
+    parameters:
+      jobName: TerraformPlanAndApply
+      dependsOn: ReviewAndApproveTerraform
+      workingDirectory: '$(terraformWorkingDirectory)'
+      backendServiceArm: '$(backendServiceArm)'
+      backendAzureRmResourceGroupName: '$(backendAzureRmResourceGroupName)'
+      backendAzureRmStorageAccountName: '$(backendAzureRmStorageAccountName)'
+      backendAzureRmContainerName: '$(backendAzureRmContainerName)'
+      backendAzureRmKey: '$(backendAzureRmKey)'
+      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
+      varFile: '$(varFile)'

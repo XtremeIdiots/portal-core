@@ -1,0 +1,5 @@
+subscription_id      = "67f63261-8bcc-4a50-9341-d6e32884b382"
+resource_group_name  = "rg-portal_tfstate-dev-eastus-01"
+storage_account_name = "saportaltfdeveastus01"
+container_name       = "tfstate"
+key                  = "portal-core-dev.tfstate"

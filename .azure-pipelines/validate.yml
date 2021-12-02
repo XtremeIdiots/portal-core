@@ -1,0 +1,36 @@
+trigger:
+  branches: 
+    include:
+    - '*'
+
+variables:
+  terraformWorkingDirectory: '$(Build.sourcesDirectory)/tf-deploy'
+  backendServiceArm: 'arm-portal-core-dev'
+  backendAzureRmResourceGroupName: 'rg-portal_tfstate-dev-eastus-01'
+  backendAzureRmStorageAccountName: 'saportaltfdeveastus01'
+  backendAzureRmContainerName: 'tfstate'
+  backendAzureRmKey: 'portal-core-dev.tfstate'
+  environmentServiceNameAzureRM: 'arm-portal-core-dev'
+  varFile: './../tf-vars/dev.tfvars'
+
+resources:
+  repositories:
+    - repository: ado-pipeline-templates
+      type: github
+      name: XtremeIdiots/ado-pipeline-templates
+      endpoint: XtremeIdiots
+
+stages:
+- stage: Validate
+
+  jobs:
+  - template: jobs/terraform-validate-and-plan.yml@ado-pipeline-templates
+    parameters:
+      workingDirectory: '$(terraformWorkingDirectory)'
+      backendServiceArm: '$(backendServiceArm)'
+      backendAzureRmResourceGroupName: '$(backendAzureRmResourceGroupName)'
+      backendAzureRmStorageAccountName: '$(backendAzureRmStorageAccountName)'
+      backendAzureRmContainerName: '$(backendAzureRmContainerName)'
+      backendAzureRmKey: '$(backendAzureRmKey)'
+      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
+      varFile: '$(varFile)'
