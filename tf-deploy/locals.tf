@@ -7,17 +7,20 @@ locals {
   apim_logger = format("apim-logger-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
 
   // App Insights
-  app_insights_name = format("ai-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
+  app_insights_name                       = format("ai-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
+  app_insights_instrumentation_key_secret = format("%s-instrumentation-key", local.app_insights_name)
 
   // Function App
-  function_app_name                   = format("fa-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
-  function_app_service_plan_name      = format("asp-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
-  function_app_storage_name           = format("safa%s%s%s%s", var.workload, var.env, var.region, var.instance)
-  function_app_aad_client_id_name     = format("fa-%s-%s-%s-%s-client-id", var.workload, var.env, var.region, var.instance)
-  function_app_aad_client_secret_name = format("fa-%s-%s-%s-%s-client-secret", var.workload, var.env, var.region, var.instance)
+  function_app_name              = format("fa-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
+  function_app_service_plan_name = format("asp-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
+  function_app_storage_name      = format("safa%s%s%s%s", var.workload, var.env, var.region, var.instance)
 
   // Key Vault
   key_vault_name = format("kv-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
+
+  // Service Bus
+  service_bus_name                     = format("sb-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
+  service_bus_connection_string_secret = format("%s-connection-string", local.service_bus_name)
 
   ## Azure Mgmt Resources
 

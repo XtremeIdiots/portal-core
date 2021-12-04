@@ -9,10 +9,21 @@
         "/OnPlayerConnected": {
             "post": {
                 "summary": "OnPlayerConnected",
+                "description": "OnPlayerConnected",
                 "operationId": "OnPlayerConnected",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "username": "charlie",
+                                "guid": "AAAABBBBCCCCDDDDEEEE1234567890ZZ"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
-                        "description": null
+                        "description": "null"
                     }
                 }
             }

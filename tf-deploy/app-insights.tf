@@ -4,5 +4,11 @@ resource "azurerm_application_insights" "application_insights" {
   resource_group_name = azurerm_resource_group.core_resource_group.name
   workspace_id        = data.azurerm_log_analytics_workspace.log_analytics_workspace.id
 
-  application_type    = "web"
+  application_type = "web"
+}
+
+resource "azurerm_key_vault_secret" "application_insights_instrumentation_key" {
+  name         = local.app_insights_instrumentation_key_secret
+  value        = azurerm_application_insights.application_insights.instrumentation_key
+  key_vault_id = azurerm_key_vault.key_vault.id
 }
