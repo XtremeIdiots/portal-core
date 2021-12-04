@@ -71,3 +71,12 @@ resource "azurerm_key_vault_secret" "sql_server_admin_password" {
   ]
 }
 
+resource "azurerm_key_vault_secret" "sql_server_connection_string" {
+  name         = local.sql_server_connstring_secret
+  value        = format("Server=tcp:%s,1433;Initial Catalog=%s;Persist Security Info=False;User ID=%s;Password=%s;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;", azurerm_mssql_server.sql_server.fully_qualified_domain_name, local.sql_database_name, local.sql_server_admin_username, random_password.sql_server_admin_password.result)
+  key_vault_id = azurerm_key_vault.key_vault.id
+
+  depends_on = [
+    azurerm_key_vault_access_policy.principal_key_vault_access_policy
+  ]
+}
