@@ -12,3 +12,11 @@ resource "azurerm_servicebus_queue" "player_connected_queue" {
 
   enable_partitioning = true
 }
+
+resource "azurerm_servicebus_queue" "chat_message_queue" {
+  name                = "chat_message_queue"
+  resource_group_name = azurerm_resource_group.core_resource_group.name
+  namespace_name      = azurerm_servicebus_namespace.service_bus.name
+
+  enable_partitioning = true
+}
