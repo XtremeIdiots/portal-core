@@ -1,0 +1,56 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "Game Events Ingest",
+        "description": "",
+        "version": "1.0"
+    },
+    "paths": {
+        "/OnSay": {
+            "post": {
+                "summary": "OnSay",
+                "description": "OnSay",
+                "operationId": "OnSay",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "username": "charlie",
+                                "guid": "AAAABBBBCCCCDDDDEEEE1234567890ZZ",
+                                "message": "This is a test message",
+                                "Type": "All"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "null"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "apiKeyHeader": {
+                "type": "apiKey",
+                "name": "Ocp-Apim-Subscription-Key",
+                "in": "header"
+            },
+            "apiKeyQuery": {
+                "type": "apiKey",
+                "name": "subscription-key",
+                "in": "query"
+            }
+        }
+    },
+    "security": [
+        {
+            "apiKeyHeader": []
+        },
+        {
+            "apiKeyQuery": []
+        }
+    ]
+}
