@@ -50,3 +50,24 @@ resource "azurerm_key_vault_secret" "application_insights_instrumentation_key" {
     azurerm_key_vault_access_policy.principal_key_vault_access_policy
   ]
 }
+
+resource "azurerm_key_vault_secret" "sql_server_admin_username" {
+  name         = local.sql_server_admin_username_secret
+  value        = local.sql_server_admin_username
+  key_vault_id = azurerm_key_vault.key_vault.id
+
+  depends_on = [
+    azurerm_key_vault_access_policy.principal_key_vault_access_policy
+  ]
+}
+
+resource "azurerm_key_vault_secret" "sql_server_admin_password" {
+  name         = local.sql_server_admin_password_secret
+  value        = random_password.sql_server_admin_password.result
+  key_vault_id = azurerm_key_vault.key_vault.id
+
+  depends_on = [
+    azurerm_key_vault_access_policy.principal_key_vault_access_policy
+  ]
+}
+
