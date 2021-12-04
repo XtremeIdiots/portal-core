@@ -12,6 +12,8 @@ variables:
   backendAzureRmKey: 'portal-core-dev.tfstate'
   environmentServiceNameAzureRM: 'arm-portal-core-dev'
   varFile: './../tf-vars/dev.tfvars'
+  buildConfiguration: 'Release'
+
 
 resources:
   repositories:
@@ -36,9 +38,6 @@ stages:
       varFile: '$(varFile)'
 
   - job: build
-      variables:
-        buildConfiguration: 'Release'
-
       steps:
       - task: UseDotNet@2
         inputs:
