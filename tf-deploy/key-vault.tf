@@ -30,3 +30,23 @@ resource "azurerm_key_vault_access_policy" "function_app_key_vault_access_policy
     "Get"
   ]
 }
+
+//resource "azurerm_key_vault_secret" "service_bus_connection_string" {
+//  name         = local.service_bus_connection_string_secret
+//  value        = azurerm_servicebus_namespace.service_bus.default_primary_connection_string
+//  key_vault_id = azurerm_key_vault.key_vault.id
+//
+//  depends_on = [
+//    azurerm_key_vault_access_policy.principal_key_vault_access_policy
+//  ]
+//}
+//
+//resource "azurerm_key_vault_secret" "application_insights_instrumentation_key" {
+//  name         = local.app_insights_instrumentation_key_secret
+//  value        = azurerm_application_insights.application_insights.instrumentation_key
+//  key_vault_id = azurerm_key_vault.key_vault.id
+//
+//  depends_on = [
+//    azurerm_key_vault_access_policy.principal_key_vault_access_policy
+//  ]
+//}

@@ -6,13 +6,3 @@ resource "azurerm_application_insights" "application_insights" {
 
   application_type = "web"
 }
-
-resource "azurerm_key_vault_secret" "application_insights_instrumentation_key" {
-  name         = local.app_insights_instrumentation_key_secret
-  value        = azurerm_application_insights.application_insights.instrumentation_key
-  key_vault_id = azurerm_key_vault.key_vault.id
-
-  depends_on = [
-    azurerm_key_vault_access_policy.principal_key_vault_access_policy
-  ]
-}
