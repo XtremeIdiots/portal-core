@@ -22,4 +22,5 @@ resource "azurerm_mssql_database" "portal_database" {
   read_scale                  = false
   sku_name                    = "GP_S_Gen5_1"
   auto_pause_delay_in_minutes = 60
+  min_capacity                = 0.5
 }
