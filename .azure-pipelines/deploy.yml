@@ -70,3 +70,24 @@ stages:
       backendAzureRmKey: '$(backendAzureRmKey)'
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
       varFile: '$(varFile)'
+
+  - job: DeployFunctionApp
+    dependsOn: TerraformPlanAndApply
+
+    variables:
+    - name: function_app_name
+      value: $[ dependencies.TerraformPlanAndApply.outputs['TerraformPlanAndApply.TerraformPlanAndApply.function_app_name'] ]
+    - name: sql_database_connection_string
+      value: $[ dependencies.TerraformPlanAndApply.outputs['TerraformPlanAndApply.TerraformPlanAndApply.sql_database_connection_string'] ]
+
+    steps: 
+      - download: current
+        displayName: 'Download function-app artifact'
+        artifact: function-app
+
+      - task: AzureFunctionApp@1
+        inputs:
+          azureSubscription: '$(environmentServiceNameAzureRM)'
+          appName: '$(function_app_name)'
+          package: '$(Pipeline.Workspace)/function-app/function-app.zip'
+          
