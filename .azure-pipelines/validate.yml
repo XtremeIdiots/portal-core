@@ -70,7 +70,7 @@ stages:
       displayName: Publish function-app artifact
       artifact: function-app
 
-  - job: buildSql
+  - job: BuildSqlDatabase
     steps:
     - task: DotNetCoreCLI@2
       inputs:
@@ -78,3 +78,12 @@ stages:
         projects: '**/database.csproj'
         arguments: '--configuration $(buildConfiguration)'
       displayName: 'dotnet build $(buildConfiguration)'
+
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: '$(Build.SourcesDirectory)/src/database/bin/Release/netstandard2.1/'
+        targetFolder: '$(Build.ArtifactStagingDirectory)/database'
+
+    - publish: '$(Build.ArtifactStagingDirectory)/database'
+      displayName: Publish database artifact
+      artifact: database
