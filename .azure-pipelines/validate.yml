@@ -37,53 +37,6 @@ stages:
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
       varFile: '$(varFile)'
 
-  - job: BuildFunctionApp
-    steps:
-    - task: UseDotNet@2
-      inputs:
-        version: 6.0.x
-        performMultiLevelLookup: true
-        includePreviewVersions: true
-    
-    - task: DotNetCoreCLI@2
-      inputs:
-        command: 'restore'
-        projects: '**/function-app.csproj'
+  - template: jobs/build-function-app.yml@ado-pipeline-templates
 
-    - task: DotNetCoreCLI@2
-      inputs:
-        command: 'build'
-        projects: '**/function-app.csproj'
-        arguments: '--configuration $(buildConfiguration)'
-      displayName: 'dotnet build $(buildConfiguration)'
-
-    - task: ArchiveFiles@2
-      displayName: "Package function-app to artifact staging directory"
-      inputs:
-        rootFolderOrFile: '$(Build.SourcesDirectory)/src/function-app/bin/Release/net6.0/'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/function-app.zip'
-        replaceExistingArchive: true
-
-    - publish: $(Build.artifactStagingDirectory)/function-app.zip
-      displayName: Publish function-app artifact
-      artifact: function-app
-
-  - job: BuildSqlDatabase
-    steps:
-    - task: DotNetCoreCLI@2
-      inputs:
-        command: 'build'
-        projects: '**/database.csproj'
-        arguments: '--configuration $(buildConfiguration)'
-      displayName: 'dotnet build $(buildConfiguration)'
-
-    - task: CopyFiles@2
-      inputs:
-        sourceFolder: '$(Build.SourcesDirectory)/src/database/bin/Release/netstandard2.1/'
-        targetFolder: '$(Build.ArtifactStagingDirectory)/database'
-
-    - publish: '$(Build.ArtifactStagingDirectory)/database'
-      displayName: Publish database artifact
-      artifact: database
+  - template: jobs/build-sql-database.yml@ado-pipeline-templates

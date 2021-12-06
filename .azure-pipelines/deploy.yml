@@ -23,6 +23,16 @@ resources:
       endpoint: XtremeIdiots
 
 stages:
+- stage: Build
+
+  - template: jobs/build-function-app.yml@ado-pipeline-templates
+    parameters:
+      publishArtifact: true
+
+  - template: jobs/build-sql-database.yml@ado-pipeline-templates
+    parameters:
+    publishArtifact: true
+
 - stage: Deploy
 
   jobs:
