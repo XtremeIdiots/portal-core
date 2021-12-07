@@ -20,6 +20,7 @@ namespace XtremeIdiots.Portal.FunctionApp
             }
             catch (Exception ex)
             {
+                log.LogError($"OnPlayerConnected Raw Input: '{input}'");
                 log.LogError(ex, "OnPlayerConnected was not in expected format");
                 throw;
             }

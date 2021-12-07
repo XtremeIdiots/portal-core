@@ -20,7 +20,7 @@ namespace XtremeIdiots.Portal.FunctionApp
             }
             catch (Exception ex)
             {
-                log.LogDebug(input);
+                log.LogError($"OnSay Raw Input: '{input}'");
                 log.LogError(ex, "OnSay was not in expected format");
                 throw;
             }
@@ -57,7 +57,7 @@ namespace XtremeIdiots.Portal.FunctionApp
             }
             catch (Exception ex)
             {
-                log.LogDebug(input);
+                log.LogError($"OnMapChange Raw Input: '{input}'");
                 log.LogError(ex, "OnMapChange was not in expected format");
                 throw;
             }
