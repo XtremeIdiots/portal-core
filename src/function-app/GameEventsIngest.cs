@@ -50,10 +50,10 @@ namespace XtremeIdiots.Portal.FunctionApp
         [return: ServiceBus("map_change_queue", Connection = "service-bus-connection-string")]
         public static string OnMapChange([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] string input, ILogger log)
         {
-            OnMapChange onMapChange;
+            OnMapChange onMapChangeEvent;
             try
             {
-                onMapChange = JsonConvert.DeserializeObject<OnMapChange>(input);
+                onMapChangeEvent = JsonConvert.DeserializeObject<OnMapChange>(input);
             }
             catch (Exception ex)
             {
@@ -62,7 +62,25 @@ namespace XtremeIdiots.Portal.FunctionApp
                 throw;
             }
 
-            return JsonConvert.SerializeObject(onMapChange);
+            return JsonConvert.SerializeObject(onMapChangeEvent);
+        }
+
+        [FunctionName("ProcessOnMapChange")]
+        public static void ProcessOnMapChange(
+        [ServiceBusTrigger("map_change_queue", Connection = "service-bus-connection-string")] string myQueueItem, ILogger log)
+        {
+            OnMapChange onMapChangeEvent;
+            try
+            {
+                onMapChangeEvent = JsonConvert.DeserializeObject<OnMapChange>(myQueueItem);
+            }
+            catch (Exception ex)
+            {
+                log.LogError(ex, "OnSay was not in expected format");
+                throw;
+            }
+
+            log.LogInformation($"ProcessOnMapChange :: GameName: '{onMapChangeEvent.GameName}', GameType: '{onMapChangeEvent.GameType}', MapName: '{onMapChangeEvent.MapName}'");
         }
     }
 }
