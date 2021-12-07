@@ -80,7 +80,8 @@ stages:
   - job: DeploySqlDatabase
     dependsOn: TerraformPlanAndApply
 
-    pool: windows-latest
+    pool:
+      vmImage: windows-latest
 
     variables:
     - name: sql_server_name
