@@ -76,9 +76,9 @@ stages:
 
     variables:
     - name: function_app_name
-      value: $[ dependencies.TerraformPlanAndApply.outputs['TerraformPlanAndApply.terraform_output.function_app_name'] ]
+      value: $[ dependencies.TerraformPlanAndApply.outputs['terraform_output.function_app_name'] ]
     - name: sql_database_connection_string
-      value: $[ dependencies.TerraformPlanAndApply.outputs['TerraformPlanAndApply.terraform_output.sql_database_connection_string'] ]
+      value: $[ dependencies.TerraformPlanAndApply.outputs['terraform_output.sql_database_connection_string'] ]
 
     steps: 
       - download: current
