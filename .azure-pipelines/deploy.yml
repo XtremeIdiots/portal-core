@@ -81,11 +81,26 @@ stages:
     dependsOn: TerraformPlanAndApply
 
     variables:
-    - name: sql_database_connection_string
-      value: $[ dependencies.TerraformPlanAndApply.outputs['terraform_output.sql_database_connection_string'] ]
+    - name: sql_server_name
+      value: $[ dependencies.TerraformPlanAndApply.outputs['terraform_output.sql_server_name'] ]
+    - name: sql_database_name
+      value: $[ dependencies.TerraformPlanAndApply.outputs['terraform_output.sql_database_name'] ]
+    - name: sql_admin_username
+      value: $[ dependencies.TerraformPlanAndApply.outputs['terraform_output.sql_admin_username'] ]
+    - name: sql_admin_password
+      value: $[ dependencies.TerraformPlanAndApply.outputs['terraform_output.sql_admin_password'] ]
 
     steps: 
       - download: current
         displayName: 'Download database artifact'
         artifact: database
+
+      - task: SqlAzureDacpacDeployment@1
+        inputs:
+          azureSubscription: '$(environmentServiceNameAzureRM)'
+          ServerName: '$(sql_server_name)'
+          DatabaseName: '$(sql_database_name)'
+          SqlUsername: '$(sql_admin_username)'
+          SqlPassword: '$(sql_admin_password)'
+          DacpacFile: '$(Pipeline.Workspace)/database/database.dacpac'
           
