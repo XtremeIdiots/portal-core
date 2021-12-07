@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "common-lib", "common-lib\co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "function-app", "function-app\function-app.csproj", "{BF72A853-86D7-43F9-90AC-FE4FC682A358}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "database", "database\database.sqlproj", "{CD3E3492-5F10-44F7-B8CE-68838A78976F}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "database", "database\database.sqlproj", "{20FFC99E-4F9E-4E08-875C-15142FD888CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,12 +23,12 @@ Global
 		{BF72A853-86D7-43F9-90AC-FE4FC682A358}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF72A853-86D7-43F9-90AC-FE4FC682A358}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF72A853-86D7-43F9-90AC-FE4FC682A358}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CD3E3492-5F10-44F7-B8CE-68838A78976F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CD3E3492-5F10-44F7-B8CE-68838A78976F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CD3E3492-5F10-44F7-B8CE-68838A78976F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{CD3E3492-5F10-44F7-B8CE-68838A78976F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CD3E3492-5F10-44F7-B8CE-68838A78976F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CD3E3492-5F10-44F7-B8CE-68838A78976F}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{20FFC99E-4F9E-4E08-875C-15142FD888CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20FFC99E-4F9E-4E08-875C-15142FD888CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20FFC99E-4F9E-4E08-875C-15142FD888CD}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{20FFC99E-4F9E-4E08-875C-15142FD888CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20FFC99E-4F9E-4E08-875C-15142FD888CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20FFC99E-4F9E-4E08-875C-15142FD888CD}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
