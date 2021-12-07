@@ -20,6 +20,7 @@ namespace XtremeIdiots.Portal.FunctionApp
             }
             catch (Exception ex)
             {
+                log.LogDebug(input);
                 log.LogError(ex, "OnSay was not in expected format");
                 throw;
             }
@@ -43,6 +44,25 @@ namespace XtremeIdiots.Portal.FunctionApp
             }
 
             log.LogInformation($"ProcessOnSay :: Username: '{onSayEvent.Username}', Guid: '{onSayEvent.Guid}', Message: '{onSayEvent.Message}'");
+        }
+
+        [FunctionName("OnMapChange")]
+        [return: ServiceBus("map_change_queue", Connection = "service-bus-connection-string")]
+        public static string OnMapChange([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] string input, ILogger log)
+        {
+            OnMapChange onMapChange;
+            try
+            {
+                onMapChange = JsonConvert.DeserializeObject<OnMapChange>(input);
+            }
+            catch (Exception ex)
+            {
+                log.LogDebug(input);
+                log.LogError(ex, "OnMapChange was not in expected format");
+                throw;
+            }
+
+            return JsonConvert.SerializeObject(onMapChange);
         }
     }
 }

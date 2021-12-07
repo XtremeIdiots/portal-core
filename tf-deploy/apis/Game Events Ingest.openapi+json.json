@@ -29,6 +29,17 @@
                     }
                 }
             }
+        },
+        "/OnMapChange": {
+            "post": {
+                "summary": "OnMapChange",
+                "operationId": "OnMapChange",
+                "responses": {
+                    "200": {
+                        "description": null
+                    }
+                }
+            }
         }
     },
     "components": {
