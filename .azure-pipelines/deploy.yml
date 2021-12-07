@@ -71,23 +71,21 @@ stages:
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
       varFile: '$(varFile)'
 
-  - job: DeployFunctionApp
+  - template: jobs/terraform-plan-and-apply.yml@ado-pipeline-templates
+    parameters:
+      jobName: DeployFunctionApp
+      dependsOn: TerraformPlanAndApply
+      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
+
+  - job: DeploySqlDatabase
     dependsOn: TerraformPlanAndApply
 
     variables:
-    - name: function_app_name
-      value: $[ dependencies.TerraformPlanAndApply.outputs['terraform_output.function_app_name'] ]
     - name: sql_database_connection_string
       value: $[ dependencies.TerraformPlanAndApply.outputs['terraform_output.sql_database_connection_string'] ]
 
     steps: 
       - download: current
-        displayName: 'Download function-app artifact'
-        artifact: function-app
-
-      - task: AzureFunctionApp@1
-        inputs:
-          azureSubscription: '$(environmentServiceNameAzureRM)'
-          appName: '$(function_app_name)'
-          package: '$(Pipeline.Workspace)/function-app/function-app.zip'
+        displayName: 'Download database artifact'
+        artifact: database
           
