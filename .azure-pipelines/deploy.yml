@@ -80,6 +80,8 @@ stages:
   - job: DeploySqlDatabase
     dependsOn: TerraformPlanAndApply
 
+    pool: windows-latest
+
     variables:
     - name: sql_server_name
       value: $[ dependencies.TerraformPlanAndApply.outputs['terraform_output.sql_server_name'] ]
