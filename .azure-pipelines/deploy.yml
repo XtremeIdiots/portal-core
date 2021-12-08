@@ -1,3 +1,8 @@
+parameters:
+- name: skipTerraformApproval
+  type: boolean
+  default: false
+
 trigger:
   branches:
     include:
@@ -55,6 +60,7 @@ stages:
     timeoutInMinutes: 60
     steps:   
     - task: ManualValidation@0
+      condition: and(succeeded(), eq('${{ parameters.skipTerraformApproval }}', 'false'))
       inputs:
           instructions: 'Validate the terraform plan from previous stage and either resume/reject.'
 
