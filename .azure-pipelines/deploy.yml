@@ -77,33 +77,8 @@ stages:
       dependsOn: TerraformPlanAndApply
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 
-  - job: DeploySqlDatabase
-    dependsOn: TerraformPlanAndApply
-
-    pool:
-      vmImage: windows-latest
-
-    variables:
-    - name: sql_server_domain_name
-      value: $[ dependencies.TerraformPlanAndApply.outputs['terraform_output.sql_server_domain_name'] ]
-    - name: sql_database_name
-      value: $[ dependencies.TerraformPlanAndApply.outputs['terraform_output.sql_database_name'] ]
-    - name: sql_admin_username
-      value: $[ dependencies.TerraformPlanAndApply.outputs['terraform_output.sql_admin_username'] ]
-    - name: sql_admin_password
-      value: $[ dependencies.TerraformPlanAndApply.outputs['terraform_output.sql_admin_password'] ]
-
-    steps: 
-      - download: current
-        displayName: 'Download database artifact'
-        artifact: database
-
-      - task: SqlAzureDacpacDeployment@1
-        inputs:
-          azureSubscription: '$(environmentServiceNameAzureRM)'
-          ServerName: '$(sql_server_domain_name)'
-          DatabaseName: '$(sql_database_name)'
-          SqlUsername: '$(sql_admin_username)'
-          SqlPassword: '$(sql_admin_password)'
-          DacpacFile: '$(Pipeline.Workspace)/database/database.dacpac'
-          
+  - template: jobs/deploy-sql-database.yml@ado-pipeline-templates
+    parameters:
+      jobName: DeploySqlDatabase
+      dependsOn: TerraformPlanAndApply
+      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
