@@ -38,5 +38,11 @@ stages:
       varFile: '$(varFile)'
       
   - template: jobs/build-function-app.yml@ado-pipeline-templates
+    parameters: 
+      projectName: 'ingest-func'
+
+  - template: jobs/build-function-app.yml@ado-pipeline-templates
+    parameters: 
+      projectName: 'repository-func'
 
   - template: jobs/build-sql-database.yml@ado-pipeline-templates

@@ -1,5 +1,5 @@
-resource "azurerm_storage_account" "function_app_storage_account" {
-  name                = local.function_app_storage_name
+resource "azurerm_storage_account" "ingest_function_app_storage_account" {
+  name                = local.ingest_function_app_storage_name
   resource_group_name = azurerm_resource_group.core_resource_group.name
   location            = azurerm_resource_group.core_resource_group.location
 
@@ -7,26 +7,14 @@ resource "azurerm_storage_account" "function_app_storage_account" {
   account_replication_type = "LRS"
 }
 
-resource "azurerm_app_service_plan" "function_app_service_plan" {
-  name                = local.function_app_service_plan_name
-  resource_group_name = azurerm_resource_group.core_resource_group.name
-  location            = azurerm_resource_group.core_resource_group.location
-  kind                = "FunctionApp"
-
-  sku {
-    tier = "Dynamic"
-    size = "Y1"
-  }
-}
-
-resource "azurerm_function_app" "function_app" {
-  name                = local.function_app_name
+resource "azurerm_function_app" "ingest_function_app" {
+  name                = local.ingest_function_app_name
   location            = azurerm_resource_group.core_resource_group.location
   resource_group_name = azurerm_resource_group.core_resource_group.name
   app_service_plan_id = azurerm_app_service_plan.function_app_service_plan.id
 
-  storage_account_name       = azurerm_storage_account.function_app_storage_account.name
-  storage_account_access_key = azurerm_storage_account.function_app_storage_account.primary_access_key
+  storage_account_name       = azurerm_storage_account.ingest_function_app_storage_account.name
+  storage_account_access_key = azurerm_storage_account.ingest_function_app_storage_account.primary_access_key
 
   version = "~4"
 
@@ -46,7 +34,7 @@ resource "azurerm_function_app" "function_app" {
   }
 }
 
-data "azurerm_function_app_host_keys" "function_app_host_key" {
-  name                = azurerm_function_app.function_app.name
+data "azurerm_function_app_host_keys" "ingest_function_app_host_key" {
+  name                = azurerm_function_app.ingest_function_app.name
   resource_group_name = azurerm_resource_group.core_resource_group.name
 }

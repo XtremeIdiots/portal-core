@@ -1,4 +1,4 @@
-﻿namespace XtremeIdiots.Portal.CommonLib.Models
+﻿namespace XtremeIdiots.Portal.CommonLib.Events
 {
     public class OnEventBase
     {

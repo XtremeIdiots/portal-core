@@ -32,9 +32,15 @@ stages:
 
   jobs:
   - template: jobs/build-function-app.yml@ado-pipeline-templates
-    parameters:
+    parameters: 
+      projectName: 'ingest-func'
       publishArtifact: true
 
+  - template: jobs/build-function-app.yml@ado-pipeline-templates
+    parameters: 
+      projectName: 'repository-func'
+      publishArtifact: true
+      
   - template: jobs/build-sql-database.yml@ado-pipeline-templates
     parameters:
       publishArtifact: true
@@ -79,7 +85,15 @@ stages:
 
   - template: jobs/deploy-function-app.yml@ado-pipeline-templates
     parameters:
-      jobName: DeployFunctionApp
+      projectName: ingest-func
+      jobName: DeployIngestFunctionApp
+      dependsOn: TerraformPlanAndApply
+      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
+
+  - template: jobs/deploy-function-app.yml@ado-pipeline-templates
+    parameters:
+      projectName: repository-func
+      jobName: DeployRepositoryFunctionApp
       dependsOn: TerraformPlanAndApply
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 

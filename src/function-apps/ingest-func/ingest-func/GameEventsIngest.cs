@@ -3,7 +3,6 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
-using XtremeIdiots.Portal.CommonLib.Extensions;
 using XtremeIdiots.Portal.CommonLib.Models;
 
 namespace XtremeIdiots.Portal.FunctionApp

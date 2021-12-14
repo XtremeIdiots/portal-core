@@ -1,3 +1,5 @@
+using XtremeIdiots.Portal.CommonLib.Events;
+
 namespace XtremeIdiots.Portal.CommonLib.Models
 {
     public class OnPlayerConnected : OnEventBase
