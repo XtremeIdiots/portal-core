@@ -6,7 +6,7 @@
         "version": "1.0"
     },
     "paths": {
-        "/Player": {
+        "/GetPlayer": {
             "get": {
                 "summary": "GetPlayer",
                 "description": "GetPlayer",
@@ -16,17 +16,32 @@
                         "description": "null"
                     }
                 }
-            },
+            }
+        },
+        "/CreatePlayer": {
             "post": {
                 "summary": "CreatePlayer",
                 "description": "CreatePlayer",
                 "operationId": "CreatePlayer",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "GameType": "CallOfDuty4",
+                                "Username": "Charlie",
+                                "Guid": "AAAAA"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "null"
                     }
                 }
-            },
+            }
+        },
+        "/UpdatePlayer": {
             "patch": {
                 "summary": "UpdatePlayer",
                 "description": "UpdatePlayer",

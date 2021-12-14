@@ -53,6 +53,9 @@ namespace XtremeIdiots.Portal.RepositoryFunc
                 return new BadRequestObjectResult(ex);
             }
 
+            player.FirstSeen = DateTime.UtcNow;
+            player.LastSeen = DateTime.UtcNow;
+
             await Context.Players.AddAsync(player);
             await Context.SaveChangesAsync();
 
@@ -83,6 +86,7 @@ namespace XtremeIdiots.Portal.RepositoryFunc
             playerToUpdate.FirstSeen = player.FirstSeen;
             playerToUpdate.LastSeen = player.LastSeen;
             playerToUpdate.IpAddress = player.IpAddress;
+            playerToUpdate.LastSeen = DateTime.UtcNow;
 
             await Context.SaveChangesAsync();
 
