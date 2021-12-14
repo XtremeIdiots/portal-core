@@ -39,10 +39,12 @@ stages:
       
   - template: jobs/build-function-app.yml@ado-pipeline-templates
     parameters: 
+      jobName: 'BuildIngestFunctionApp'
       projectName: 'ingest-func'
 
   - template: jobs/build-function-app.yml@ado-pipeline-templates
     parameters: 
+      jobName: 'BuildRepositoryFunctionApp'
       projectName: 'repository-func'
 
   - template: jobs/build-sql-database.yml@ado-pipeline-templates

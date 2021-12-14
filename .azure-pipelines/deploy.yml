@@ -33,11 +33,13 @@ stages:
   jobs:
   - template: jobs/build-function-app.yml@ado-pipeline-templates
     parameters: 
+      jobName: 'BuildIngestFunctionApp'
       projectName: 'ingest-func'
       publishArtifact: true
 
   - template: jobs/build-function-app.yml@ado-pipeline-templates
     parameters: 
+      jobName: 'BuildRepositoryFunctionApp'
       projectName: 'repository-func'
       publishArtifact: true
       
