@@ -63,13 +63,6 @@ namespace XtremeIdiots.Portal.FunctionApp
                 throw;
             }
 
-            if (!onMapChangeEvent.IsValid())
-            {
-                log.LogError($"OnMapChange Raw Input: '{input}'");
-                log.LogError("OnMapChange was not in expected format");
-                throw()
-            }
-
             return JsonConvert.SerializeObject(onMapChangeEvent);
         }
 
@@ -86,11 +79,6 @@ namespace XtremeIdiots.Portal.FunctionApp
             {
                 log.LogError(ex, "OnSay was not in expected format");
                 throw;
-            }
-
-            if (onMapChangeEvent.IsEventStale())
-            {
-                log.LogInformation($"Skipping ")
             }
 
             log.LogInformation($"ProcessOnMapChange :: GameName: '{onMapChangeEvent.GameName}', GameType: '{onMapChangeEvent.GameType}', MapName: '{onMapChangeEvent.MapName}'");
