@@ -21,10 +21,20 @@ resource "azurerm_key_vault_access_policy" "principal_key_vault_access_policy" {
   ]
 }
 
-resource "azurerm_key_vault_access_policy" "function_app_key_vault_access_policy" {
+resource "azurerm_key_vault_access_policy" "ingest_function_app_key_vault_access_policy" {
   key_vault_id = azurerm_key_vault.key_vault.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = azurerm_function_app.function_app.identity[0].principal_id
+  object_id    = azurerm_function_app.ingest_function_app.identity[0].principal_id
+
+  secret_permissions = [
+    "Get"
+  ]
+}
+
+resource "azurerm_key_vault_access_policy" "repository_function_app_key_vault_access_policy" {
+  key_vault_id = azurerm_key_vault.key_vault.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = azurerm_function_app.repository_function_app.identity[0].principal_id
 
   secret_permissions = [
     "Get"

@@ -1,5 +1,10 @@
-output "function_app_name" {
-  value     = azurerm_function_app.function_app.name
+output "ingest-func_name" {
+  value     = azurerm_function_app.ingest_function_app.name
+  sensitive = false
+}
+
+output "repository-func_name" {
+  value     = azurerm_function_app.repository_function_app.name
   sensitive = false
 }
 

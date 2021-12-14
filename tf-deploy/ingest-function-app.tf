@@ -1,5 +1,5 @@
 resource "azurerm_storage_account" "ingest_function_app_storage_account" {
-  name                = local.ingest_function_app_storage_name
+  name                = local.ingest_app_storage_name
   resource_group_name = azurerm_resource_group.core_resource_group.name
   location            = azurerm_resource_group.core_resource_group.location
 
