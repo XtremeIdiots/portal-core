@@ -21,7 +21,7 @@ resource "azurerm_api_management_api_policy" "game_events_ingest_api_policy" {
   api_management_name = azurerm_api_management.api_management.name
   resource_group_name = azurerm_resource_group.core_resource_group.name
 
-  xml_content = replace(file("./policies/GameEventsIngestPolicy.xml"), "__CODE__", data.azurerm_function_app_host_keys.function_app_host_key.default_function_key)
+  xml_content = replace(file("./policies/GameEventsIngestPolicy.xml"), "__CODE__", data.azurerm_function_app_host_keys.ingest_function_app_host_key.default_function_key)
 }
 
 resource "azurerm_api_management_api_diagnostic" "game_events_ingest_api_diagnostic" {
