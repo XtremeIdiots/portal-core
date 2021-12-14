@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ingest-func", "function-app
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "repository-func", "function-apps\repository-func\repository-func.csproj", "{F3D2394D-BCB3-4D59-A1F0-26AE52F843F4}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "data-lib", "data-lib\data-lib.csproj", "{DA5EF441-43CF-444E-A05F-210C33BDF1C0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{F3D2394D-BCB3-4D59-A1F0-26AE52F843F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3D2394D-BCB3-4D59-A1F0-26AE52F843F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3D2394D-BCB3-4D59-A1F0-26AE52F843F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA5EF441-43CF-444E-A05F-210C33BDF1C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA5EF441-43CF-444E-A05F-210C33BDF1C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA5EF441-43CF-444E-A05F-210C33BDF1C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA5EF441-43CF-444E-A05F-210C33BDF1C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

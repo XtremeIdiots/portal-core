@@ -1,0 +1,64 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "Player Repository",
+        "description": "",
+        "version": "1.0"
+    },
+    "paths": {
+        "/Player": {
+            "get": {
+                "summary": "Get",
+                "description": "GetPlayer",
+                "operationId": "GetPlayer",
+                "responses": {
+                    "200": {
+                        "description": "null"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create",
+                "description": "CreatePlayer",
+                "operationId": "CreatePlayer",
+                "responses": {
+                    "200": {
+                        "description": "null"
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Update",
+                "description": "UpdatePlayer",
+                "operationId": "UpdatePlayer",
+                "responses": {
+                    "200": {
+                        "description": "null"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "apiKeyHeader": {
+                "type": "apiKey",
+                "name": "Ocp-Apim-Subscription-Key",
+                "in": "header"
+            },
+            "apiKeyQuery": {
+                "type": "apiKey",
+                "name": "subscription-key",
+                "in": "query"
+            }
+        }
+    },
+    "security": [
+        {
+            "apiKeyHeader": []
+        },
+        {
+            "apiKeyQuery": []
+        }
+    ]
+}
