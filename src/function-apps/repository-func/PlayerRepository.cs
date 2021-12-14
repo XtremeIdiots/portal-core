@@ -13,16 +13,16 @@ using System;
 
 namespace XtremeIdiots.Portal.RepositoryFunc
 {
-    public class PlayersRepository
+    public class PlayerRepository
     {
         public PortalDbContext Context { get; }
 
-        public PlayersRepository(PortalDbContext context)
+        public PlayerRepository(PortalDbContext context)
         {
             Context = context ?? throw new System.ArgumentNullException(nameof(context));
         }
 
-        [FunctionName("Player")]
+        [FunctionName("GetPlayer")]
         public async Task<IActionResult> GetPlayer([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req)
         {
             var id = req.Query["id"];
@@ -38,7 +38,7 @@ namespace XtremeIdiots.Portal.RepositoryFunc
             return new OkObjectResult(player);
         }
 
-        [FunctionName("Player")]
+        [FunctionName("CreatePlayer")]
         public async Task<IActionResult> CreatePlayer([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {
             var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -59,7 +59,7 @@ namespace XtremeIdiots.Portal.RepositoryFunc
             return new OkObjectResult(player);
         }
 
-        [FunctionName("Player")]
+        [FunctionName("UpdatePlayer")]
         public async Task<IActionResult> UpdatePlayer([HttpTrigger(AuthorizationLevel.Function, "patch", Route = null)] HttpRequest req)
         {
             var requestBody = await new StreamReader(req.Body).ReadToEndAsync();

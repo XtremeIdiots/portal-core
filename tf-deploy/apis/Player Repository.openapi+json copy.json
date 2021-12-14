@@ -8,7 +8,7 @@
     "paths": {
         "/Player": {
             "get": {
-                "summary": "Get",
+                "summary": "GetPlayer",
                 "description": "GetPlayer",
                 "operationId": "GetPlayer",
                 "responses": {
@@ -18,7 +18,7 @@
                 }
             },
             "post": {
-                "summary": "Create",
+                "summary": "CreatePlayer",
                 "description": "CreatePlayer",
                 "operationId": "CreatePlayer",
                 "responses": {
@@ -28,7 +28,7 @@
                 }
             },
             "patch": {
-                "summary": "Update",
+                "summary": "UpdatePlayer",
                 "description": "UpdatePlayer",
                 "operationId": "UpdatePlayer",
                 "responses": {
