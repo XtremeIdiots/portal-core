@@ -15,7 +15,7 @@ locals {
 
   ingest_function_app_name     = format("fa-%s-ingest-%s-%s-%s", var.workload, var.env, var.region, var.instance)
   repository_function_app_name = format("fa-%s-repository-%s-%s-%s", var.workload, var.env, var.region, var.instance)
-  ingest_app_storage_name      = format("safae%s%s%s%s", var.workload, var.env, var.region, "01")
+  ingest_app_storage_name      = format("safa%s%s%s%s", var.workload, var.env, var.region, "01")
   repository_app_storage_name  = format("safa%s%s%s%s", var.workload, var.env, var.region, "02")
 
   // Key Vault
