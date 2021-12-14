@@ -13,10 +13,10 @@ locals {
   // Function Apps
   function_app_service_plan_name = format("asp-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
 
-  ingest_function_app_name     = format("fa-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
-  repository_function_app_name = format("fa-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
-  ingest_app_storage_name      = format("safa%s%s%s%s", var.workload, var.env, var.region, var.instance)
-  repository_app_storage_name  = format("safa%s%s%s%s", var.workload, var.env, var.region, var.instance)
+  ingest_function_app_name     = format("fa-%s-ingest-%s-%s-%s", var.workload, var.env, var.region, var.instance)
+  repository_function_app_name = format("fa-%s-repository-%s-%s-%s", var.workload, var.env, var.region, var.instance)
+  ingest_app_storage_name      = format("safae%s%s%s%s", var.workload, var.env, var.region, "01")
+  repository_app_storage_name  = format("safa%s%s%s%s", var.workload, var.env, var.region, "02")
 
   // Key Vault
   key_vault_name = format("kv-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
