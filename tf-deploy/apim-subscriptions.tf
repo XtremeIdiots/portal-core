@@ -4,6 +4,7 @@ resource "azurerm_api_management_subscription" "b3bot_subscription" {
   display_name        = "B3Bots"
   api_id              = azurerm_api_management_api.apim_player_ingest.id
   state               = "active"
+  allow_tracing       = false
 }
 
 resource "azurerm_api_management_subscription" "ingest_funcapp_subscription" {
@@ -11,4 +12,5 @@ resource "azurerm_api_management_subscription" "ingest_funcapp_subscription" {
   resource_group_name = azurerm_api_management.api_management.resource_group_name
   display_name        = "Ingest Function App"
   state               = "active"
+  allow_tracing       = false
 }

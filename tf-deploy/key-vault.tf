@@ -103,7 +103,7 @@ resource "azurerm_key_vault_secret" "b3bot_subscription_key" {
 
 resource "azurerm_key_vault_secret" "ingest_funcapp_subscription_key" {
   name         = local.apim_ingest_funcapp_subscription_secret_name
-  value        = azurerm_api_management_subscription.b3bot_subscription.primary_key
+  value        = azurerm_api_management_subscription.ingest_funcapp_subscription.primary_key
   key_vault_id = azurerm_key_vault.key_vault.id
 
   depends_on = [
