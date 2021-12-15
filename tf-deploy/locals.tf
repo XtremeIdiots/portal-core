@@ -6,6 +6,10 @@ locals {
   apim_name   = format("apim-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
   apim_logger = format("apim-logger-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
 
+  // Secret Names
+  apim_b3bot_subscription_secret_name          = format("%s-b3bot-subscription-key", local.apim_name)
+  apim_ingest_funcapp_subscription_secret_name = format("%s-ingest-funcapp-subscription-key", local.apim_name)
+
   // App Insights
   app_insights_name                       = format("ai-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
   app_insights_instrumentation_key_secret = format("%s-instrumentation-key", local.app_insights_name)

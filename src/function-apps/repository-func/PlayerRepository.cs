@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using XtremeIdiots.Portal.DataLib;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +37,23 @@ namespace XtremeIdiots.Portal.RepositoryFunc
             return new OkObjectResult(player);
         }
 
+        [FunctionName("GetPlayerByGame")]
+        public async Task<IActionResult> GetPlayerByGame([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req)
+        {
+            var gameType = req.Query["gameType"];
+            var guid = req.Query["guid"];
+
+            if (string.IsNullOrWhiteSpace(gameType))
+                return new BadRequestResult();
+
+            var player = await Context.Players.SingleOrDefaultAsync(p => p.GameType == gameType && p.Guid == guid);
+
+            if (player == null)
+                return new NotFoundResult();
+
+            return new OkObjectResult(player);
+        }
+
         [FunctionName("CreatePlayer")]
         public async Task<IActionResult> CreatePlayer([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {
@@ -52,6 +68,10 @@ namespace XtremeIdiots.Portal.RepositoryFunc
             {
                 return new BadRequestObjectResult(ex);
             }
+
+            var existingPlayer = await Context.Players.SingleOrDefaultAsync(p => p.GameType ==  player.GameType && p.Guid == player.Guid);
+            if (existingPlayer != null)
+                return new ConflictObjectResult(existingPlayer);
 
             player.FirstSeen = DateTime.UtcNow;
             player.LastSeen = DateTime.UtcNow;

@@ -2,16 +2,20 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using RestSharp;
 using System;
+using System.Net;
+using System.Net.Http;
 using XtremeIdiots.Portal.CommonLib.Models;
+using XtremeIdiots.Portal.DataLib.Models;
 
 namespace XtremeIdiots.Portal.FunctionApp
 {
-    public static class PlayerIngest
+    public class PlayerIngest
     {
         [FunctionName("OnPlayerConnected")]
         [return: ServiceBus("player_connected_queue", Connection = "service-bus-connection-string")]
-        public static string OnPlayerConnected([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] string input, ILogger log)
+        public string OnPlayerConnected([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] string input, ILogger log)
         {
             OnPlayerConnected playerConnectedEvent;
             try
@@ -29,7 +33,7 @@ namespace XtremeIdiots.Portal.FunctionApp
         }
 
         [FunctionName("ProcessOnPlayerConnected")]
-        public static void ProcessOnPlayerConnected(
+        public void ProcessOnPlayerConnected(
         [ServiceBusTrigger("player_connected_queue", Connection = "service-bus-connection-string")] string myQueueItem, ILogger log)
         {
             OnPlayerConnected playerConnectedEvent;
@@ -44,6 +48,36 @@ namespace XtremeIdiots.Portal.FunctionApp
             }
 
             log.LogInformation($"ProcessOnPlayerConnected :: Username: '{playerConnectedEvent.Username}', Guid: '{playerConnectedEvent.Guid}'");
+
+            var baseUrl = Environment.GetEnvironmentVariable("apim-base-url");
+            var subscriptionKey = Environment.GetEnvironmentVariable("apim-subscription-key");
+
+            var getPlayerRequest = new RestRequest("player-repository/GetPlayerByGame", Method.GET);
+            getPlayerRequest.AddHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
+            getPlayerRequest.AddParameter(new Parameter("gameType", playerConnectedEvent.GameType, ParameterType.QueryString));
+            getPlayerRequest.AddParameter(new Parameter("guid", playerConnectedEvent.Guid, ParameterType.QueryString));
+
+            var client = new RestClient(baseUrl);
+            var response = client.Execute(getPlayerRequest);
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                var createPlayerRequest = new RestRequest("player-repository/CreatePlayer", Method.POST);
+                createPlayerRequest.AddHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
+                createPlayerRequest.AddJsonBody(new Player(playerConnectedEvent.GameType, playerConnectedEvent.Guid, playerConnectedEvent.Username));
+
+                client.Execute(createPlayerRequest);
+            } 
+            else if (response.IsSuccessful)
+            {
+
+            }
+
+            // Get Player
+
+            // If player doesn't exist create player
+
+            // If event not stale and info to update then update player
         }
     }
 }

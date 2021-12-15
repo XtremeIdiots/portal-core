@@ -31,7 +31,9 @@ resource "azurerm_function_app" "ingest_function_app" {
     "APPINSIGHTS_INSTRUMENTATIONKEY" = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", local.key_vault_name, local.app_insights_instrumentation_key_secret)
     "WEBSITE_RUN_FROM_PACKAGE"       = 1
     "service-bus-connection-string"  = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", local.key_vault_name, local.service_bus_connection_string_secret)
-    "sql-connection-string"          = azurerm_key_vault_secret.sql_server_connection_string.value
+    "sql-connection-string"          = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", local.key_vault_name, local.sql_server_connstring_secret)
+    "apim-base-url"                  = azurerm_api_management.api_management.gateway_url,
+    "apim-subscription-key"          = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", local.key_vault_name, local.apim_ingest_funcapp_subscription_secret_name)
   }
 }
 
