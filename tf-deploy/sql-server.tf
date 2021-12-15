@@ -13,7 +13,7 @@ resource "azurerm_mssql_server" "sql_server" {
   administrator_login          = local.sql_server_admin_username
   administrator_login_password = random_password.sql_server_admin_password.result
 
-  public_network_access_enabled = false
+  public_network_access_enabled = true
 }
 
 resource "azurerm_mssql_database" "portal_database" {
