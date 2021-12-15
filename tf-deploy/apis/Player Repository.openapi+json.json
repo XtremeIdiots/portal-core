@@ -11,6 +11,15 @@
                 "summary": "GetPlayer",
                 "description": "GetPlayer",
                 "operationId": "GetPlayer",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "null"
@@ -46,6 +55,34 @@
                 "summary": "UpdatePlayer",
                 "description": "UpdatePlayer",
                 "operationId": "UpdatePlayer",
+                "responses": {
+                    "200": {
+                        "description": "null"
+                    }
+                }
+            }
+        },
+        "/GetPlayerByGame": {
+            "get": {
+                "summary": "GetPlayerByGame",
+                "description": "GetPlayerByGame",
+                "operationId": "61ba4635a2a59dcb1421d7ba",
+                "parameters": [
+                    {
+                        "name": "gameType",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "guid",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "null"
