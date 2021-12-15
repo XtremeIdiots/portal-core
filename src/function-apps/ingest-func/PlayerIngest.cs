@@ -5,9 +5,8 @@ using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Net;
-using System.Net.Http;
 using XtremeIdiots.Portal.CommonLib.Models;
-using XtremeIdiots.Portal.DataLib.Models;
+using XtremeIdiots.Portal.DataLib;
 
 namespace XtremeIdiots.Portal.FunctionApp
 {
@@ -62,9 +61,16 @@ namespace XtremeIdiots.Portal.FunctionApp
 
             if (response.StatusCode == HttpStatusCode.NotFound)
             {
+                var player = new Player()
+                {
+                    GameType = playerConnectedEvent.GameType,
+                    Guid = playerConnectedEvent.Guid,
+                    Username = playerConnectedEvent.Username
+                };
+
                 var createPlayerRequest = new RestRequest("player-repository/CreatePlayer", Method.POST);
                 createPlayerRequest.AddHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
-                createPlayerRequest.AddJsonBody(new Player(playerConnectedEvent.GameType, playerConnectedEvent.Guid, playerConnectedEvent.Username));
+                createPlayerRequest.AddJsonBody(player);
 
                 client.Execute(createPlayerRequest);
             } 

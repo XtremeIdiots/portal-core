@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using XtremeIdiots.Portal.DataLib;
 using Microsoft.EntityFrameworkCore;
-using XtremeIdiots.Portal.DataLib.Models;
 using System;
 
 namespace XtremeIdiots.Portal.RepositoryFunc
