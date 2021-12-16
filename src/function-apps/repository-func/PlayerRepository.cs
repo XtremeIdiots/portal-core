@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using XtremeIdiots.Portal.DataLib;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Net;
 
 namespace XtremeIdiots.Portal.RepositoryFunc
 {
@@ -75,6 +76,10 @@ namespace XtremeIdiots.Portal.RepositoryFunc
             if (existingPlayer != null)
                 return new ConflictObjectResult(existingPlayer);
 
+            player.Username = player.Username.Trim();
+            player.Guid = player.Guid.ToLower().Trim();
+
+
             player.FirstSeen = DateTime.UtcNow;
             player.LastSeen = DateTime.UtcNow;
 
@@ -104,10 +109,12 @@ namespace XtremeIdiots.Portal.RepositoryFunc
             if (playerToUpdate == null)
                 return new NotFoundResult();
 
-            playerToUpdate.Username = player.Username;
-            playerToUpdate.FirstSeen = player.FirstSeen;
-            playerToUpdate.LastSeen = player.LastSeen;
-            playerToUpdate.IpAddress = player.IpAddress;
+            if (!string.IsNullOrWhiteSpace(player.Username))
+                playerToUpdate.Username = player.Username.Trim();
+
+            if (IPAddress.TryParse(playerToUpdate.IpAddress, out IPAddress ip))
+                playerToUpdate.IpAddress = ip.ToString();
+
             playerToUpdate.LastSeen = DateTime.UtcNow;
 
             await Context.SaveChangesAsync();

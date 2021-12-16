@@ -12,6 +12,9 @@ namespace XtremeIdiots.Portal.FunctionApp
 {
     public class PlayerIngest
     {
+        private static string ApimBaseUrl => Environment.GetEnvironmentVariable("apim-base-url");
+        private static string ApimSubscriptionKey => Environment.GetEnvironmentVariable("apim-subscription-key");
+
         [FunctionName("OnPlayerConnected")]
         [return: ServiceBus("player_connected_queue", Connection = "service-bus-connection-string")]
         public string OnPlayerConnected([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] string input, ILogger log)
@@ -48,42 +51,74 @@ namespace XtremeIdiots.Portal.FunctionApp
 
             log.LogInformation($"ProcessOnPlayerConnected :: Username: '{playerConnectedEvent.Username}', Guid: '{playerConnectedEvent.Guid}'");
 
-            var baseUrl = Environment.GetEnvironmentVariable("apim-base-url");
-            var subscriptionKey = Environment.GetEnvironmentVariable("apim-subscription-key");
+            var existingPlayer = GetPlayer(playerConnectedEvent.GameType, playerConnectedEvent.Guid);
 
-            var getPlayerRequest = new RestRequest("player-repository/GetPlayerByGame", Method.GET);
-            getPlayerRequest.AddHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
-            getPlayerRequest.AddParameter(new Parameter("gameType", playerConnectedEvent.GameType, ParameterType.QueryString));
-            getPlayerRequest.AddParameter(new Parameter("guid", playerConnectedEvent.Guid, ParameterType.QueryString));
-
-            var client = new RestClient(baseUrl);
-            var response = client.Execute(getPlayerRequest);
-
-            if (response.StatusCode == HttpStatusCode.NotFound)
+            if (existingPlayer == null)
             {
                 var player = new Player()
                 {
                     GameType = playerConnectedEvent.GameType,
                     Guid = playerConnectedEvent.Guid,
-                    Username = playerConnectedEvent.Username
+                    Username = playerConnectedEvent.Username,
+                    IpAddress = playerConnectedEvent.IpAddress
                 };
 
-                var createPlayerRequest = new RestRequest("player-repository/CreatePlayer", Method.POST);
-                createPlayerRequest.AddHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
-                createPlayerRequest.AddJsonBody(player);
-
-                client.Execute(createPlayerRequest);
-            } 
-            else if (response.IsSuccessful)
-            {
-
+                CreatePlayer(player);
             }
+            else
+            {
+                if (playerConnectedEvent.EventGeneratedUtc > existingPlayer.LastSeen)
+                {
+                    existingPlayer.Username = playerConnectedEvent.Username;
+                    existingPlayer.IpAddress = playerConnectedEvent.IpAddress;
 
-            // Get Player
+                    UpdatePlayer(existingPlayer);
+                }
+            }
+        }
 
-            // If player doesn't exist create player
+        private static Player GetPlayer(string gameType, string guid)
+        {
+            var client = new RestClient(ApimBaseUrl);
+            var request = new RestRequest("player-repository/GetPlayerByGame", Method.GET);
+            request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
+            request.AddParameter(new Parameter("gameType", gameType, ParameterType.QueryString));
+            request.AddParameter(new Parameter("guid", guid, ParameterType.QueryString));
 
-            // If event not stale and info to update then update player
+            var response = client.Execute(request);
+
+            if (response.IsSuccessful)
+            {
+                return JsonConvert.DeserializeObject<Player>(response.Content);
+            }
+            else if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            else
+            {
+                throw new Exception("Failed to execute 'player-repository/GetPlayerByGame'");
+            }
+        }
+
+        private static void CreatePlayer(Player player)
+        {
+            var client = new RestClient(ApimBaseUrl);
+            var request = new RestRequest("player-repository/CreatePlayer", Method.POST);
+            request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
+            request.AddJsonBody(player);
+
+            client.Execute(request);
+        }
+
+        private static void UpdatePlayer(Player player)
+        {
+            var client = new RestClient(ApimBaseUrl);
+            var request = new RestRequest("player-repository/UpdatePlayer", Method.PATCH);
+            request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
+            request.AddJsonBody(player);
+
+            client.Execute(request);
         }
     }
 }
