@@ -17,18 +17,21 @@ namespace XtremeIdiots.Portal.RepositoryFunc
 
         public PlayerRepository(PortalDbContext context)
         {
-            Context = context ?? throw new System.ArgumentNullException(nameof(context));
+            Context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         [FunctionName("GetPlayer")]
         public async Task<IActionResult> GetPlayer([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req)
         {
-            var id = req.Query["id"];
+            string id = req.Query["id"];
 
             if (string.IsNullOrWhiteSpace(id))
                 return new BadRequestResult();
 
-            var player = await Context.Players.SingleOrDefaultAsync(p => p.Id == id);
+            if (!Guid.TryParse(id, out Guid idAsGuid))
+                return new BadRequestResult();
+
+            var player = await Context.Players.SingleOrDefaultAsync(p => p.Id == idAsGuid);
 
             if (player == null)
                 return new NotFoundResult();
@@ -39,10 +42,10 @@ namespace XtremeIdiots.Portal.RepositoryFunc
         [FunctionName("GetPlayerByGame")]
         public async Task<IActionResult> GetPlayerByGame([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req)
         {
-            var gameType = req.Query["gameType"];
-            var guid = req.Query["guid"];
+            string gameType = req.Query["gameType"];
+            string guid = req.Query["guid"];
 
-            if (string.IsNullOrWhiteSpace(gameType))
+            if (string.IsNullOrWhiteSpace(gameType) || string.IsNullOrWhiteSpace(guid))
                 return new BadRequestResult();
 
             var player = await Context.Players.SingleOrDefaultAsync(p => p.GameType == gameType && p.Guid == guid);
