@@ -49,6 +49,8 @@ namespace XtremeIdiots.Portal.RepositoryFunc
             if (string.IsNullOrWhiteSpace(gameType) || string.IsNullOrWhiteSpace(guid))
                 return new BadRequestResult();
 
+            guid = guid.ToLower();
+
             var player = await Context.Players.SingleOrDefaultAsync(p => p.GameType == gameType && p.Guid == guid);
 
             if (player == null)
