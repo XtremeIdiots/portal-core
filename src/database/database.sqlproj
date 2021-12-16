@@ -59,7 +59,7 @@
     <Folder Include="Properties" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="TestTable.sql" />
     <Build Include="Players.sql" />
+    <Build Include="GameServers.sql" />
   </ItemGroup>
 </Project>

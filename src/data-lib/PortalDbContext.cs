@@ -17,6 +17,7 @@ namespace XtremeIdiots.Portal.DataLib
         {
         }
 
+        public virtual DbSet<GameServer> GameServers { get; set; }
         public virtual DbSet<Player> Players { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

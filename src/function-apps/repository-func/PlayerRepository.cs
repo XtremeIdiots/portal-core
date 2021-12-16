@@ -81,7 +81,6 @@ namespace XtremeIdiots.Portal.RepositoryFunc
             player.Username = player.Username.Trim();
             player.Guid = player.Guid.ToLower().Trim();
 
-
             player.FirstSeen = DateTime.UtcNow;
             player.LastSeen = DateTime.UtcNow;
 

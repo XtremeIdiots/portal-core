@@ -1,0 +1,100 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "Game Server Repository",
+        "description": "",
+        "version": "1.0"
+    },
+    "paths": {
+        "/GetGameServer": {
+            "get": {
+                "summary": "GetGameServer",
+                "operationId": "GetGameServer",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": null
+                    }
+                }
+            }
+        },
+        "/CreateGameServer": {
+            "post": {
+                "summary": "CreateGameServer",
+                "operationId": "CreateGameServer",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "id": "test-server",
+                                "title": "My Test Server",
+                                "gameType": "testGame",
+                                "ipAddress": "127.0.0.1",
+                                "queryPort": 12345
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": null
+                    }
+                }
+            }
+        },
+        "/UpdateGameServer": {
+            "patch": {
+                "summary": "UpdateGameServer",
+                "operationId": "UpdateGameServer",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "id": "test-server",
+                                "title": "My Test Server",
+                                "gameType": "testGame",
+                                "ipAddress": "127.0.0.1",
+                                "queryPort": 12345
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": null
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "apiKeyHeader": {
+                "type": "apiKey",
+                "name": "Ocp-Apim-Subscription-Key",
+                "in": "header"
+            },
+            "apiKeyQuery": {
+                "type": "apiKey",
+                "name": "subscription-key",
+                "in": "query"
+            }
+        }
+    },
+    "security": [
+        {
+            "apiKeyHeader": []
+        },
+        {
+            "apiKeyQuery": []
+        }
+    ]
+}
