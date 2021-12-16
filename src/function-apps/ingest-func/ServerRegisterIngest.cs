@@ -40,7 +40,7 @@ namespace XtremeIdiots.Portal.IngestFunc
 
         [FunctionName("ProcessOnRegisterServer")]
         public void ProcessOnRegisterServer(
-        [ServiceBusTrigger("player_connected_queue", Connection = "service-bus-connection-string")] string myQueueItem, ILogger log)
+        [ServiceBusTrigger("server_register_queue", Connection = "service-bus-connection-string")] string myQueueItem, ILogger log)
         {
             OnRegisterServer registerServerEvent;
             try

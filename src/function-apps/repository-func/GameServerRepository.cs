@@ -57,6 +57,12 @@ namespace XtremeIdiots.Portal.RepositoryFunc
             if (existingGameServer != null)
                 return new ConflictObjectResult(existingGameServer);
 
+            if (string.IsNullOrWhiteSpace(gameServer.Title))
+                gameServer.Title = "to-be-updated";
+
+            if (string.IsNullOrWhiteSpace(gameServer.IpAddress))
+                gameServer.IpAddress = "127.0.0.1";
+
             await Context.GameServers.AddAsync(gameServer);
             await Context.SaveChangesAsync();
 
