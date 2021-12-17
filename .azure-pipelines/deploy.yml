@@ -33,6 +33,12 @@ stages:
   jobs:
   - template: jobs/build-function-app.yml@ado-pipeline-templates
     parameters: 
+      jobName: 'BuildEventsFunctionApp'
+      projectName: 'events-func'
+      publishArtifact: true
+
+  - template: jobs/build-function-app.yml@ado-pipeline-templates
+    parameters: 
       jobName: 'BuildIngestFunctionApp'
       projectName: 'ingest-func'
       publishArtifact: true
@@ -85,6 +91,13 @@ stages:
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
       varFile: '$(varFile)'
 
+  - template: jobs/deploy-function-app.yml@ado-pipeline-templates
+    parameters:
+      projectName: events-func
+      jobName: DeployEventsFunctionApp
+      dependsOn: TerraformPlanAndApply
+      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
+ 
   - template: jobs/deploy-function-app.yml@ado-pipeline-templates
     parameters:
       projectName: ingest-func

@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.1",
     "info": {
-        "title": "Player Ingest",
+        "title": "Player Events",
         "description": "",
         "version": "1.0"
     },
@@ -17,6 +17,30 @@
                             "example": {
                                 "username": "charlie",
                                 "guid": "AAAABBBBCCCCDDDDEEEE1234567890ZZ"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "null"
+                    }
+                }
+            }
+        },
+        "/OnChatMessage": {
+            "post": {
+                "summary": "OnChatMessage",
+                "description": "OnChatMessage",
+                "operationId": "OnChatMessage",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "username": "charlie",
+                                "guid": "AAAABBBBCCCCDDDDEEEE1234567890ZZ",
+                                "message": "This is a test message",
+                                "Type": "All"
                             }
                         }
                     }

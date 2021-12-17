@@ -29,8 +29,8 @@ resource "azurerm_servicebus_queue" "map_change_queue" {
   enable_partitioning = true
 }
 
-resource "azurerm_servicebus_queue" "server_register_queue" {
-  name                = "server_register_queue"
+resource "azurerm_servicebus_queue" "server_connected_queue" {
+  name                = "server_connected_queue"
   resource_group_name = azurerm_resource_group.core_resource_group.name
   namespace_name      = azurerm_servicebus_namespace.service_bus.name
 

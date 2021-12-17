@@ -1,19 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <AzureFunctionsVersion>v4</AzureFunctionsVersion>
-    <RootNamespace>XtremeIdiots.Portal.IngestFunc</RootNamespace>
+    <AzureFunctionsVersion>v3</AzureFunctionsVersion>
+    <RootNamespace>events_func</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Http" Version="3.0.12" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.ServiceBus" Version="5.2.0" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.0.1" />
-    <PackageReference Include="RestSharp" Version="106.15.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\common-lib\common-lib.csproj" />
-    <ProjectReference Include="..\..\data-lib\data-lib.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">

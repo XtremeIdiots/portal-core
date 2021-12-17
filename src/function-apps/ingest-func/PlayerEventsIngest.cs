@@ -1,5 +1,4 @@
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RestSharp;
@@ -10,33 +9,13 @@ using XtremeIdiots.Portal.DataLib;
 
 namespace XtremeIdiots.Portal.FunctionApp
 {
-    public class PlayerIngest
+    public class PlayerEventsIngest
     {
         private static string ApimBaseUrl => Environment.GetEnvironmentVariable("apim-base-url");
         private static string ApimSubscriptionKey => Environment.GetEnvironmentVariable("apim-subscription-key");
 
-        [FunctionName("OnPlayerConnected")]
-        [return: ServiceBus("player_connected_queue", Connection = "service-bus-connection-string")]
-        public string OnPlayerConnected([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] string input, ILogger log)
-        {
-            OnPlayerConnected playerConnectedEvent;
-            try
-            {
-                playerConnectedEvent = JsonConvert.DeserializeObject<OnPlayerConnected>(input);
-            }
-            catch (Exception ex)
-            {
-                log.LogError($"OnPlayerConnected Raw Input: '{input}'");
-                log.LogError(ex, "OnPlayerConnected was not in expected format");
-                throw;
-            }
-
-            return JsonConvert.SerializeObject(playerConnectedEvent);
-        }
-
         [FunctionName("ProcessOnPlayerConnected")]
-        public void ProcessOnPlayerConnected(
-        [ServiceBusTrigger("player_connected_queue", Connection = "service-bus-connection-string")] string myQueueItem, ILogger log)
+        public void ProcessOnPlayerConnected([ServiceBusTrigger("player_connected_queue", Connection = "service-bus-connection-string")] string myQueueItem, ILogger log)
         {
             OnPlayerConnected playerConnectedEvent;
             try
@@ -75,6 +54,23 @@ namespace XtremeIdiots.Portal.FunctionApp
                     UpdatePlayer(existingPlayer);
                 }
             }
+        }
+
+        [FunctionName("ProcessOnChatMessage")]
+        public static void ProcessOnChatMessage([ServiceBusTrigger("chat_message_queue", Connection = "service-bus-connection-string")] string myQueueItem, ILogger log)
+        {
+            OnChatMessage onChatMessage;
+            try
+            {
+                onChatMessage = JsonConvert.DeserializeObject<OnChatMessage>(myQueueItem);
+            }
+            catch (Exception ex)
+            {
+                log.LogError(ex, "OnChatMessage was not in expected format");
+                throw;
+            }
+
+            log.LogInformation($"ProcessOnChatMessage :: Username: '{onChatMessage.Username}', Guid: '{onChatMessage.Guid}', Message: '{onChatMessage.Message}'");
         }
 
         private static Player GetPlayer(string gameType, string guid)

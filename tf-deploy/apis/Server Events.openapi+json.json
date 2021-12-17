@@ -1,15 +1,15 @@
 {
     "openapi": "3.0.1",
     "info": {
-        "title": "Server Register Ingest",
+        "title": "Server Events",
         "description": "",
         "version": "1.0"
     },
     "paths": {
-        "/OnRegisterServer": {
+        "/OnServerConnected": {
             "post": {
-                "summary": "OnRegisterServer",
-                "operationId": "OnRegisterServer",
+                "summary": "OnServerConnected",
+                "operationId": "OnServerConnected",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -20,6 +20,17 @@
                         }
                     }
                 },
+                "responses": {
+                    "200": {
+                        "description": null
+                    }
+                }
+            }
+        },
+        "/OnMapChange": {
+            "post": {
+                "summary": "OnMapChange",
+                "operationId": "OnMapChange",
                 "responses": {
                     "200": {
                         "description": null

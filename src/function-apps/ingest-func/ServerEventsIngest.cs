@@ -1,72 +1,65 @@
 using System;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using XtremeIdiots.Portal.CommonLib.Events;
 using XtremeIdiots.Portal.DataLib;
 using RestSharp;
 using System.Net;
+using XtremeIdiots.Portal.CommonLib.Models;
 
 namespace XtremeIdiots.Portal.IngestFunc
 {
-    public class ServerRegisterIngest
+    public class ServerEventsIngest
     {
         private static string ApimBaseUrl => Environment.GetEnvironmentVariable("apim-base-url");
         private static string ApimSubscriptionKey => Environment.GetEnvironmentVariable("apim-subscription-key");
 
-        [FunctionName("OnRegisterServer")]
-        [return: ServiceBus("server_register_queue", Connection = "service-bus-connection-string")]
-        public string OnRegisterServer([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] string input, ILogger log)
+        [FunctionName("ProcessOnServerConnected")]
+        public void ProcessOnServerConnected([ServiceBusTrigger("server_connected_queue", Connection = "service-bus-connection-string")] string myQueueItem, ILogger log)
         {
-            OnRegisterServer serverRegisterEvent;
+            OnServerConnected onServerConnected;
             try
             {
-                serverRegisterEvent = JsonConvert.DeserializeObject<OnRegisterServer>(input);
+                onServerConnected = JsonConvert.DeserializeObject<OnServerConnected>(myQueueItem);
             }
             catch (Exception ex)
             {
-                log.LogError($"OnRegisterServer Raw Input: '{input}'");
-                log.LogError(ex, "OnRegisterServer was not in expected format");
+                log.LogError(ex, "OnServerConnected was not in expected format");
                 throw;
             }
 
-            return JsonConvert.SerializeObject(serverRegisterEvent);
-        }
+            log.LogInformation($"OnServerConnected :: Id: '{onServerConnected.Id}', GameType: '{onServerConnected.GameType}'");
 
-        [FunctionName("ProcessOnRegisterServer")]
-        public void ProcessOnRegisterServer(
-        [ServiceBusTrigger("server_register_queue", Connection = "service-bus-connection-string")] string myQueueItem, ILogger log)
-        {
-            OnRegisterServer registerServerEvent;
-            try
-            {
-                registerServerEvent = JsonConvert.DeserializeObject<OnRegisterServer>(myQueueItem);
-            }
-            catch (Exception ex)
-            {
-                log.LogError(ex, "OnRegisterServer was not in expected format");
-                throw;
-            }
-
-            log.LogInformation($"ProcessOnRegisterServer :: Id: '{registerServerEvent.Id}', GameType: '{registerServerEvent.GameType}'");
-
-            var existingServer = GetGameServer(registerServerEvent.Id);
+            var existingServer = GetGameServer(onServerConnected.Id);
 
             if (existingServer == null)
             {
                 var gameServer = new GameServer()
                 {
-                    Id = registerServerEvent.Id,
-                    GameType = registerServerEvent.GameType
+                    Id = onServerConnected.Id,
+                    GameType = onServerConnected.GameType
                 };
 
                 CreateGameServer(gameServer);
             }
+        }
+
+        [FunctionName("ProcessOnMapChange")]
+        public static void ProcessOnMapChange([ServiceBusTrigger("map_change_queue", Connection = "service-bus-connection-string")] string myQueueItem, ILogger log)
+        {
+            OnMapChange onMapChange;
+            try
+            {
+                onMapChange = JsonConvert.DeserializeObject<OnMapChange>(myQueueItem);
+            }
+            catch (Exception ex)
+            {
+                log.LogError(ex, "OnMapChange was not in expected format");
+                throw;
+            }
+
+            log.LogInformation($"ProcessOnMapChange :: GameName: '{onMapChange.GameName}', GameType: '{onMapChange.GameType}', MapName: '{onMapChange.MapName}'");
         }
 
         private static GameServer GetGameServer(string id)

@@ -39,6 +39,11 @@ stages:
       
   - template: jobs/build-function-app.yml@ado-pipeline-templates
     parameters: 
+      jobName: 'BuildEventsFunctionApp'
+      projectName: 'events-func'
+  
+  - template: jobs/build-function-app.yml@ado-pipeline-templates
+    parameters: 
       jobName: 'BuildIngestFunctionApp'
       projectName: 'ingest-func'
 
