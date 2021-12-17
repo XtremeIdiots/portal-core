@@ -28,8 +28,7 @@ locals {
   events_app_storage_name      = format("safa%s%s%s%s", var.workload, var.env, var.region, "03")
 
   // Web Apps
-  mgmt_web_app_name         = format("web-%s-mgmt-%s-%s-%s", var.workload, var.env, var.region, var.instance)
-  mgmt_web_app_storage_name = format("sawa%s%s%s%s", var.workload, var.env, var.region, "01")
+  mgmt_web_app_name = format("web-%s-mgmt-%s-%s-%s", var.workload, var.env, var.region, var.instance)
 
   // Key Vault
   key_vault_name = format("kv-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
