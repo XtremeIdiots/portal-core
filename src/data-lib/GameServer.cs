@@ -9,6 +9,12 @@ namespace XtremeIdiots.Portal.DataLib
 {
     public partial class GameServer
     {
+        public GameServer()
+        {
+            ChatMessages = new HashSet<ChatMessage>();
+            GameServerEvents = new HashSet<GameServerEvent>();
+        }
+
         [Key]
         [StringLength(50)]
         public string Id { get; set; }
@@ -22,5 +28,10 @@ namespace XtremeIdiots.Portal.DataLib
         [StringLength(50)]
         public string IpAddress { get; set; }
         public int QueryPort { get; set; }
+
+        [InverseProperty(nameof(ChatMessage.GameServer))]
+        public virtual ICollection<ChatMessage> ChatMessages { get; set; }
+        [InverseProperty(nameof(GameServerEvent.GameServer))]
+        public virtual ICollection<GameServerEvent> GameServerEvents { get; set; }
     }
 }

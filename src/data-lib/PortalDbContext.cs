@@ -17,12 +17,42 @@ namespace XtremeIdiots.Portal.DataLib
         {
         }
 
+        public virtual DbSet<ChatMessage> ChatMessages { get; set; }
         public virtual DbSet<GameServer> GameServers { get; set; }
+        public virtual DbSet<GameServerEvent> GameServerEvents { get; set; }
         public virtual DbSet<Player> Players { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Scaffolding:ConnectionString", "Data Source=(local);Initial Catalog=database;Integrated Security=true");
+
+            modelBuilder.Entity<ChatMessage>(entity =>
+            {
+                entity.Property(e => e.Id).HasDefaultValueSql("newsequentialid()");
+
+                entity.HasOne(d => d.GameServer)
+                    .WithMany(p => p.ChatMessages)
+                    .HasForeignKey(d => d.GameServerId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ChatMessages_GameServer");
+
+                entity.HasOne(d => d.Player)
+                    .WithMany(p => p.ChatMessages)
+                    .HasForeignKey(d => d.PlayerId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ChatMessages_Player");
+            });
+
+            modelBuilder.Entity<GameServerEvent>(entity =>
+            {
+                entity.Property(e => e.Id).HasDefaultValueSql("newsequentialid()");
+
+                entity.HasOne(d => d.GameServer)
+                    .WithMany(p => p.GameServerEvents)
+                    .HasForeignKey(d => d.GameServerId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_GameServerEvents_GameServer");
+            });
 
             modelBuilder.Entity<Player>(entity =>
             {

@@ -61,5 +61,10 @@
   <ItemGroup>
     <Build Include="Players.sql" />
     <Build Include="GameServers.sql" />
+    <Build Include="GameServerEvents.sql" />
+    <Build Include="ChatMessages.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="database.refactorlog" />
   </ItemGroup>
 </Project>

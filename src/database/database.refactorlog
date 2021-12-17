@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="0b8ad933-f09a-4054-81ba-7ba97339e67a" ChangeDateTime="12/17/2021 21:18:13">
+    <Property Name="ElementName" Value="[dbo].[GameServerEvents].[GameId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[GameServerEvents]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ServerId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="d2602881-849b-4947-8762-12fe334476b2" ChangeDateTime="12/17/2021 21:23:30">
+    <Property Name="ElementName" Value="[dbo].[ChatMessages].[ServerId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ChatMessages]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="GameServerId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="bba476ca-6a09-40a4-9df0-bc6406e32209" ChangeDateTime="12/17/2021 21:24:37">
+    <Property Name="ElementName" Value="[dbo].[GameServerEvents].[ServerId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[GameServerEvents]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="GameServerId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="b62efc5c-14af-49b7-8be5-8a14e555f901" ChangeDateTime="12/17/2021 21:29:02">
+    <Property Name="ElementName" Value="[dbo].[ChatMessages].[Timespamp]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ChatMessages]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Timestamp" />
+  </Operation>
+</Operations>

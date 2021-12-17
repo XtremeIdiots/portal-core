@@ -9,6 +9,11 @@ namespace XtremeIdiots.Portal.DataLib
 {
     public partial class Player
     {
+        public Player()
+        {
+            ChatMessages = new HashSet<ChatMessage>();
+        }
+
         [Key]
         public Guid Id { get; set; }
         [Required]
@@ -25,5 +30,8 @@ namespace XtremeIdiots.Portal.DataLib
         public DateTime LastSeen { get; set; }
         [StringLength(50)]
         public string IpAddress { get; set; }
+
+        [InverseProperty(nameof(ChatMessage.Player))]
+        public virtual ICollection<ChatMessage> ChatMessages { get; set; }
     }
 }

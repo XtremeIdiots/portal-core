@@ -14,6 +14,14 @@
    "SelectedToBeGenerated": 0,
    "Tables": [
       {
+         "Name": "[dbo].[ChatMessages]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[GameServerEvents]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[GameServers]",
          "ObjectType": 0
       },

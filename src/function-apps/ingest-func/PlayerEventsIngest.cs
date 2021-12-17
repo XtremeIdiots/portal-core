@@ -71,6 +71,23 @@ namespace XtremeIdiots.Portal.FunctionApp
             }
 
             log.LogInformation($"ProcessOnChatMessage :: Username: '{onChatMessage.Username}', Guid: '{onChatMessage.Guid}', Message: '{onChatMessage.Message}'");
+
+            var player = GetPlayer(onChatMessage.GameType, onChatMessage.Guid);
+
+            if (player != null)
+            {
+                var chatMessage = new ChatMessage()
+                {
+                    GameServerId = onChatMessage.ServerId,
+                    PlayerId = player.Id,
+                    Username = onChatMessage.Username,
+                    Message = onChatMessage.Message,
+                    Type = onChatMessage.Type,
+                    Timestamp = onChatMessage.EventGeneratedUtc
+                };
+
+                CreateChatMessage(chatMessage);
+            }
         }
 
         private static Player GetPlayer(string gameType, string guid)
@@ -113,6 +130,16 @@ namespace XtremeIdiots.Portal.FunctionApp
             var request = new RestRequest("player-repository/UpdatePlayer", Method.PATCH);
             request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
             request.AddJsonBody(player);
+
+            client.Execute(request);
+        }
+
+        private static void CreateChatMessage(ChatMessage chatMessage)
+        {
+            var client = new RestClient(ApimBaseUrl);
+            var request = new RestRequest("chat-message-repository/CreateChatMessage", Method.POST);
+            request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
+            request.AddJsonBody(chatMessage);
 
             client.Execute(request);
         }
