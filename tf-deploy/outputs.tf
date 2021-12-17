@@ -1,3 +1,8 @@
+output "events-func_name" {
+  value     = azurerm_function_app.events_function_app.name
+  sensitive = false
+}
+
 output "ingest-func_name" {
   value     = azurerm_function_app.ingest_function_app.name
   sensitive = false
