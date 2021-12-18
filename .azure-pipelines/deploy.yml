@@ -20,6 +20,8 @@ variables:
   environmentServiceNameAzureRM: 'arm-portal-core-dev'
   varFile: './../tf-vars/dev.tfvars'
 
+pool: Dedicated
+
 resources:
   repositories:
     - repository: ado-pipeline-templates
