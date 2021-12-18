@@ -11,9 +11,7 @@
 <policies>
     <inbound>
         <base/>
-        <set-query-parameter name="code" exists-action="override">
-            <value>__CODE__</value>
-        </set-query-parameter>
+        <set-backend-service backend-id="__backend_service_id__" />
         <cache-lookup vary-by-developer="false" vary-by-developer-groups="false" downstream-caching-type="none" />
     </inbound>
     <backend>

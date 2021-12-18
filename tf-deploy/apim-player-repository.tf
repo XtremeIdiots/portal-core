@@ -21,7 +21,7 @@ resource "azurerm_api_management_api_policy" "player_repository_api_policy" {
   api_management_name = azurerm_api_management.api_management.name
   resource_group_name = azurerm_resource_group.core_resource_group.name
 
-  xml_content = replace(file("./policies/PlayerRepositoryPolicy.xml"), "__CODE__", data.azurerm_function_app_host_keys.repository_function_app_host_key.default_function_key)
+  xml_content = replace(file("./policies/PlayerRepositoryPolicy.xml"), "__backend_service_id__", azurerm_api_management_backend.repository_funcapp_backend.id)
 }
 
 resource "azurerm_api_management_api_diagnostic" "player_repository_api_diagnostic" {
