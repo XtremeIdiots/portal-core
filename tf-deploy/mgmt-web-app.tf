@@ -1,7 +1,7 @@
 resource "azuread_application" "mgmt_web_app_application" {
-  display_name      = local.mgmt_web_app_name
-  owners            = [data.azuread_client_config.current.object_id]
-  ssign_in_audience = "AzureADMyOrg"
+  display_name     = local.mgmt_web_app_name
+  owners           = [data.azuread_client_config.current.object_id]
+  sign_in_audience = "AzureADMyOrg"
 
   web {
     logout_url    = "https://localhost:44321/signout-oidc"
