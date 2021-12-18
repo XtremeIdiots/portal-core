@@ -28,6 +28,8 @@ resource "azurerm_app_service" "mgmt_web_app" {
     ftps_state               = "Disabled"
     min_tls_version          = "1.2"
     dotnet_framework_version = "v6.0"
+    # This is required to be set to support the shared app service plan
+    use_32_bit_worker_process = true
   }
 
   app_settings = {
