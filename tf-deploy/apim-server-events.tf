@@ -21,7 +21,7 @@ resource "azurerm_api_management_api_policy" "server_events_api_policy" {
   api_management_name = azurerm_api_management.api_management.name
   resource_group_name = azurerm_resource_group.core_resource_group.name
 
-  xml_content = replace(file("./policies/ServerEventsPolicy.xml"), "__backend_service_id__", azurerm_api_management_backend.events_funcapp_backend.id)
+  xml_content = replace(file("./policies/ServerEventsPolicy.xml"), "__backend_service_id__", azurerm_api_management_backend.events_funcapp_backend.name)
 }
 
 resource "azurerm_api_management_api_diagnostic" "server_events_api_diagnostic" {

@@ -21,7 +21,7 @@ resource "azurerm_api_management_api_policy" "chat_message_repository_api_policy
   api_management_name = azurerm_api_management.api_management.name
   resource_group_name = azurerm_resource_group.core_resource_group.name
 
-  xml_content = replace(file("./policies/ChatMessageRepositoryPolicy.xml"), "__backend_service_id__", azurerm_api_management_backend.repository_funcapp_backend.id)
+  xml_content = replace(file("./policies/ChatMessageRepositoryPolicy.xml"), "__backend_service_id__", azurerm_api_management_backend.repository_funcapp_backend.name)
 }
 
 resource "azurerm_api_management_api_diagnostic" "chat_message_repository_api_diagnostic" {
