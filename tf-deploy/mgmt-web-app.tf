@@ -1,3 +1,19 @@
+resource "azuread_application" "mgmt_web_app_application" {
+  display_name      = local.mgmt_web_app_name
+  owners            = [data.azuread_client_config.current.object_id]
+  ssign_in_audience = "AzureADMyOrg"
+
+  web {
+    logout_url    = "https://localhost:44321/signout-oidc"
+    redirect_uris = ["https://localhost:44321/signin-oidc"]
+
+    implicit_grant {
+      access_token_issuance_enabled = true
+      id_token_issuance_enabled     = true
+    }
+  }
+}
+
 resource "azurerm_app_service" "mgmt_web_app" {
   name                = local.mgmt_web_app_name
   location            = azurerm_resource_group.core_resource_group.location
