@@ -16,6 +16,13 @@ resource "azurerm_mssql_server" "sql_server" {
   public_network_access_enabled = true
 }
 
+resource "azurerm_mssql_firewall_rule" "dedicated_agent_pool_firewall_rule" {
+  name             = "DedicatedAgentPool"
+  server_id        = azurerm_mssql_server.sql_server.id
+  start_ip_address = "51.79.83.13"
+  end_ip_address   = "51.79.83.13"
+}
+
 resource "azurerm_mssql_database" "portal_database" {
   name         = local.sql_database_name
   server_id    = azurerm_mssql_server.sql_server.id
