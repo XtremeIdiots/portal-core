@@ -17,13 +17,9 @@ resource "azurerm_mssql_server" "sql_server" {
 }
 
 resource "azurerm_mssql_database" "portal_database" {
-  name                        = local.sql_database_name
-  server_id                   = azurerm_mssql_server.sql_server.id
-  collation                   = "SQL_Latin1_General_CP1_CI_AS"
-  max_size_gb                 = 32
-  read_scale                  = false
-  sku_name                    = "GP_S_Gen5_1"
-  auto_pause_delay_in_minutes = 60
-  min_capacity                = 0.5
-  geo_backup_enabled          = false
+  name         = local.sql_database_name
+  server_id    = azurerm_mssql_server.sql_server.id
+  collation    = "SQL_Latin1_General_CP1_CI_AS"
+  sku_name     = "Basic"
+  min_capacity = 5
 }
