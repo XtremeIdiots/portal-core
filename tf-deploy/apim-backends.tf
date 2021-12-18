@@ -8,7 +8,7 @@ resource "azurerm_api_management_backend" "events_funcapp_backend" {
   resource_id = azurerm_function_app.events_function_app.id
 
   credentials {
-    headers = {
+    header = {
       "x-functions-key" = azurerm_function_app.events_function_app.name
     }
   }
@@ -24,7 +24,7 @@ resource "azurerm_api_management_backend" "repository_funcapp_backend" {
   resource_id = azurerm_function_app.repository_function_app.id
 
   credentials {
-    headers = {
+    header = {
       "x-functions-key" = azurerm_function_app.repository_function_app.name
     }
   }
