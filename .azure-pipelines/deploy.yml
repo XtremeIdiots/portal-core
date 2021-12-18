@@ -48,6 +48,12 @@ stages:
       jobName: 'BuildRepositoryFunctionApp'
       projectName: 'repository-func'
       publishArtifact: true
+
+  - template: jobs/build-web-app.yml@ado-pipeline-templates
+    parameters: 
+      jobName: 'BuildMgmtWebApp'
+      projectName: 'mgmt-web'
+      publishArtifact: true
       
   - template: jobs/build-sql-database.yml@ado-pipeline-templates
     parameters:
@@ -109,6 +115,13 @@ stages:
     parameters:
       projectName: repository-func
       jobName: DeployRepositoryFunctionApp
+      dependsOn: TerraformPlanAndApply
+      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
+
+  - template: jobs/deploy-web-app.yml@ado-pipeline-templates
+    parameters: 
+      projectName: 'mgmt-web'
+      jobName: 'DeployMgmtWebApp'
       dependsOn: TerraformPlanAndApply
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 

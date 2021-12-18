@@ -56,6 +56,5 @@ stages:
     parameters: 
       jobName: 'BuildMgmtWebApp'
       projectName: 'mgmt-web'
-      publishArtifact: true
 
   - template: jobs/build-sql-database.yml@ado-pipeline-templates
