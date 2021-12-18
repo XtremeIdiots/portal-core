@@ -5,11 +5,10 @@ resource "azurerm_api_management_backend" "events_funcapp_backend" {
 
   protocol    = "http"
   url         = format("https://%s/api/", azurerm_function_app.events_function_app.default_hostname)
-  resource_id = format("https://management.azure.com/%s", azurerm_function_app.repository_function_app.id)
 
   credentials {
-    header = {
-      "x-functions-key" = azurerm_function_app.events_function_app.name
+    query = {
+      "code" = data.azurerm_function_app_host_keys.events_function_app_host_key.master_key
     }
   }
 }
@@ -21,11 +20,10 @@ resource "azurerm_api_management_backend" "repository_funcapp_backend" {
 
   protocol    = "http"
   url         = format("https://%s/api/", azurerm_function_app.repository_function_app.default_hostname)
-  resource_id = format("https://management.azure.com/%s", azurerm_function_app.repository_function_app.id)
 
   credentials {
-    header = {
-      "x-functions-key" = azurerm_function_app.repository_function_app.name
+    query = {
+      "code" = data.azurerm_function_app_host_keys.repository_function_app_host_key.master_key
     }
   }
 }
