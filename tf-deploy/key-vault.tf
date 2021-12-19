@@ -29,6 +29,16 @@ resource "azurerm_key_vault_access_policy" "principal_key_vault_access_policy" {
   ]
 }
 
+resource "azurerm_key_vault_access_policy" "api_management_key_vault_access_policy" {
+  key_vault_id = azurerm_key_vault.key_vault.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = azurerm_api_management.api_management.identity[0].principal_id
+
+  secret_permissions = [
+    "Get"
+  ]
+}
+
 resource "azurerm_key_vault_access_policy" "events_function_app_key_vault_access_policy" {
   key_vault_id = azurerm_key_vault.key_vault.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
