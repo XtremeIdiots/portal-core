@@ -6,7 +6,7 @@
         "version": "1.0"
     },
     "paths": {
-        "/GetGameServer": {
+        "/GameServer": {
             "get": {
                 "summary": "GetGameServer",
                 "operationId": "GetGameServer",
@@ -24,9 +24,7 @@
                         "description": null
                     }
                 }
-            }
-        },
-        "/CreateGameServer": {
+            },
             "post": {
                 "summary": "CreateGameServer",
                 "operationId": "CreateGameServer",
@@ -48,9 +46,7 @@
                         "description": null
                     }
                 }
-            }
-        },
-        "/UpdateGameServer": {
+            },
             "patch": {
                 "summary": "UpdateGameServer",
                 "operationId": "UpdateGameServer",

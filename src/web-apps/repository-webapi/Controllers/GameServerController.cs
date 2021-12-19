@@ -7,7 +7,7 @@ using XtremeIdiots.Portal.DataLib;
 namespace repository_webapi.Controllers
 {
     [ApiController]
-    [Route("api/game-server-repository")]
+    [Route("api")]
     public class GameServerController : ControllerBase
     {
         public PortalDbContext Context { get; }
@@ -17,7 +17,7 @@ namespace repository_webapi.Controllers
             Context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        [HttpGet(Name = "GetGameServer")]
+        [HttpGet(Name = "GameServer")]
         public async Task<IActionResult> GetGameServer()
         {
             string id = Request.Query["id"];
@@ -33,7 +33,7 @@ namespace repository_webapi.Controllers
             return new OkObjectResult(gameServer);
         }
 
-        [HttpPost(Name = "CreateGameServer")]
+        [HttpPost(Name = "GameServer")]
         public async Task<IActionResult> CreateGameServer()
         {
             var requestBody = await new StreamReader(Request.Body).ReadToEndAsync();
@@ -64,7 +64,7 @@ namespace repository_webapi.Controllers
             return new OkObjectResult(gameServer);
         }
 
-        [HttpPatch(Name = "UpdateGameServer")]
+        [HttpPatch(Name = "GameServer")]
         public async Task<IActionResult> UpdateGameServer()
         {
             var requestBody = await new StreamReader(Request.Body).ReadToEndAsync();
