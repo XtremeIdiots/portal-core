@@ -26,9 +26,11 @@ locals {
   ingest_function_app_name     = format("fa-%s-ingest-%s-%s-%s", var.workload, var.env, var.region, var.instance)
   repository_function_app_name = format("fa-%s-repository-%s-%s-%s", var.workload, var.env, var.region, var.instance)
   events_function_app_name     = format("fa-%s-events-%s-%s-%s", var.workload, var.env, var.region, var.instance)
+  bansync_function_app_name     = format("fa-%s-bansync-%s-%s-%s", var.workload, var.env, var.region, var.instance)
   ingest_app_storage_name      = format("safa%s%s%s%s", var.workload, var.env, var.region, "01")
   repository_app_storage_name  = format("safa%s%s%s%s", var.workload, var.env, var.region, "02")
   events_app_storage_name      = format("safa%s%s%s%s", var.workload, var.env, var.region, "03")
+  bansync_app_storage_name      = format("safa%s%s%s%s", var.workload, var.env, var.region, "04")
 
   // Web Apps
   mgmt_web_app_name   = format("web-%s-mgmt-%s-%s-%s", var.workload, var.env, var.region, var.instance)

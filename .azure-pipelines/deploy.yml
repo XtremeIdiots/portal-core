@@ -51,6 +51,12 @@ stages:
       projectName: 'repository-func'
       publishArtifact: true
 
+  - template: jobs/build-function-app.yml@ado-pipeline-templates
+    parameters: 
+      jobName: 'BuildBanSyncFunctionApp'
+      projectName: 'bansync-func'
+      publishArtifact: true
+
   - template: jobs/build-web-app.yml@ado-pipeline-templates
     parameters: 
       jobName: 'BuildMgmtWebApp'
@@ -135,6 +141,13 @@ stages:
     parameters:
       projectName: repository-func
       jobName: DeployRepositoryFunctionApp
+      dependsOn: TerraformPlanAndApply
+      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
+
+  - template: jobs/deploy-function-app.yml@ado-pipeline-templates
+    parameters:
+      projectName: bansync-func
+      jobName: DeployBanSyncFunctionApp
       dependsOn: TerraformPlanAndApply
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 

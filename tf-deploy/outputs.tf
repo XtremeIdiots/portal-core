@@ -13,6 +13,11 @@ output "repository-func_name" {
   sensitive = false
 }
 
+output "bansync-func_name" {
+  value     = azurerm_function_app.bansync_function_app.name
+  sensitive = false
+}
+
 output "mgmt-web_name" {
   value     = azurerm_app_service.mgmt_web_app.name
   sensitive = false

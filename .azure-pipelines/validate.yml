@@ -53,6 +53,11 @@ stages:
       jobName: 'BuildRepositoryFunctionApp'
       projectName: 'repository-func'
 
+  - template: jobs/build-function-app.yml@ado-pipeline-templates
+    parameters: 
+      jobName: 'BuildBanSyncFunctionApp'
+      projectName: 'bansync-func'
+
   - template: jobs/build-web-app.yml@ado-pipeline-templates
     parameters: 
       jobName: 'BuildMgmtWebApp'
