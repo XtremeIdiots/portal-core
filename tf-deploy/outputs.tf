@@ -23,6 +23,36 @@ output "mgmt-web_resource_group" {
   sensitive = false
 }
 
+output "admin-web_name" {
+  value     = azurerm_app_service.admin_web_app.name
+  sensitive = false
+}
+
+output "admin-web_resource_group" {
+  value     = azurerm_app_service.admin_web_app.resource_group_name
+  sensitive = false
+}
+
+output "public-web_name" {
+  value     = azurerm_app_service.public_web_app.name
+  sensitive = false
+}
+
+output "public-web_resource_group" {
+  value     = azurerm_app_service.public_web_app.resource_group_name
+  sensitive = false
+}
+
+output "repository-webapi_name" {
+  value     = azurerm_app_service.repository_web_api.name
+  sensitive = false
+}
+
+output "repository-webapi_resource_group" {
+  value     = azurerm_app_service.repository_web_api.resource_group_name
+  sensitive = false
+}
+
 output "sql_server_domain_name" {
   value     = azurerm_mssql_server.sql_server.fully_qualified_domain_name
   sensitive = true
