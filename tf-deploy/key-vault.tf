@@ -69,6 +69,16 @@ resource "azurerm_key_vault_access_policy" "repository_function_app_key_vault_ac
   ]
 }
 
+resource "azurerm_key_vault_access_policy" "bansync_function_app_key_vault_access_policy" {
+  key_vault_id = azurerm_key_vault.key_vault.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = azurerm_function_app.bansync_function_app.identity[0].principal_id
+
+  secret_permissions = [
+    "Get"
+  ]
+}
+
 resource "azurerm_key_vault_access_policy" "mgmt_web_app_key_vault_access_policy" {
   key_vault_id = azurerm_key_vault.key_vault.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
@@ -182,6 +192,36 @@ resource "azurerm_key_vault_secret" "ingest_funcapp_subscription_key" {
 resource "azurerm_key_vault_secret" "mgmt_web_app_subscription_key" {
   name         = local.apim_mgmt_web_app_subscription_secret_name
   value        = azurerm_api_management_subscription.mgmt_web_app_subscription.primary_key
+  key_vault_id = azurerm_key_vault.key_vault.id
+
+  depends_on = [
+    azurerm_key_vault_access_policy.principal_key_vault_access_policy
+  ]
+}
+
+resource "azurerm_key_vault_secret" "admin_web_app_subscription_key" {
+  name         = local.apim_admin_web_app_subscription_secret_name
+  value        = azurerm_api_management_subscription.admin_web_app_subscription.primary_key
+  key_vault_id = azurerm_key_vault.key_vault.id
+
+  depends_on = [
+    azurerm_key_vault_access_policy.principal_key_vault_access_policy
+  ]
+}
+
+resource "azurerm_key_vault_secret" "public_web_app_subscription_key" {
+  name         = local.apim_public_web_app_subscription_secret_name
+  value        = azurerm_api_management_subscription.public_web_app_subscription.primary_key
+  key_vault_id = azurerm_key_vault.key_vault.id
+
+  depends_on = [
+    azurerm_key_vault_access_policy.principal_key_vault_access_policy
+  ]
+}
+
+resource "azurerm_key_vault_secret" "repository_webapi_subscription_key" {
+  name         = local.apim_repository_web_api_subscription_secret_name
+  value        = azurerm_api_management_subscription.repository_web_api_subscription.primary_key
   key_vault_id = azurerm_key_vault.key_vault.id
 
   depends_on = [
