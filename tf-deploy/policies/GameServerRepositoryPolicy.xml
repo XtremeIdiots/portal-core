@@ -13,6 +13,7 @@
         <base/>
         <set-backend-service backend-id="__backend_service_id__" />
         <cache-lookup vary-by-developer="false" vary-by-developer-groups="false" downstream-caching-type="none" />
+        <authentication-managed-identity resource="__repository_application_id__"/>
     </inbound>
     <backend>
         <forward-request />

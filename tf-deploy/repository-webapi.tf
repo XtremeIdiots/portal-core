@@ -1,5 +1,23 @@
+resource "azuread_application" "repository_webapi_application" {
+  display_name     = local.repository_web_api_name
+  owners           = [data.azuread_client_config.current.object_id]
+  sign_in_audience = "AzureADMyOrg"
+
+  web {
+    logout_url = format("https://%s.azurewebsites.net/signout-oidc", local.repository_web_api_name)
+    redirect_uris = [
+      format("https://%s.azurewebsites.net/signin-oidc", local.repository_web_api_name)
+    ]
+
+    implicit_grant {
+      access_token_issuance_enabled = true
+      id_token_issuance_enabled     = true
+    }
+  }
+}
+
 resource "azurerm_app_service" "repository_web_api" {
-  name                = local.repository_web_api
+  name                = local.repository_web_api_name
   location            = azurerm_resource_group.core_resource_group.location
   resource_group_name = azurerm_resource_group.core_resource_group.name
   app_service_plan_id = azurerm_app_service_plan.web_app_service_plan.id
@@ -19,7 +37,10 @@ resource "azurerm_app_service" "repository_web_api" {
   app_settings = {
     "APPINSIGHTS_INSTRUMENTATIONKEY" = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", local.key_vault_name, local.app_insights_instrumentation_key_secret)
     "WEBSITE_RUN_FROM_PACKAGE"       = 1
+    "sql-connection-string"          = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", local.key_vault_name, local.sql_server_connstring_secret)
     "apim-base-url"                  = azurerm_api_management.api_management.gateway_url
     "apim-subscription-key"          = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", local.key_vault_name, local.apim_repository_web_api_subscription_secret_name)
+    "AzureAd:TenantId"               = data.azurerm_client_config.current.tenant_id
+    "AzureAd:ClientId"               = azuread_application.repository_webapi_application.application_id
   }
 }

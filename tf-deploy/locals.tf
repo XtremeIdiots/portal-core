@@ -33,10 +33,10 @@ locals {
   bansync_app_storage_name     = format("safa%s%s%s%s", var.workload, var.env, var.region, "04")
 
   // Web Apps
-  mgmt_web_app_name   = format("web-%s-mgmt-%s-%s-%s", var.workload, var.env, var.region, var.instance)
-  admin_web_app_name  = format("web-%s-admin-%s-%s-%s", var.workload, var.env, var.region, var.instance)
-  public_web_app_name = format("web-%s-public-%s-%s-%s", var.workload, var.env, var.region, var.instance)
-  repository_web_api  = format("webapi-%s-repository-%s-%s-%s", var.workload, var.env, var.region, var.instance)
+  mgmt_web_app_name       = format("web-%s-mgmt-%s-%s-%s", var.workload, var.env, var.region, var.instance)
+  admin_web_app_name      = format("web-%s-admin-%s-%s-%s", var.workload, var.env, var.region, var.instance)
+  public_web_app_name     = format("web-%s-public-%s-%s-%s", var.workload, var.env, var.region, var.instance)
+  repository_web_api_name = format("webapi-%s-repository-%s-%s-%s", var.workload, var.env, var.region, var.instance)
 
   // Key Vault
   key_vault_name = format("kv-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
