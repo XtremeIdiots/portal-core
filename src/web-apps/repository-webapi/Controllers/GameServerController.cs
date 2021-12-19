@@ -17,7 +17,7 @@ namespace repository_webapi.Controllers
             Context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        [HttpGet]
+        [HttpGet(Name = "GetGameServer")]
         public async Task<IActionResult> GetGameServer()
         {
             string id = Request.Query["id"];
@@ -33,7 +33,7 @@ namespace repository_webapi.Controllers
             return new OkObjectResult(gameServer);
         }
 
-        [HttpPost]
+        [HttpPost(Name = "CreateGameServer")]
         public async Task<IActionResult> CreateGameServer()
         {
             var requestBody = await new StreamReader(Request.Body).ReadToEndAsync();
@@ -64,7 +64,7 @@ namespace repository_webapi.Controllers
             return new OkObjectResult(gameServer);
         }
 
-        [HttpPatch]
+        [HttpPatch(Name = "UpdateGameServer")]
         public async Task<IActionResult> UpdateGameServer()
         {
             var requestBody = await new StreamReader(Request.Body).ReadToEndAsync();

@@ -1,6 +1,10 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
+using XtremeIdiots.Portal.DataLib;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<PortalDbContext>(options => options.UseSqlServer(builder.Configuration["sql-connection-string"]));
 
 // Add services to the container.
 builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration, "AzureAd");
@@ -21,7 +25,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseAuthentication();
+}
+    
 app.UseAuthorization();
 
 app.MapControllers();
