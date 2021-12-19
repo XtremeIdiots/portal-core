@@ -79,6 +79,36 @@ resource "azurerm_key_vault_access_policy" "mgmt_web_app_key_vault_access_policy
   ]
 }
 
+resource "azurerm_key_vault_access_policy" "admin_web_app_key_vault_access_policy" {
+  key_vault_id = azurerm_key_vault.key_vault.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = azurerm_app_service.admin_web_app.identity[0].principal_id
+
+  secret_permissions = [
+    "Get"
+  ]
+}
+
+resource "azurerm_key_vault_access_policy" "public_web_app_key_vault_access_policy" {
+  key_vault_id = azurerm_key_vault.key_vault.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = azurerm_app_service.public_web_app.identity[0].principal_id
+
+  secret_permissions = [
+    "Get"
+  ]
+}
+
+resource "azurerm_key_vault_access_policy" "repository_webapi_key_vault_access_policy" {
+  key_vault_id = azurerm_key_vault.key_vault.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = azurerm_app_service.repository_web_api.identity[0].principal_id
+
+  secret_permissions = [
+    "Get"
+  ]
+}
+
 resource "azurerm_key_vault_secret" "service_bus_connection_string" {
   name         = local.service_bus_connection_string_secret
   value        = azurerm_servicebus_namespace.service_bus.default_primary_connection_string
