@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-mgmt_web-02FC7DA3-D91C-4BB0-BC91-B6D98FCA8BF7</UserSecretsId>
-    <RootNamespace>mgmt_web</RootNamespace>
+    <RootNamespace>XtremeIdiots.Portal.MgmtWeb</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
