@@ -58,4 +58,19 @@ stages:
       jobName: 'BuildMgmtWebApp'
       projectName: 'mgmt-web'
 
+  - template: jobs/build-web-app.yml@ado-pipeline-templates
+    parameters: 
+      jobName: 'BuildAdminWebApp'
+      projectName: 'admin-web'
+
+  - template: jobs/build-web-app.yml@ado-pipeline-templates
+    parameters: 
+      jobName: 'BuildPublicWebApp'
+      projectName: 'public-web'
+
+  - template: jobs/build-web-app.yml@ado-pipeline-templates
+    parameters: 
+      jobName: 'BuildRepositoryWebApi'
+      projectName: 'repository-webapi'
+
   - template: jobs/build-sql-database.yml@ado-pipeline-templates

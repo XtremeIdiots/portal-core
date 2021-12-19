@@ -56,6 +56,24 @@ stages:
       jobName: 'BuildMgmtWebApp'
       projectName: 'mgmt-web'
       publishArtifact: true
+
+  - template: jobs/build-web-app.yml@ado-pipeline-templates
+    parameters: 
+      jobName: 'BuildAdminWebApp'
+      projectName: 'admin-web'
+      publishArtifact: true
+
+  - template: jobs/build-web-app.yml@ado-pipeline-templates
+    parameters: 
+      jobName: 'BuildPublicWebApp'
+      projectName: 'public-web'
+      publishArtifact: true
+
+  - template: jobs/build-web-app.yml@ado-pipeline-templates
+    parameters: 
+      jobName: 'BuildRepositoryWebApi'
+      projectName: 'repository-webapi'
+      publishArtifact: true
       
   - template: jobs/build-sql-database.yml@ado-pipeline-templates
     parameters:
@@ -124,6 +142,27 @@ stages:
     parameters: 
       projectName: 'mgmt-web'
       jobName: 'DeployMgmtWebApp'
+      dependsOn: TerraformPlanAndApply
+      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
+
+  - template: jobs/deploy-web-app.yml@ado-pipeline-templates
+    parameters: 
+      projectName: 'admin-web'
+      jobName: 'DeployAdminWebApp'
+      dependsOn: TerraformPlanAndApply
+      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
+
+  - template: jobs/deploy-web-app.yml@ado-pipeline-templates
+    parameters: 
+      projectName: 'public-web'
+      jobName: 'DeployPublicWebApp'
+      dependsOn: TerraformPlanAndApply
+      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
+
+  - template: jobs/deploy-web-app.yml@ado-pipeline-templates
+    parameters: 
+      projectName: 'repository-webapi'
+      jobName: 'DeployRepositoryWebApi'
       dependsOn: TerraformPlanAndApply
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 
