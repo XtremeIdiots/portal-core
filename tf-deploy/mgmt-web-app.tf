@@ -4,8 +4,10 @@ resource "azuread_application" "mgmt_web_app_application" {
   sign_in_audience = "AzureADMyOrg"
 
   web {
-    logout_url    = "https://localhost:44321/signout-oidc"
-    redirect_uris = ["https://localhost:44321/signin-oidc"]
+    logout_url = format("https://%s.azurewebsites.net/signout-oidc", local.mgmt_web_app_name)
+    redirect_uris = [
+      format("https://%s.azurewebsites.net/signin-oidc", local.mgmt_web_app_name)
+    ]
 
     implicit_grant {
       access_token_issuance_enabled = true
