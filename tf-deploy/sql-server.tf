@@ -24,9 +24,8 @@ resource "azurerm_mssql_firewall_rule" "dedicated_agent_pool_firewall_rule" {
 }
 
 resource "azurerm_mssql_database" "portal_database" {
-  name         = local.sql_database_name
-  server_id    = azurerm_mssql_server.sql_server.id
-  collation    = "SQL_Latin1_General_CP1_CI_AS"
-  sku_name     = "Basic"
-  min_capacity = 5
+  name      = local.sql_database_name
+  server_id = azurerm_mssql_server.sql_server.id
+  collation = "SQL_Latin1_General_CP1_CI_AS"
+  sku_name  = "Basic"
 }
