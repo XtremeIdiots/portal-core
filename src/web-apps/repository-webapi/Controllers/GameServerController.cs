@@ -7,7 +7,7 @@ using XtremeIdiots.Portal.DataLib;
 namespace repository_webapi.Controllers
 {
     [ApiController]
-    [Route("api")]
+    [Route("api/GameServer")]
     public class GameServerController : ControllerBase
     {
         public PortalDbContext Context { get; }
@@ -18,10 +18,8 @@ namespace repository_webapi.Controllers
         }
 
         [HttpGet(Name = "GameServer")]
-        public async Task<IActionResult> GetGameServer()
+        public async Task<IActionResult> GetGameServer(string id)
         {
-            string id = Request.Query["id"];
-
             if (string.IsNullOrWhiteSpace(id))
                 return new BadRequestResult();
 
