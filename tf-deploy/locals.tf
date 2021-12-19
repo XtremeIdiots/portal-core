@@ -13,7 +13,6 @@ locals {
   apim_admin_web_app_subscription_secret_name      = format("%s-admin-webapp-subscription-key", local.apim_name)
   apim_public_web_app_subscription_secret_name     = format("%s-public-webapp-subscription-key", local.apim_name)
   apim_repository_web_api_subscription_secret_name = format("%s-repository-webapi-subscription-key", local.apim_name)
-  apim_repository_client_cert_secret_name          = format("%s-repository-client-cert", local.apim_name)
 
   // App Insights
   app_insights_name                       = format("ai-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
