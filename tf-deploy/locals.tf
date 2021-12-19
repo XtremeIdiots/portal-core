@@ -9,14 +9,17 @@ locals {
   // Secret Names
   apim_b3bot_subscription_secret_name          = format("%s-b3bot-subscription-key", local.apim_name)
   apim_ingest_funcapp_subscription_secret_name = format("%s-ingest-funcapp-subscription-key", local.apim_name)
+  apim_mgmt_web_app_subscription_secret_name   = format("%s-mgmt-webapp-subscription-key", local.apim_name)
 
   // App Insights
   app_insights_name                       = format("ai-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
   app_insights_instrumentation_key_secret = format("%s-instrumentation-key", local.app_insights_name)
 
-  // Function Apps
-  function_app_service_plan_name = format("asp-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
+  // App Service Plans
+  function_app_service_plan_name = format("asp-%s-%s-%s-%s", var.workload, var.env, var.region, "01")
+  web_app_service_plan_name      = format("asp-%s-%s-%s-%s", var.workload, var.env, var.region, "02")
 
+  // Function Apps
   ingest_function_app_name     = format("fa-%s-ingest-%s-%s-%s", var.workload, var.env, var.region, var.instance)
   repository_function_app_name = format("fa-%s-repository-%s-%s-%s", var.workload, var.env, var.region, var.instance)
   events_function_app_name     = format("fa-%s-events-%s-%s-%s", var.workload, var.env, var.region, var.instance)
@@ -24,6 +27,9 @@ locals {
   repository_app_storage_name  = format("safa%s%s%s%s", var.workload, var.env, var.region, "02")
   events_app_storage_name      = format("safa%s%s%s%s", var.workload, var.env, var.region, "03")
 
+  // Web Apps
+  mgmt_web_app_name = format("web-%s-mgmt-%s-%s-%s", var.workload, var.env, var.region, var.instance)
+  
   // Key Vault
   key_vault_name = format("kv-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
 

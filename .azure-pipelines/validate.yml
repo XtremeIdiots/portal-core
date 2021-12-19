@@ -14,6 +14,7 @@ variables:
   varFile: './../tf-vars/dev.tfvars'
   buildConfiguration: 'Release'
 
+pool: Dedicated
 
 resources:
   repositories:
@@ -51,5 +52,10 @@ stages:
     parameters: 
       jobName: 'BuildRepositoryFunctionApp'
       projectName: 'repository-func'
+
+  - template: jobs/build-web-app.yml@ado-pipeline-templates
+    parameters: 
+      jobName: 'BuildMgmtWebApp'
+      projectName: 'mgmt-web'
 
   - template: jobs/build-sql-database.yml@ado-pipeline-templates

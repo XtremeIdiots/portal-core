@@ -51,6 +51,16 @@ resource "azurerm_key_vault_access_policy" "repository_function_app_key_vault_ac
   ]
 }
 
+resource "azurerm_key_vault_access_policy" "mgmt_web_app_key_vault_access_policy" {
+  key_vault_id = azurerm_key_vault.key_vault.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = azurerm_app_service.mgmt_web_app.identity[0].principal_id
+
+  secret_permissions = [
+    "Get"
+  ]
+}
+
 resource "azurerm_key_vault_secret" "service_bus_connection_string" {
   name         = local.service_bus_connection_string_secret
   value        = azurerm_servicebus_namespace.service_bus.default_primary_connection_string
@@ -114,6 +124,16 @@ resource "azurerm_key_vault_secret" "b3bot_subscription_key" {
 resource "azurerm_key_vault_secret" "ingest_funcapp_subscription_key" {
   name         = local.apim_ingest_funcapp_subscription_secret_name
   value        = azurerm_api_management_subscription.ingest_funcapp_subscription.primary_key
+  key_vault_id = azurerm_key_vault.key_vault.id
+
+  depends_on = [
+    azurerm_key_vault_access_policy.principal_key_vault_access_policy
+  ]
+}
+
+resource "azurerm_key_vault_secret" "mgmt_web_app_subscription_key" {
+  name         = local.apim_mgmt_web_app_subscription_secret_name
+  value        = azurerm_api_management_subscription.mgmt_web_app_subscription.primary_key
   key_vault_id = azurerm_key_vault.key_vault.id
 
   depends_on = [

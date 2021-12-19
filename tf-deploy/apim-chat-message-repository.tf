@@ -3,8 +3,6 @@ resource "azurerm_api_management_api" "apim_chat_message_repository" {
   resource_group_name = azurerm_resource_group.core_resource_group.name
   api_management_name = azurerm_api_management.api_management.name
 
-  service_url = format("https://%s/api/", azurerm_function_app.repository_function_app.default_hostname)
-
   revision     = "1"
   display_name = "Chat Message Repository"
   path         = "chat-message-repository"
@@ -21,7 +19,7 @@ resource "azurerm_api_management_api_policy" "chat_message_repository_api_policy
   api_management_name = azurerm_api_management.api_management.name
   resource_group_name = azurerm_resource_group.core_resource_group.name
 
-  xml_content = replace(file("./policies/ChatMessageRepositoryPolicy.xml"), "__CODE__", data.azurerm_function_app_host_keys.repository_function_app_host_key.default_function_key)
+  xml_content = replace(file("./policies/ChatMessageRepositoryPolicy.xml"), "__backend_service_id__", azurerm_api_management_backend.repository_funcapp_backend.name)
 }
 
 resource "azurerm_api_management_api_diagnostic" "chat_message_repository_api_diagnostic" {

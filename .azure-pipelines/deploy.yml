@@ -20,6 +20,8 @@ variables:
   environmentServiceNameAzureRM: 'arm-portal-core-dev'
   varFile: './../tf-vars/dev.tfvars'
 
+pool: Dedicated
+
 resources:
   repositories:
     - repository: ado-pipeline-templates
@@ -47,6 +49,12 @@ stages:
     parameters: 
       jobName: 'BuildRepositoryFunctionApp'
       projectName: 'repository-func'
+      publishArtifact: true
+
+  - template: jobs/build-web-app.yml@ado-pipeline-templates
+    parameters: 
+      jobName: 'BuildMgmtWebApp'
+      projectName: 'mgmt-web'
       publishArtifact: true
       
   - template: jobs/build-sql-database.yml@ado-pipeline-templates
@@ -109,6 +117,13 @@ stages:
     parameters:
       projectName: repository-func
       jobName: DeployRepositoryFunctionApp
+      dependsOn: TerraformPlanAndApply
+      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
+
+  - template: jobs/deploy-web-app.yml@ado-pipeline-templates
+    parameters: 
+      projectName: 'mgmt-web'
+      jobName: 'DeployMgmtWebApp'
       dependsOn: TerraformPlanAndApply
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 

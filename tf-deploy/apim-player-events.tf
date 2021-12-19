@@ -3,8 +3,6 @@ resource "azurerm_api_management_api" "apim_player_events" {
   resource_group_name = azurerm_resource_group.core_resource_group.name
   api_management_name = azurerm_api_management.api_management.name
 
-  service_url = format("https://%s/api/", azurerm_function_app.events_function_app.default_hostname)
-
   revision     = "1"
   display_name = "Player Events"
   path         = "player-events"
@@ -21,7 +19,7 @@ resource "azurerm_api_management_api_policy" "player_events_api_policy" {
   api_management_name = azurerm_api_management.api_management.name
   resource_group_name = azurerm_resource_group.core_resource_group.name
 
-  xml_content = replace(file("./policies/PlayerEventsPolicy.xml"), "__CODE__", data.azurerm_function_app_host_keys.events_function_app_host_key.default_function_key)
+  xml_content = replace(file("./policies/PlayerEventsPolicy.xml"), "__backend_service_id__", azurerm_api_management_backend.events_funcapp_backend.name)
 }
 
 resource "azurerm_api_management_api_diagnostic" "player_events_api_diagnostic" {

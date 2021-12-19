@@ -13,6 +13,16 @@ output "repository-func_name" {
   sensitive = false
 }
 
+output "mgmt-web_name" {
+  value     = azurerm_app_service.mgmt_web_app.name
+  sensitive = false
+}
+
+output "mgmt-web_resource_group" {
+  value     = azurerm_app_service.mgmt_web_app.resource_group_name
+  sensitive = false
+}
+
 output "sql_server_domain_name" {
   value     = azurerm_mssql_server.sql_server.fully_qualified_domain_name
   sensitive = true
