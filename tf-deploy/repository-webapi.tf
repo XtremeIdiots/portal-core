@@ -14,6 +14,16 @@ resource "azuread_application" "repository_webapi_application" {
       id_token_issuance_enabled     = true
     }
   }
+
+  optional_claims {
+    access_token {
+      name = "groups"
+    }
+
+    id_token {
+      name = "groups"
+    }
+  }
 }
 
 resource "azurerm_app_service" "repository_web_api" {
