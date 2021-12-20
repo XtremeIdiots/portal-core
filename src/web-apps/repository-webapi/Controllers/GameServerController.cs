@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Net;
@@ -7,6 +8,7 @@ using XtremeIdiots.Portal.DataLib;
 namespace repository_webapi.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/GameServer")]
     public class GameServerController : ControllerBase
     {
