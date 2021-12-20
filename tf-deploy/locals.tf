@@ -55,6 +55,9 @@ locals {
   // SQL Database
   sql_database_name = "portal"
 
+  // AAD Groups
+  repository_service_writers = format("sg-%s-repo_service_writers-%s", var.workload, var.env)
+
   ## Azure Mgmt Resources
 
   // Log Analytics
