@@ -72,5 +72,5 @@ data "azuread_service_principal" "repository_webapi_application_service_principa
 resource "azuread_app_role_assignment" "ingest_function_app_repository_role_assignment" {
   app_role_id         = random_uuid.webapi_serviceaccount_uuid.result
   principal_object_id = azurerm_function_app.ingest_function_app.identity[0].principal_id
-  resource_object_id  = data.azuread_service_principal.repository_webapi_application.object_id
+  resource_object_id  = data.azuread_service_principal.repository_webapi_application_service_principal.object_id
 }
