@@ -17,7 +17,7 @@ namespace XtremeIdiots.Portal.IngestFunc
     {
         private static string ApimBaseUrl => Environment.GetEnvironmentVariable("apim-base-url");
         private static string ApimSubscriptionKey => Environment.GetEnvironmentVariable("apim-subscription-key");
-        private static string WebApiPortalRepositoryApplicationId => Environment.GetEnvironmentVariable("webapi-portal-repository-application-id");
+        private static string WebApiPortalRepositoryApplicationName => Environment.GetEnvironmentVariable("webapi-portal-repository-name");
 
         [FunctionName("ProcessOnServerConnected")]
         public async Task ProcessOnServerConnected([ServiceBusTrigger("server_connected_queue", Connection = "service-bus-connection-string")] string myQueueItem, ILogger log)
@@ -113,7 +113,7 @@ namespace XtremeIdiots.Portal.IngestFunc
             try
             {
                 accessToken = await tokenCredential.GetTokenAsync(
-                    new TokenRequestContext(scopes: new string[] { $"api://{WebApiPortalRepositoryApplicationId}/Test" }) { }
+                    new TokenRequestContext(scopes: new string[] { $"api://{WebApiPortalRepositoryApplicationName}/AllAccess" }) { }
                 );
 
                 log.LogInformation($"AccessToken: {accessToken}");
