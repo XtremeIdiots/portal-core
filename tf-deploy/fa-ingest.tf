@@ -41,12 +41,3 @@ data "azurerm_function_app_host_keys" "ingest_function_app_host_key" {
   name                = azurerm_function_app.ingest_function_app.name
   resource_group_name = azurerm_resource_group.core_resource_group.name
 }
-
-resource "random_uuid" "ingest_function_app_repository_role_assignment_id" {
-}
-
-resource "azuread_app_role_assignment" "ingest_function_app_repository_role_assignment" {
-  app_role_id         = random_uuid.ingest_function_app_repository_role_assignment_id.result
-  principal_object_id = azurerm_function_app.ingest_function_app.identity[0].principal_id
-  resource_object_id  = random_uuid.webapi_serviceaccount_uuid.result
-}
