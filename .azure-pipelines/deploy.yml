@@ -36,66 +36,58 @@ resources:
       endpoint: XtremeIdiots
 
 stages:
-- stage: Build
+- ${{ if eq(parameters.skipArtifactDeploy, false) }}:
+  - stage: Build
 
-  jobs:
-  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
+    jobs:
     - template: jobs/build-function-app.yml@ado-pipeline-templates
       parameters: 
         jobName: 'BuildEventsFunctionApp'
         projectName: 'events-func'
         publishArtifact: true
 
-  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
     - template: jobs/build-function-app.yml@ado-pipeline-templates
       parameters: 
         jobName: 'BuildIngestFunctionApp'
         projectName: 'ingest-func'
         publishArtifact: true
 
-  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
     - template: jobs/build-function-app.yml@ado-pipeline-templates
       parameters: 
         jobName: 'BuildRepositoryFunctionApp'
         projectName: 'repository-func'
         publishArtifact: true
 
-  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
     - template: jobs/build-function-app.yml@ado-pipeline-templates
       parameters: 
         jobName: 'BuildBanSyncFunctionApp'
         projectName: 'bansync-func'
         publishArtifact: true
 
-  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
     - template: jobs/build-web-app.yml@ado-pipeline-templates
       parameters: 
         jobName: 'BuildMgmtWebApp'
         projectName: 'mgmt-web'
         publishArtifact: true
 
-  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
     - template: jobs/build-web-app.yml@ado-pipeline-templates
       parameters: 
         jobName: 'BuildAdminWebApp'
         projectName: 'admin-web'
         publishArtifact: true
 
-  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
     - template: jobs/build-web-app.yml@ado-pipeline-templates
       parameters: 
         jobName: 'BuildPublicWebApp'
         projectName: 'public-web'
         publishArtifact: true
 
-  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
     - template: jobs/build-web-app.yml@ado-pipeline-templates
       parameters: 
         jobName: 'BuildRepositoryWebApi'
         projectName: 'repository-webapi'
         publishArtifact: true
 
-  - ${{ if eq(parameters.skipArtifactDeploy, false) }}: 
     - template: jobs/build-sql-database.yml@ado-pipeline-templates
       parameters:
         publishArtifact: true
