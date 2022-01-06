@@ -23,8 +23,8 @@ resource "azurerm_app_service" "repository_web_api" {
     "apim-base-url"                  = azurerm_api_management.api_management.gateway_url
     "apim-subscription-key"          = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", local.key_vault_name, local.apim_repository_web_api_subscription_secret_name)
     "AzureAd:TenantId"               = data.azurerm_client_config.current.tenant_id
-    "AzureAd:ClientId"               = azuread_application.repository_webapi_application.application_id
-    "AzureAd:Audience"               = azuread_application.repository_webapi_application.application_id
+    //"AzureAd:ClientId"               = azuread_application.repository_webapi_application.application_id
+    //"AzureAd:Audience"               = azuread_application.repository_webapi_application.application_id
     "ASPNETCORE_ENVIRONMENT"         = var.env == "dev" ? "Development" : "Production"
   }
 }

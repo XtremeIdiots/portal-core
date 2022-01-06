@@ -33,7 +33,7 @@ resource "azurerm_function_app" "ingest_function_app" {
     "service-bus-connection-string"           = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", local.key_vault_name, local.service_bus_connection_string_secret)
     "apim-base-url"                           = azurerm_api_management.api_management.gateway_url,
     "apim-subscription-key"                   = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", local.key_vault_name, local.apim_ingest_funcapp_subscription_secret_name)
-    "webapi-portal-repository-application-id" = azuread_application.repository_webapi_application.application_id
+    //"webapi-portal-repository-application-id" = azuread_application.repository_webapi_application.application_id
   }
 }
 
