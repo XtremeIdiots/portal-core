@@ -7,6 +7,9 @@ using XtremeIdiots.Portal.DataLib;
 using RestSharp;
 using System.Net;
 using XtremeIdiots.Portal.CommonLib.Models;
+using Azure.Identity;
+using System.Threading.Tasks;
+using Azure.Core;
 
 namespace XtremeIdiots.Portal.IngestFunc
 {
@@ -14,9 +17,10 @@ namespace XtremeIdiots.Portal.IngestFunc
     {
         private static string ApimBaseUrl => Environment.GetEnvironmentVariable("apim-base-url");
         private static string ApimSubscriptionKey => Environment.GetEnvironmentVariable("apim-subscription-key");
+        private static string WebApiPortalRepositoryApplicationId => Environment.GetEnvironmentVariable("webapi-portal-repository-application-id");
 
         [FunctionName("ProcessOnServerConnected")]
-        public void ProcessOnServerConnected([ServiceBusTrigger("server_connected_queue", Connection = "service-bus-connection-string")] string myQueueItem, ILogger log)
+        public async Task ProcessOnServerConnected([ServiceBusTrigger("server_connected_queue", Connection = "service-bus-connection-string")] string myQueueItem, ILogger log)
         {
             OnServerConnected onServerConnected;
             try
@@ -31,7 +35,7 @@ namespace XtremeIdiots.Portal.IngestFunc
 
             log.LogInformation($"OnServerConnected :: Id: '{onServerConnected.Id}', GameType: '{onServerConnected.GameType}'");
 
-            var existingServer = GetGameServer(onServerConnected.Id);
+            var existingServer = GetGameServer(log, onServerConnected.Id);
 
             if (existingServer == null)
             {
@@ -41,7 +45,7 @@ namespace XtremeIdiots.Portal.IngestFunc
                     GameType = onServerConnected.GameType
                 };
 
-                CreateGameServer(gameServer);
+                await CreateGameServer(log, gameServer);
             }
         }
 
@@ -62,11 +66,14 @@ namespace XtremeIdiots.Portal.IngestFunc
             log.LogInformation($"ProcessOnMapChange :: GameName: '{onMapChange.GameName}', GameType: '{onMapChange.GameType}', MapName: '{onMapChange.MapName}'");
         }
 
-        private static GameServer GetGameServer(string id)
+        private async static Task<GameServer> GetGameServer(ILogger log, string id)
         {
             var client = new RestClient(ApimBaseUrl);
             var request = new RestRequest("game-server-repository/GameServer", Method.GET);
+            var accessToken = await GetRepositoryAccessToken(log);
+
             request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
+            request.AddHeader("Authorization", $"Bearer {accessToken}");
             request.AddParameter(new Parameter("id", id, ParameterType.QueryString));
 
             var response = client.Execute(request);
@@ -85,14 +92,39 @@ namespace XtremeIdiots.Portal.IngestFunc
             }
         }
 
-        private static void CreateGameServer(GameServer gameServer)
+        private async static Task CreateGameServer(ILogger log, GameServer gameServer)
         {
             var client = new RestClient(ApimBaseUrl);
             var request = new RestRequest("game-server-repository/GameServer", Method.POST);
+            var accessToken = await GetRepositoryAccessToken(log);
+
             request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
+            request.AddHeader("Authorization", $"Bearer {accessToken}");
             request.AddJsonBody(gameServer);
 
             client.Execute(request);
+        }
+
+        private static async Task<string> GetRepositoryAccessToken(ILogger log)
+        {
+            var tokenCredential = new ManagedIdentityCredential();
+
+            AccessToken accessToken;
+            try
+            {
+                accessToken = await tokenCredential.GetTokenAsync(
+                    new TokenRequestContext(scopes: new string[] { $"api://{WebApiPortalRepositoryApplicationId}/Test" }) { }
+                );
+
+                log.LogInformation($"AccessToken: {accessToken}");
+            }
+            catch (Exception ex)
+            {
+                log.LogError(ex, "Failed to get managed identity token");
+                throw;
+            }
+
+            return accessToken.ToString();
         }
     }
 }
