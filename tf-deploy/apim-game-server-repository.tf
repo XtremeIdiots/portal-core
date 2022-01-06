@@ -17,7 +17,6 @@ resource "azurerm_api_management_api" "apim_game_server_repository" {
 locals {
   gsra_policy_1 = file("./policies/GameServerRepositoryPolicy.xml")
   gsra_policy_2 = replace(local.gsra_policy_1, "__backend_service_id__", azurerm_api_management_backend.repository_webapi_backend.name)
-  gsra_policy_3 = replace(local.gsra_policy_2, "__repository_application_id__", azuread_application.repository_webapi_application.application_id)
 }
 
 resource "azurerm_api_management_api_policy" "game_server_repository_api_policy" {
@@ -25,7 +24,7 @@ resource "azurerm_api_management_api_policy" "game_server_repository_api_policy"
   api_management_name = azurerm_api_management.api_management.name
   resource_group_name = azurerm_resource_group.core_resource_group.name
 
-  xml_content = local.gsra_policy_3
+  xml_content = local.gsra_policy_2
 }
 
 resource "azurerm_api_management_api_diagnostic" "game_server_repository_api_diagnostic" {
