@@ -4,6 +4,9 @@ resource "random_uuid" "webapi_allaccess_uuid" {
 resource "random_uuid" "webapi_gamesadmin_uuid" {
 }
 
+resource "random_uuid" "webapi_serviceaccount_uuid" {
+}
+
 resource "azuread_application" "repository_webapi_application" {
   display_name     = local.repository_web_api_name
   owners           = [data.azuread_client_config.current.object_id]
@@ -28,6 +31,15 @@ resource "azuread_application" "repository_webapi_application" {
       type                       = "Admin"
       value                      = "GamesAdmin"
     }
+  }
+
+  app_role {
+    allowed_member_types = ["Application"]
+    description          = "Service Accounts can access/manage all data aspects"
+    display_name         = "ServiceAccount"
+    enabled              = true
+    id                   = random_uuid.webapi_serviceaccount_uuid.result
+    value                = "ServiceAccount"
   }
 
   web {
