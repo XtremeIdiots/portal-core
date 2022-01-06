@@ -39,166 +39,175 @@ stages:
 - stage: Build
 
   jobs:
-  - template: jobs/build-function-app.yml@ado-pipeline-templates
-    parameters: 
-      jobName: 'BuildEventsFunctionApp'
-      projectName: 'events-func'
-      publishArtifact: true
+  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
+    - template: jobs/build-function-app.yml@ado-pipeline-templates
+      parameters: 
+        jobName: 'BuildEventsFunctionApp'
+        projectName: 'events-func'
+        publishArtifact: true
 
-  - template: jobs/build-function-app.yml@ado-pipeline-templates
-    parameters: 
-      jobName: 'BuildIngestFunctionApp'
-      projectName: 'ingest-func'
-      publishArtifact: true
+  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
+    - template: jobs/build-function-app.yml@ado-pipeline-templates
+      parameters: 
+        jobName: 'BuildIngestFunctionApp'
+        projectName: 'ingest-func'
+        publishArtifact: true
 
-  - template: jobs/build-function-app.yml@ado-pipeline-templates
-    parameters: 
-      jobName: 'BuildRepositoryFunctionApp'
-      projectName: 'repository-func'
-      publishArtifact: true
+  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
+    - template: jobs/build-function-app.yml@ado-pipeline-templates
+      parameters: 
+        jobName: 'BuildRepositoryFunctionApp'
+        projectName: 'repository-func'
+        publishArtifact: true
 
-  - template: jobs/build-function-app.yml@ado-pipeline-templates
-    parameters: 
-      jobName: 'BuildBanSyncFunctionApp'
-      projectName: 'bansync-func'
-      publishArtifact: true
+  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
+    - template: jobs/build-function-app.yml@ado-pipeline-templates
+      parameters: 
+        jobName: 'BuildBanSyncFunctionApp'
+        projectName: 'bansync-func'
+        publishArtifact: true
 
-  - template: jobs/build-web-app.yml@ado-pipeline-templates
-    parameters: 
-      jobName: 'BuildMgmtWebApp'
-      projectName: 'mgmt-web'
-      publishArtifact: true
+  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
+    - template: jobs/build-web-app.yml@ado-pipeline-templates
+      parameters: 
+        jobName: 'BuildMgmtWebApp'
+        projectName: 'mgmt-web'
+        publishArtifact: true
 
-  - template: jobs/build-web-app.yml@ado-pipeline-templates
-    parameters: 
-      jobName: 'BuildAdminWebApp'
-      projectName: 'admin-web'
-      publishArtifact: true
+  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
+    - template: jobs/build-web-app.yml@ado-pipeline-templates
+      parameters: 
+        jobName: 'BuildAdminWebApp'
+        projectName: 'admin-web'
+        publishArtifact: true
 
-  - template: jobs/build-web-app.yml@ado-pipeline-templates
-    parameters: 
-      jobName: 'BuildPublicWebApp'
-      projectName: 'public-web'
-      publishArtifact: true
+  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
+    - template: jobs/build-web-app.yml@ado-pipeline-templates
+      parameters: 
+        jobName: 'BuildPublicWebApp'
+        projectName: 'public-web'
+        publishArtifact: true
 
-  - template: jobs/build-web-app.yml@ado-pipeline-templates
-    parameters: 
-      jobName: 'BuildRepositoryWebApi'
-      projectName: 'repository-webapi'
-      publishArtifact: true
-      
-  - template: jobs/build-sql-database.yml@ado-pipeline-templates
-    parameters:
-      publishArtifact: true
+  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
+    - template: jobs/build-web-app.yml@ado-pipeline-templates
+      parameters: 
+        jobName: 'BuildRepositoryWebApi'
+        projectName: 'repository-webapi'
+        publishArtifact: true
+
+  - ${{ if eq(parameters.skipArtifactDeploy, false) }}: 
+    - template: jobs/build-sql-database.yml@ado-pipeline-templates
+      parameters:
+        publishArtifact: true
 
 - stage: Deploy
 
   jobs:
-  - template: jobs/terraform-validate-and-plan.yml@ado-pipeline-templates
-    condition: and(succeeded(), eq('${{ parameters.skipTerraformDeploy }}', 'false'))
-    parameters:
-      jobName: TerraformValidateAndPlan
-      workingDirectory: '$(terraformWorkingDirectory)'
-      backendServiceArm: '$(backendServiceArm)'
-      backendAzureRmResourceGroupName: '$(backendAzureRmResourceGroupName)'
-      backendAzureRmStorageAccountName: '$(backendAzureRmStorageAccountName)'
-      backendAzureRmContainerName: '$(backendAzureRmContainerName)'
-      backendAzureRmKey: '$(backendAzureRmKey)'
-      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
-      varFile: '$(varFile)'
+  - ${{ if eq(parameters.skipTerraformDeploy, false) }}:
+    - template: jobs/terraform-validate-and-plan.yml@ado-pipeline-templates
+      parameters:
+        jobName: TerraformValidateAndPlan
+        workingDirectory: '$(terraformWorkingDirectory)'
+        backendServiceArm: '$(backendServiceArm)'
+        backendAzureRmResourceGroupName: '$(backendAzureRmResourceGroupName)'
+        backendAzureRmStorageAccountName: '$(backendAzureRmStorageAccountName)'
+        backendAzureRmContainerName: '$(backendAzureRmContainerName)'
+        backendAzureRmKey: '$(backendAzureRmKey)'
+        environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
+        varFile: '$(varFile)'
 
-  - job: ReviewAndApproveTerraform
-    condition: and(succeeded(), eq('${{ parameters.skipTerraformDeploy }}', 'false'))
-    dependsOn: TerraformValidateAndPlan
-    pool: server
-    timeoutInMinutes: 60
-    steps:   
-    - task: ManualValidation@0
-      condition: and(succeeded(), eq('${{ parameters.skipTerraformApproval }}', 'false'))
-      inputs:
-          instructions: 'Validate the terraform plan from previous stage and either resume/reject.'
+  - ${{ if eq(parameters.skipTerraformDeploy, false) }}:
+    - job: ReviewAndApproveTerraform
+      dependsOn: TerraformValidateAndPlan
+      pool: server
+      timeoutInMinutes: 60
+      steps:   
+      - task: ManualValidation@0
+        condition: and(succeeded(), eq('${{ parameters.skipTerraformApproval }}', 'false'))
+        inputs:
+            instructions: 'Validate the terraform plan from previous stage and either resume/reject.'
 
-  - template: jobs/terraform-plan-and-apply.yml@ado-pipeline-templates
-    condition: and(succeeded(), eq('${{ parameters.skipTerraformDeploy }}', 'false'))
-    parameters:
-      jobName: TerraformPlanAndApply
-      dependsOn: ReviewAndApproveTerraform
-      workingDirectory: '$(terraformWorkingDirectory)'
-      backendServiceArm: '$(backendServiceArm)'
-      backendAzureRmResourceGroupName: '$(backendAzureRmResourceGroupName)'
-      backendAzureRmStorageAccountName: '$(backendAzureRmStorageAccountName)'
-      backendAzureRmContainerName: '$(backendAzureRmContainerName)'
-      backendAzureRmKey: '$(backendAzureRmKey)'
-      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
-      varFile: '$(varFile)'
+  - ${{ if eq(parameters.skipTerraformDeploy, false) }}:
+    - template: jobs/terraform-plan-and-apply.yml@ado-pipeline-templates
+      parameters:
+        jobName: TerraformPlanAndApply
+        dependsOn: ReviewAndApproveTerraform
+        workingDirectory: '$(terraformWorkingDirectory)'
+        backendServiceArm: '$(backendServiceArm)'
+        backendAzureRmResourceGroupName: '$(backendAzureRmResourceGroupName)'
+        backendAzureRmStorageAccountName: '$(backendAzureRmStorageAccountName)'
+        backendAzureRmContainerName: '$(backendAzureRmContainerName)'
+        backendAzureRmKey: '$(backendAzureRmKey)'
+        environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
+        varFile: '$(varFile)'
 
-  - template: jobs/deploy-function-app.yml@ado-pipeline-templates
-    condition: and(succeeded(), eq('${{ parameters.skipArtifactDeploy }}', 'false'))
-    parameters:
-      projectName: events-func
-      jobName: DeployEventsFunctionApp
-      dependsOn: TerraformPlanAndApply
-      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
+  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
+    - template: jobs/deploy-function-app.yml@ado-pipeline-templates
+      parameters:
+        projectName: events-func
+        jobName: DeployEventsFunctionApp
+        dependsOn: TerraformPlanAndApply
+        environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
  
-  - template: jobs/deploy-function-app.yml@ado-pipeline-templates
-    condition: and(succeeded(), eq('${{ parameters.skipArtifactDeploy }}', 'false'))
-    parameters:
-      projectName: ingest-func
-      jobName: DeployIngestFunctionApp
-      dependsOn: TerraformPlanAndApply
-      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
+  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
+    - template: jobs/deploy-function-app.yml@ado-pipeline-templates
+      parameters:
+        projectName: ingest-func
+        jobName: DeployIngestFunctionApp
+        dependsOn: TerraformPlanAndApply
+        environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 
-  - template: jobs/deploy-function-app.yml@ado-pipeline-templates
-    condition: and(succeeded(), eq('${{ parameters.skipArtifactDeploy }}', 'false'))
-    parameters:
-      projectName: repository-func
-      jobName: DeployRepositoryFunctionApp
-      dependsOn: TerraformPlanAndApply
-      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
+  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
+    - template: jobs/deploy-function-app.yml@ado-pipeline-templates
+      parameters:
+        projectName: repository-func
+        jobName: DeployRepositoryFunctionApp
+        dependsOn: TerraformPlanAndApply
+        environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 
-  - template: jobs/deploy-function-app.yml@ado-pipeline-templates
-    condition: and(succeeded(), eq('${{ parameters.skipArtifactDeploy }}', 'false'))
-    parameters:
-      projectName: bansync-func
-      jobName: DeployBanSyncFunctionApp
-      dependsOn: TerraformPlanAndApply
-      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
+  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
+    - template: jobs/deploy-function-app.yml@ado-pipeline-templates
+      parameters:
+        projectName: bansync-func
+        jobName: DeployBanSyncFunctionApp
+        dependsOn: TerraformPlanAndApply
+        environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 
-  - template: jobs/deploy-web-app.yml@ado-pipeline-templates
-    condition: and(succeeded(), eq('${{ parameters.skipArtifactDeploy }}', 'false'))
-    parameters: 
-      projectName: 'mgmt-web'
-      jobName: 'DeployMgmtWebApp'
-      dependsOn: TerraformPlanAndApply
-      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
+  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
+    - template: jobs/deploy-web-app.yml@ado-pipeline-templates
+      parameters: 
+        projectName: 'mgmt-web'
+        jobName: 'DeployMgmtWebApp'
+        dependsOn: TerraformPlanAndApply
+        environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 
-  - template: jobs/deploy-web-app.yml@ado-pipeline-templates
-    condition: and(succeeded(), eq('${{ parameters.skipArtifactDeploy }}', 'false'))
-    parameters: 
-      projectName: 'admin-web'
-      jobName: 'DeployAdminWebApp'
-      dependsOn: TerraformPlanAndApply
-      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
+  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
+    - template: jobs/deploy-web-app.yml@ado-pipeline-templates
+      parameters: 
+        projectName: 'admin-web'
+        jobName: 'DeployAdminWebApp'
+        dependsOn: TerraformPlanAndApply
+        environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 
-  - template: jobs/deploy-web-app.yml@ado-pipeline-templates
-    condition: and(succeeded(), eq('${{ parameters.skipArtifactDeploy }}', 'false'))
-    parameters: 
-      projectName: 'public-web'
-      jobName: 'DeployPublicWebApp'
-      dependsOn: TerraformPlanAndApply
-      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
+  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
+    - template: jobs/deploy-web-app.yml@ado-pipeline-templates
+      parameters: 
+        projectName: 'public-web'
+        jobName: 'DeployPublicWebApp'
+        dependsOn: TerraformPlanAndApply
+        environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 
-  - template: jobs/deploy-web-app.yml@ado-pipeline-templates
-    condition: and(succeeded(), eq('${{ parameters.skipArtifactDeploy }}', 'false'))
-    parameters: 
-      projectName: 'repository-webapi'
-      jobName: 'DeployRepositoryWebApi'
-      dependsOn: TerraformPlanAndApply
-      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
+  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
+    - template: jobs/deploy-web-app.yml@ado-pipeline-templates
+      parameters: 
+        projectName: 'repository-webapi'
+        jobName: 'DeployRepositoryWebApi'
+        dependsOn: TerraformPlanAndApply
+        environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 
-  - template: jobs/deploy-sql-database.yml@ado-pipeline-templates
-    condition: and(succeeded(), eq('${{ parameters.skipArtifactDeploy }}', 'false'))
-    parameters:
-      jobName: DeploySqlDatabase
-      dependsOn: TerraformPlanAndApply
-      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
+  - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
+    - template: jobs/deploy-sql-database.yml@ado-pipeline-templates
+      parameters:
+        jobName: DeploySqlDatabase
+        dependsOn: TerraformPlanAndApply
+        environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
