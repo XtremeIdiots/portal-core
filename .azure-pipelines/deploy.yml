@@ -2,6 +2,12 @@ parameters:
 - name: skipTerraformApproval
   type: boolean
   default: false
+- name: skipTerraformDeploy
+  type: boolean
+  default: false
+- name: skipArtifactDeploy
+  type: boolean
+  default: false
 
 trigger:
   branches:
@@ -89,6 +95,7 @@ stages:
 
   jobs:
   - template: jobs/terraform-validate-and-plan.yml@ado-pipeline-templates
+    condition: and(succeeded(), eq('${{ parameters.skipTerraformDeploy }}', 'false'))
     parameters:
       jobName: TerraformValidateAndPlan
       workingDirectory: '$(terraformWorkingDirectory)'
@@ -101,6 +108,7 @@ stages:
       varFile: '$(varFile)'
 
   - job: ReviewAndApproveTerraform
+    condition: and(succeeded(), eq('${{ parameters.skipTerraformDeploy }}', 'false'))
     dependsOn: TerraformValidateAndPlan
     pool: server
     timeoutInMinutes: 60
@@ -111,6 +119,7 @@ stages:
           instructions: 'Validate the terraform plan from previous stage and either resume/reject.'
 
   - template: jobs/terraform-plan-and-apply.yml@ado-pipeline-templates
+    condition: and(succeeded(), eq('${{ parameters.skipTerraformDeploy }}', 'false'))
     parameters:
       jobName: TerraformPlanAndApply
       dependsOn: ReviewAndApproveTerraform
@@ -124,6 +133,7 @@ stages:
       varFile: '$(varFile)'
 
   - template: jobs/deploy-function-app.yml@ado-pipeline-templates
+    condition: and(succeeded(), eq('${{ parameters.skipArtifactDeploy }}', 'false'))
     parameters:
       projectName: events-func
       jobName: DeployEventsFunctionApp
@@ -131,6 +141,7 @@ stages:
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
  
   - template: jobs/deploy-function-app.yml@ado-pipeline-templates
+    condition: and(succeeded(), eq('${{ parameters.skipArtifactDeploy }}', 'false'))
     parameters:
       projectName: ingest-func
       jobName: DeployIngestFunctionApp
@@ -138,6 +149,7 @@ stages:
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 
   - template: jobs/deploy-function-app.yml@ado-pipeline-templates
+    condition: and(succeeded(), eq('${{ parameters.skipArtifactDeploy }}', 'false'))
     parameters:
       projectName: repository-func
       jobName: DeployRepositoryFunctionApp
@@ -145,6 +157,7 @@ stages:
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 
   - template: jobs/deploy-function-app.yml@ado-pipeline-templates
+    condition: and(succeeded(), eq('${{ parameters.skipArtifactDeploy }}', 'false'))
     parameters:
       projectName: bansync-func
       jobName: DeployBanSyncFunctionApp
@@ -152,6 +165,7 @@ stages:
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 
   - template: jobs/deploy-web-app.yml@ado-pipeline-templates
+    condition: and(succeeded(), eq('${{ parameters.skipArtifactDeploy }}', 'false'))
     parameters: 
       projectName: 'mgmt-web'
       jobName: 'DeployMgmtWebApp'
@@ -159,6 +173,7 @@ stages:
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 
   - template: jobs/deploy-web-app.yml@ado-pipeline-templates
+    condition: and(succeeded(), eq('${{ parameters.skipArtifactDeploy }}', 'false'))
     parameters: 
       projectName: 'admin-web'
       jobName: 'DeployAdminWebApp'
@@ -166,6 +181,7 @@ stages:
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 
   - template: jobs/deploy-web-app.yml@ado-pipeline-templates
+    condition: and(succeeded(), eq('${{ parameters.skipArtifactDeploy }}', 'false'))
     parameters: 
       projectName: 'public-web'
       jobName: 'DeployPublicWebApp'
@@ -173,6 +189,7 @@ stages:
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 
   - template: jobs/deploy-web-app.yml@ado-pipeline-templates
+    condition: and(succeeded(), eq('${{ parameters.skipArtifactDeploy }}', 'false'))
     parameters: 
       projectName: 'repository-webapi'
       jobName: 'DeployRepositoryWebApi'
@@ -180,6 +197,7 @@ stages:
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 
   - template: jobs/deploy-sql-database.yml@ado-pipeline-templates
+    condition: and(succeeded(), eq('${{ parameters.skipArtifactDeploy }}', 'false'))
     parameters:
       jobName: DeploySqlDatabase
       dependsOn: TerraformPlanAndApply
