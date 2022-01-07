@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Net;
+using System.Threading.Tasks;
 using XtremeIdiots.Portal.CommonLib.Models;
 using XtremeIdiots.Portal.DataLib;
 
@@ -15,7 +16,7 @@ namespace XtremeIdiots.Portal.FunctionApp
         private static string ApimSubscriptionKey => Environment.GetEnvironmentVariable("apim-subscription-key");
 
         [FunctionName("ProcessOnPlayerConnected")]
-        public void ProcessOnPlayerConnected([ServiceBusTrigger("player_connected_queue", Connection = "service-bus-connection-string")] string myQueueItem, ILogger log)
+        public async static Task ProcessOnPlayerConnected([ServiceBusTrigger("player_connected_queue", Connection = "service-bus-connection-string")] string myQueueItem, ILogger log)
         {
             OnPlayerConnected playerConnectedEvent;
             try
@@ -30,7 +31,7 @@ namespace XtremeIdiots.Portal.FunctionApp
 
             log.LogInformation($"ProcessOnPlayerConnected :: Username: '{playerConnectedEvent.Username}', Guid: '{playerConnectedEvent.Guid}'");
 
-            var existingPlayer = GetPlayer(playerConnectedEvent.GameType, playerConnectedEvent.Guid);
+            var existingPlayer = await GetPlayer(playerConnectedEvent.GameType, playerConnectedEvent.Guid);
 
             if (existingPlayer == null)
             {
@@ -42,7 +43,7 @@ namespace XtremeIdiots.Portal.FunctionApp
                     IpAddress = playerConnectedEvent.IpAddress
                 };
 
-                CreatePlayer(player);
+                await CreatePlayer(player);
             }
             else
             {
@@ -51,13 +52,13 @@ namespace XtremeIdiots.Portal.FunctionApp
                     existingPlayer.Username = playerConnectedEvent.Username;
                     existingPlayer.IpAddress = playerConnectedEvent.IpAddress;
 
-                    UpdatePlayer(existingPlayer);
+                    await UpdatePlayer(existingPlayer);
                 }
             }
         }
 
         [FunctionName("ProcessOnChatMessage")]
-        public static void ProcessOnChatMessage([ServiceBusTrigger("chat_message_queue", Connection = "service-bus-connection-string")] string myQueueItem, ILogger log)
+        public async static Task ProcessOnChatMessage([ServiceBusTrigger("chat_message_queue", Connection = "service-bus-connection-string")] string myQueueItem, ILogger log)
         {
             OnChatMessage onChatMessage;
             try
@@ -72,7 +73,7 @@ namespace XtremeIdiots.Portal.FunctionApp
 
             log.LogInformation($"ProcessOnChatMessage :: Username: '{onChatMessage.Username}', Guid: '{onChatMessage.Guid}', Message: '{onChatMessage.Message}'");
 
-            var player = GetPlayer(onChatMessage.GameType, onChatMessage.Guid);
+            var player = await GetPlayer(onChatMessage.GameType, onChatMessage.Guid);
 
             if (player != null)
             {
@@ -86,19 +87,19 @@ namespace XtremeIdiots.Portal.FunctionApp
                     Timestamp = onChatMessage.EventGeneratedUtc
                 };
 
-                CreateChatMessage(chatMessage);
+                await CreateChatMessage(chatMessage);
             }
         }
 
-        private static Player GetPlayer(string gameType, string guid)
+        private async static Task<Player> GetPlayer(string gameType, string guid)
         {
             var client = new RestClient(ApimBaseUrl);
-            var request = new RestRequest("player-repository/GetPlayerByGame", Method.GET);
+            var request = new RestRequest("player-repository/GetPlayerByGame", Method.Get);
             request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
-            request.AddParameter(new Parameter("gameType", gameType, ParameterType.QueryString));
-            request.AddParameter(new Parameter("guid", guid, ParameterType.QueryString));
+            request.AddParameter(new QueryParameter("gameType", gameType));
+            request.AddParameter(new QueryParameter("guid", guid));
 
-            var response = client.Execute(request);
+            var response = await client.ExecuteAsync(request);
 
             if (response.IsSuccessful)
             {
@@ -114,34 +115,34 @@ namespace XtremeIdiots.Portal.FunctionApp
             }
         }
 
-        private static void CreatePlayer(Player player)
+        private static async Task CreatePlayer(Player player)
         {
             var client = new RestClient(ApimBaseUrl);
-            var request = new RestRequest("player-repository/CreatePlayer", Method.POST);
+            var request = new RestRequest("player-repository/CreatePlayer", Method.Post);
             request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
             request.AddJsonBody(player);
 
-            client.Execute(request);
+            await client.ExecuteAsync(request);
         }
 
-        private static void UpdatePlayer(Player player)
+        private static async Task UpdatePlayer(Player player)
         {
             var client = new RestClient(ApimBaseUrl);
-            var request = new RestRequest("player-repository/UpdatePlayer", Method.PATCH);
+            var request = new RestRequest("player-repository/UpdatePlayer", Method.Patch);
             request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
             request.AddJsonBody(player);
 
-            client.Execute(request);
+            await client.ExecuteAsync(request);
         }
 
-        private static void CreateChatMessage(ChatMessage chatMessage)
+        private static async Task CreateChatMessage(ChatMessage chatMessage)
         {
             var client = new RestClient(ApimBaseUrl);
-            var request = new RestRequest("chat-message-repository/CreateChatMessage", Method.POST);
+            var request = new RestRequest("chat-message-repository/CreateChatMessage", Method.Post);
             request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
             request.AddJsonBody(chatMessage);
 
-            client.Execute(request);
+            await client.ExecuteAsync(request);
         }
     }
 }

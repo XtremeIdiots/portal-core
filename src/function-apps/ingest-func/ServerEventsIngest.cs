@@ -69,12 +69,12 @@ namespace XtremeIdiots.Portal.IngestFunc
         private async static Task<GameServer> GetGameServer(ILogger log, string id)
         {
             var client = new RestClient(ApimBaseUrl);
-            var request = new RestRequest("game-server-repository/GameServer", Method.GET);
+            var request = new RestRequest("game-server-repository/GameServer", Method.Get);
             var accessToken = await GetRepositoryAccessToken(log);
 
             request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
             request.AddHeader("Authorization", $"Bearer {accessToken}");
-            request.AddParameter(new Parameter("id", id, ParameterType.QueryString));
+            request.AddParameter(new QueryParameter("id", id));
 
             var response = await client.ExecuteAsync(request);
 
@@ -95,7 +95,7 @@ namespace XtremeIdiots.Portal.IngestFunc
         private async static Task CreateGameServer(ILogger log, GameServer gameServer)
         {
             var client = new RestClient(ApimBaseUrl);
-            var request = new RestRequest("game-server-repository/GameServer", Method.POST);
+            var request = new RestRequest("game-server-repository/GameServer", Method.Post);
             var accessToken = await GetRepositoryAccessToken(log);
 
             request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);

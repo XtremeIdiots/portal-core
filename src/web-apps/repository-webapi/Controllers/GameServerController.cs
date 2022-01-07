@@ -41,12 +41,17 @@ namespace repository_webapi.Controllers
             GameServer gameServer;
             try
             {
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
                 gameServer = JsonConvert.DeserializeObject<GameServer>(requestBody);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             }
             catch (Exception ex)
             {
                 return new BadRequestObjectResult(ex);
             }
+
+            if (gameServer == null)
+                return new BadRequestResult();
 
             var existingGameServer = await Context.GameServers.SingleOrDefaultAsync(gs => gs.Id == gameServer.Id);
             if (existingGameServer != null)
@@ -72,12 +77,17 @@ namespace repository_webapi.Controllers
             GameServer gameServer;
             try
             {
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
                 gameServer = JsonConvert.DeserializeObject<GameServer>(requestBody);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             }
             catch (Exception ex)
             {
                 return new BadRequestObjectResult(ex);
             }
+
+            if (gameServer == null)
+                return new BadRequestResult();
 
             var gameServerToUpdate = await Context.GameServers.SingleOrDefaultAsync(gs => gs.Id == gameServer.Id);
 
@@ -87,7 +97,9 @@ namespace repository_webapi.Controllers
             if (!string.IsNullOrWhiteSpace(gameServer.Title))
                 gameServerToUpdate.Title = gameServer.Title.Trim();
 
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             if (IPAddress.TryParse(gameServerToUpdate.IpAddress, out IPAddress ip))
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
                 gameServerToUpdate.IpAddress = ip.ToString();
 
             if (gameServerToUpdate.QueryPort != 0)

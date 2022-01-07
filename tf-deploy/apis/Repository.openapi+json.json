@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.1",
     "info": {
-        "title": "Game Server Repository",
+        "title": "Repository",
         "description": "",
         "version": "1.0"
     },
@@ -66,6 +66,84 @@
                 "responses": {
                     "200": {
                         "description": null
+                    }
+                }
+            }
+        },
+        "/Player": {
+            "get": {
+                "summary": "GetPlayer",
+                "description": "GetPlayer",
+                "operationId": "GetPlayer",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "gameType",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "guid",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "null"
+                    }
+                }
+            },
+            "post": {
+                "summary": "CreatePlayer",
+                "description": "CreatePlayer",
+                "operationId": "CreatePlayer",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "GameType": "CallOfDuty4",
+                                "Username": "Charlie",
+                                "Guid": "AAAAA"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "null"
+                    }
+                }
+            },
+            "patch": {
+                "summary": "UpdatePlayer",
+                "description": "UpdatePlayer",
+                "operationId": "UpdatePlayer",
+                "responses": {
+                    "200": {
+                        "description": "null"
+                    }
+                }
+            }
+        },
+        "/ChatMessage": {
+            "post": {
+                "summary": "CreateChatMessage",
+                "description": "CreateChatMessage",
+                "operationId": "CreateChatMessage",
+                "responses": {
+                    "200": {
+                        "description": "null"
                     }
                 }
             }
