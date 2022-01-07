@@ -4,10 +4,14 @@ using XtremeIdiots.Portal.DataLib;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<PortalDbContext>(options => options.UseSqlServer(builder.Configuration["sql-connection-string"]));
+builder.Services.AddLogging();
+builder.Services.AddApplicationInsightsTelemetry();
+
+builder.Services.AddDbContext<PortalDbContext>(options =>
+    options.UseSqlServer(builder.Configuration["sql-connection-string"]));
 
 // Add services to the container.
-builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration, "AzureAd");
+builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

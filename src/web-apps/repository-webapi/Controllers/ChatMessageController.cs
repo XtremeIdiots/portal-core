@@ -3,44 +3,42 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using XtremeIdiots.Portal.DataLib;
 
-namespace repository_webapi.Controllers
+namespace XtremeIdiots.Portal.RepositoryWebApi.Controllers;
+
+[ApiController]
+[Authorize(Roles = "ServiceAccount")]
+[Route("api/ChatMessage")]
+public class ChatMessageController : ControllerBase
 {
-    [ApiController]
-    [Authorize(Roles = "ServiceAccount")]
-    [Route("api/ChatMessage")]
-    public class ChatMessageController : ControllerBase
+    public ChatMessageController(PortalDbContext context)
     {
-        public PortalDbContext Context { get; }
+        Context = context ?? throw new ArgumentNullException(nameof(context));
+    }
 
-        public ChatMessageController(PortalDbContext context)
+    public PortalDbContext Context { get; }
+
+    [HttpPost(Name = "ChatMessage")]
+    public async Task<IActionResult> CreateChatMessage()
+    {
+        var requestBody = await new StreamReader(Request.Body).ReadToEndAsync();
+
+        ChatMessage chatMessage;
+        try
         {
-            Context = context ?? throw new ArgumentNullException(nameof(context));
-        }
-
-        [HttpPost(Name = "ChatMessage")]
-        public async Task<IActionResult> CreateChatMessage()
-        {
-            var requestBody = await new StreamReader(Request.Body).ReadToEndAsync();
-
-            ChatMessage chatMessage;
-            try
-            {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-                chatMessage = JsonConvert.DeserializeObject<ChatMessage>(requestBody);
+            chatMessage = JsonConvert.DeserializeObject<ChatMessage>(requestBody);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-            }
-            catch (Exception ex)
-            {
-                return new BadRequestObjectResult(ex);
-            }
-
-            if (chatMessage == null)
-                return new BadRequestResult();
-
-            await Context.ChatMessages.AddAsync(chatMessage);
-            await Context.SaveChangesAsync();
-
-            return new OkObjectResult(chatMessage);
         }
+        catch (Exception ex)
+        {
+            return new BadRequestObjectResult(ex);
+        }
+
+        if (chatMessage == null) return new BadRequestResult();
+
+        await Context.ChatMessages.AddAsync(chatMessage);
+        await Context.SaveChangesAsync();
+
+        return new OkObjectResult(chatMessage);
     }
 }

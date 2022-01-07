@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace XtremeIdiots.Portal.IngestFunc.Providers
+namespace XtremeIdiots.Portal.IngestFunc.Providers;
+
+public interface IRepositoryTokenProvider
 {
-    public interface IRepositoryTokenProvider
-    {
-        Task<string> GetRepositoryAccessToken();
-    }
+    Task<string> GetRepositoryAccessToken();
 }
