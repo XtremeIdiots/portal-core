@@ -39,8 +39,6 @@ namespace XtremeIdiots.Portal.IngestFunc
 
             if (existingServer == null)
             {
-                log.LogInformation($"OnServerConnected :: Id: '{onServerConnected.Id}', GameType: '{onServerConnected.GameType}' does not exist - creating");
-
                 var gameServer = new GameServer()
                 {
                     Id = onServerConnected.Id,
@@ -48,10 +46,6 @@ namespace XtremeIdiots.Portal.IngestFunc
                 };
 
                 await CreateGameServer(log, gameServer);
-            }
-            else
-            {
-                log.LogInformation($"OnServerConnected :: Server Found: {existingServer}");
             }
         }
 
