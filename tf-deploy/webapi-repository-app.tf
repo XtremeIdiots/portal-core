@@ -8,10 +8,10 @@ resource "random_uuid" "webapi_serviceaccount_uuid" {
 }
 
 resource "azuread_application" "repository_webapi_application" {
-  display_name     = local.repository_web_api_name
+  display_name     = local.repository_web_api_application_name
   owners           = [data.azuread_client_config.current.object_id]
   sign_in_audience = "AzureADMyOrg"
-  identifier_uris  = [format("api://%s", local.repository_web_api_name)]
+  identifier_uris  = [local.repository_web_api_audience]
 
   api {
     oauth2_permission_scope {

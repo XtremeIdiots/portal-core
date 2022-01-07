@@ -58,6 +58,10 @@ locals {
   // AAD Groups
   repository_service_writers = format("sg-%s-repo_service_writers-%s", var.workload, var.env)
 
+  // Repository API Application
+  repository_web_api_application_name = format("webapi-%s-repository-%s", var.workload, var.env)
+  repository_web_api_audience         = format("api://webapi-%s-repository-%s", var.workload, var.env)
+
   ## Azure Mgmt Resources
 
   // Log Analytics
