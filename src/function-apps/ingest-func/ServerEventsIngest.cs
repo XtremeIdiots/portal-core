@@ -35,10 +35,12 @@ namespace XtremeIdiots.Portal.IngestFunc
 
             log.LogInformation($"OnServerConnected :: Id: '{onServerConnected.Id}', GameType: '{onServerConnected.GameType}'");
 
-            var existingServer = GetGameServer(log, onServerConnected.Id);
+            var existingServer = await GetGameServer(log, onServerConnected.Id);
 
             if (existingServer == null)
             {
+                log.LogInformation($"OnServerConnected :: Id: '{onServerConnected.Id}', GameType: '{onServerConnected.GameType}' does not exist - creating");
+
                 var gameServer = new GameServer()
                 {
                     Id = onServerConnected.Id,
@@ -46,6 +48,10 @@ namespace XtremeIdiots.Portal.IngestFunc
                 };
 
                 await CreateGameServer(log, gameServer);
+            }
+            else
+            {
+                log.LogInformation($"OnServerConnected :: Server Found: {existingServer}");
             }
         }
 
@@ -76,7 +82,7 @@ namespace XtremeIdiots.Portal.IngestFunc
             request.AddHeader("Authorization", $"Bearer {accessToken}");
             request.AddParameter(new Parameter("id", id, ParameterType.QueryString));
 
-            var response = client.Execute(request);
+            var response = await client.ExecuteAsync(request);
 
             if (response.IsSuccessful)
             {
@@ -102,7 +108,7 @@ namespace XtremeIdiots.Portal.IngestFunc
             request.AddHeader("Authorization", $"Bearer {accessToken}");
             request.AddJsonBody(gameServer);
 
-            client.Execute(request);
+            await client.ExecuteAsync(request);
         }
 
         private static async Task<string> GetRepositoryAccessToken(ILogger log)
