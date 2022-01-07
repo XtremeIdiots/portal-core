@@ -69,7 +69,7 @@ namespace XtremeIdiots.Portal.IngestFunc
         private async static Task<GameServer> GetGameServer(ILogger log, string id)
         {
             var client = new RestClient(ApimBaseUrl);
-            var request = new RestRequest("game-server-repository/GameServer", Method.Get);
+            var request = new RestRequest("repository/GameServer", Method.Get);
             var accessToken = await GetRepositoryAccessToken(log);
 
             request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
@@ -88,14 +88,14 @@ namespace XtremeIdiots.Portal.IngestFunc
             }
             else
             {
-                throw new Exception("Failed to execute 'game-server-repository/GameServer'");
+                throw new Exception("Failed to execute 'repository/GameServer'");
             }
         }
 
         private async static Task CreateGameServer(ILogger log, GameServer gameServer)
         {
             var client = new RestClient(ApimBaseUrl);
-            var request = new RestRequest("game-server-repository/GameServer", Method.Post);
+            var request = new RestRequest("repository/GameServer", Method.Post);
             var accessToken = await GetRepositoryAccessToken(log);
 
             request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
