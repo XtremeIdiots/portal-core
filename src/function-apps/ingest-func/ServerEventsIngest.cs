@@ -1,23 +1,27 @@
-using System;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using XtremeIdiots.Portal.CommonLib.Events;
-using XtremeIdiots.Portal.DataLib;
 using RestSharp;
+using System;
 using System.Net;
-using XtremeIdiots.Portal.CommonLib.Models;
-using Azure.Identity;
 using System.Threading.Tasks;
-using Azure.Core;
+using XtremeIdiots.Portal.CommonLib.Events;
+using XtremeIdiots.Portal.CommonLib.Models;
+using XtremeIdiots.Portal.DataLib;
+using XtremeIdiots.Portal.IngestFunc.Providers;
 
 namespace XtremeIdiots.Portal.IngestFunc
 {
     public class ServerEventsIngest
     {
-        private static string ApimBaseUrl => Environment.GetEnvironmentVariable("apim-base-url");
-        private static string ApimSubscriptionKey => Environment.GetEnvironmentVariable("apim-subscription-key");
-        private static string WebApiPortalApplicationAudience => Environment.GetEnvironmentVariable("webapi-portal-application-audience");
+        public ServerEventsIngest(IRepositoryTokenProvider repositoryTokenProvider)
+        {
+            RepositoryTokenProvider = repositoryTokenProvider;
+        }
+
+        private IRepositoryTokenProvider RepositoryTokenProvider { get; }
+        private string ApimBaseUrl => Environment.GetEnvironmentVariable("apim-base-url");
+        private string ApimSubscriptionKey => Environment.GetEnvironmentVariable("apim-subscription-key");
 
         [FunctionName("ProcessOnServerConnected")]
         public async Task ProcessOnServerConnected([ServiceBusTrigger("server_connected_queue", Connection = "service-bus-connection-string")] string myQueueItem, ILogger log)
@@ -50,7 +54,7 @@ namespace XtremeIdiots.Portal.IngestFunc
         }
 
         [FunctionName("ProcessOnMapChange")]
-        public static void ProcessOnMapChange([ServiceBusTrigger("map_change_queue", Connection = "service-bus-connection-string")] string myQueueItem, ILogger log)
+        public void ProcessOnMapChange([ServiceBusTrigger("map_change_queue", Connection = "service-bus-connection-string")] string myQueueItem, ILogger log)
         {
             OnMapChange onMapChange;
             try
@@ -66,11 +70,11 @@ namespace XtremeIdiots.Portal.IngestFunc
             log.LogInformation($"ProcessOnMapChange :: GameName: '{onMapChange.GameName}', GameType: '{onMapChange.GameType}', MapName: '{onMapChange.MapName}'");
         }
 
-        private async static Task<GameServer> GetGameServer(ILogger log, string id)
+        private async Task<GameServer> GetGameServer(ILogger log, string id)
         {
             var client = new RestClient(ApimBaseUrl);
             var request = new RestRequest("repository/GameServer", Method.Get);
-            var accessToken = await GetRepositoryAccessToken(log);
+            var accessToken = await RepositoryTokenProvider.GetRepositoryAccessToken();
 
             request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
             request.AddHeader("Authorization", $"Bearer {accessToken}");
@@ -92,39 +96,17 @@ namespace XtremeIdiots.Portal.IngestFunc
             }
         }
 
-        private async static Task CreateGameServer(ILogger log, GameServer gameServer)
+        private async Task CreateGameServer(ILogger log, GameServer gameServer)
         {
             var client = new RestClient(ApimBaseUrl);
             var request = new RestRequest("repository/GameServer", Method.Post);
-            var accessToken = await GetRepositoryAccessToken(log);
+            var accessToken = await RepositoryTokenProvider.GetRepositoryAccessToken();
 
             request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
             request.AddHeader("Authorization", $"Bearer {accessToken}");
             request.AddJsonBody(gameServer);
 
             await client.ExecuteAsync(request);
-        }
-
-        private static async Task<string> GetRepositoryAccessToken(ILogger log)
-        {
-            var tokenCredential = new ManagedIdentityCredential();
-
-            AccessToken accessToken;
-            try
-            {
-                accessToken = await tokenCredential.GetTokenAsync(
-                    new TokenRequestContext(scopes: new string[] { $"{WebApiPortalApplicationAudience}/.default" }) { }
-                );
-
-                log.LogInformation($"AccessToken: {accessToken.Token}");
-            }
-            catch (Exception ex)
-            {
-                log.LogError(ex, "Failed to get managed identity token");
-                throw;
-            }
-
-            return accessToken.Token;
         }
     }
 }

@@ -1,7 +1,7 @@
-using System;
 using Microsoft.Azure.WebJobs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
 using XtremeIdiots.Portal.DataLib;
 
 namespace XtremeIdiots.Portal.RepositoryFunc

@@ -19,7 +19,7 @@ namespace repository_webapi.Controllers
             Context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        [HttpPost(Name = "Player")]
+        [HttpGet(Name = "Player")]
         public async Task<IActionResult> GetPlayer(string id = "", string gameType = "", string guid = "")
         {
             if (!string.IsNullOrWhiteSpace(id))
@@ -36,7 +36,7 @@ namespace repository_webapi.Controllers
                     return new NotFoundResult();
 
                 return new OkObjectResult(player);
-            } 
+            }
             else
             {
                 if (string.IsNullOrWhiteSpace(gameType) || string.IsNullOrWhiteSpace(guid))

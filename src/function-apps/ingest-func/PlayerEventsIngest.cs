@@ -7,16 +7,23 @@ using System.Net;
 using System.Threading.Tasks;
 using XtremeIdiots.Portal.CommonLib.Models;
 using XtremeIdiots.Portal.DataLib;
+using XtremeIdiots.Portal.IngestFunc.Providers;
 
 namespace XtremeIdiots.Portal.FunctionApp
 {
     public class PlayerEventsIngest
     {
-        private static string ApimBaseUrl => Environment.GetEnvironmentVariable("apim-base-url");
-        private static string ApimSubscriptionKey => Environment.GetEnvironmentVariable("apim-subscription-key");
+        public PlayerEventsIngest(IRepositoryTokenProvider repositoryTokenProvider)
+        {
+            RepositoryTokenProvider = repositoryTokenProvider;
+        }
+
+        private IRepositoryTokenProvider RepositoryTokenProvider { get; }
+        private string ApimBaseUrl => Environment.GetEnvironmentVariable("apim-base-url");
+        private string ApimSubscriptionKey => Environment.GetEnvironmentVariable("apim-subscription-key");
 
         [FunctionName("ProcessOnPlayerConnected")]
-        public async static Task ProcessOnPlayerConnected([ServiceBusTrigger("player_connected_queue", Connection = "service-bus-connection-string")] string myQueueItem, ILogger log)
+        public async Task ProcessOnPlayerConnected([ServiceBusTrigger("player_connected_queue", Connection = "service-bus-connection-string")] string myQueueItem, ILogger log)
         {
             OnPlayerConnected playerConnectedEvent;
             try
@@ -58,7 +65,7 @@ namespace XtremeIdiots.Portal.FunctionApp
         }
 
         [FunctionName("ProcessOnChatMessage")]
-        public async static Task ProcessOnChatMessage([ServiceBusTrigger("chat_message_queue", Connection = "service-bus-connection-string")] string myQueueItem, ILogger log)
+        public async Task ProcessOnChatMessage([ServiceBusTrigger("chat_message_queue", Connection = "service-bus-connection-string")] string myQueueItem, ILogger log)
         {
             OnChatMessage onChatMessage;
             try
@@ -91,11 +98,14 @@ namespace XtremeIdiots.Portal.FunctionApp
             }
         }
 
-        private async static Task<Player> GetPlayer(string gameType, string guid)
+        private async Task<Player> GetPlayer(string gameType, string guid)
         {
             var client = new RestClient(ApimBaseUrl);
             var request = new RestRequest("player-repository/GetPlayerByGame", Method.Get);
+            var accessToken = await RepositoryTokenProvider.GetRepositoryAccessToken();
+
             request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
+            request.AddHeader("Authorization", $"Bearer {accessToken}");
             request.AddParameter(new QueryParameter("gameType", gameType));
             request.AddParameter(new QueryParameter("guid", guid));
 
@@ -115,31 +125,40 @@ namespace XtremeIdiots.Portal.FunctionApp
             }
         }
 
-        private static async Task CreatePlayer(Player player)
+        private async Task CreatePlayer(Player player)
         {
             var client = new RestClient(ApimBaseUrl);
             var request = new RestRequest("player-repository/CreatePlayer", Method.Post);
+            var accessToken = await RepositoryTokenProvider.GetRepositoryAccessToken();
+
             request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
+            request.AddHeader("Authorization", $"Bearer {accessToken}");
             request.AddJsonBody(player);
 
             await client.ExecuteAsync(request);
         }
 
-        private static async Task UpdatePlayer(Player player)
+        private async Task UpdatePlayer(Player player)
         {
             var client = new RestClient(ApimBaseUrl);
             var request = new RestRequest("player-repository/UpdatePlayer", Method.Patch);
+            var accessToken = await RepositoryTokenProvider.GetRepositoryAccessToken();
+
             request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
+            request.AddHeader("Authorization", $"Bearer {accessToken}");
             request.AddJsonBody(player);
 
             await client.ExecuteAsync(request);
         }
 
-        private static async Task CreateChatMessage(ChatMessage chatMessage)
+        private async Task CreateChatMessage(ChatMessage chatMessage)
         {
             var client = new RestClient(ApimBaseUrl);
             var request = new RestRequest("chat-message-repository/CreateChatMessage", Method.Post);
+            var accessToken = await RepositoryTokenProvider.GetRepositoryAccessToken();
+
             request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
+            request.AddHeader("Authorization", $"Bearer {accessToken}");
             request.AddJsonBody(chatMessage);
 
             await client.ExecuteAsync(request);
