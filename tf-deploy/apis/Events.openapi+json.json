@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.1",
     "info": {
-        "title": "Player Events",
+        "title": "Events",
         "description": "",
         "version": "1.0"
     },
