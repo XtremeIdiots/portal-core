@@ -113,7 +113,7 @@ namespace XtremeIdiots.Portal.IngestFunc
             try
             {
                 accessToken = await tokenCredential.GetTokenAsync(
-                    new TokenRequestContext(scopes: new string[] { $"api://{WebApiPortalRepositoryApplicationName}/AllAccess" }) { }
+                    new TokenRequestContext() { }
                 );
 
                 log.LogInformation($"AccessToken: {accessToken}");
