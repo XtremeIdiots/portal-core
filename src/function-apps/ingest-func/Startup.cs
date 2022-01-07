@@ -11,6 +11,7 @@ namespace XtremeIdiots.Portal.IngestFunc
         public override void Configure(IFunctionsHostBuilder builder)
         {
             builder.Services.AddSingleton<IRepositoryTokenProvider, RepositoryTokenProvider>();
+            builder.Services.AddLogging();
         }
     }
 }
