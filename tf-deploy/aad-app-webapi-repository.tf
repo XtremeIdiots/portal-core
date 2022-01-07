@@ -42,27 +42,27 @@ resource "azuread_application" "repository_webapi_application" {
     value                = "ServiceAccount"
   }
 
-  web {
-    logout_url = format("https://%s.azurewebsites.net/signout-oidc", local.repository_web_api_name)
-    redirect_uris = [
-      format("https://%s.azurewebsites.net/signin-oidc", local.repository_web_api_name)
-    ]
+  //web {
+  //  logout_url = format("https://%s.azurewebsites.net/signout-oidc", local.repository_web_api_name)
+  //  redirect_uris = [
+  //    format("https://%s.azurewebsites.net/signin-oidc", local.repository_web_api_name)
+  //  ]
 
-    implicit_grant {
-      access_token_issuance_enabled = true
-      id_token_issuance_enabled     = true
-    }
-  }
+  //  implicit_grant {
+  //    access_token_issuance_enabled = true
+  //    id_token_issuance_enabled     = true
+  //  }
+  //}
 
-  optional_claims {
-    access_token {
-      name = "groups"
-    }
+  //optional_claims {
+  //  access_token {
+  //    name = "groups"
+  //  }
 
-    id_token {
-      name = "groups"
-    }
-  }
+  //  id_token {
+  //    name = "groups"
+  //  }
+  //}
 }
 
 resource "azuread_service_principal" "repository_webapi_application_service_principal" {
