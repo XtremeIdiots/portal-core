@@ -75,3 +75,9 @@ resource "azuread_app_role_assignment" "ingest_function_app_repository_role_assi
   principal_object_id = azurerm_function_app.ingest_function_app.identity[0].principal_id
   resource_object_id  = azuread_service_principal.repository_webapi_application_service_principal.object_id
 }
+
+resource "azuread_app_role_assignment" "ingest_function_app_repository_allaccess_scope_assignment" {
+  app_role_id         = random_uuid.webapi_allaccess_uuid.result
+  principal_object_id = azurerm_function_app.ingest_function_app.identity[0].principal_id
+  resource_object_id  = azuread_service_principal.repository_webapi_application_service_principal.object_id
+}
