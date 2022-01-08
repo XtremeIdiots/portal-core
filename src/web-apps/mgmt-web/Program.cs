@@ -4,6 +4,7 @@ using Microsoft.Identity.Web.UI;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddLogging();
 builder.Services.AddApplicationInsightsTelemetry();
 
 // Add services to the container.

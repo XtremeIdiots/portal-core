@@ -13,7 +13,6 @@ locals {
   apim_admin_web_app_subscription_secret_name      = format("%s-admin-webapp-subscription-key", local.apim_name)
   apim_public_web_app_subscription_secret_name     = format("%s-public-webapp-subscription-key", local.apim_name)
   apim_repository_web_api_subscription_secret_name = format("%s-repository-webapi-subscription-key", local.apim_name)
-  apim_repository_client_cert_secret_name          = format("%s-repository-client-cert", local.apim_name)
 
   // App Insights
   app_insights_name                       = format("ai-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
@@ -34,10 +33,10 @@ locals {
   bansync_app_storage_name     = format("safa%s%s%s%s", var.workload, var.env, var.region, "04")
 
   // Web Apps
-  mgmt_web_app_name   = format("web-%s-mgmt-%s-%s-%s", var.workload, var.env, var.region, var.instance)
-  admin_web_app_name  = format("web-%s-admin-%s-%s-%s", var.workload, var.env, var.region, var.instance)
-  public_web_app_name = format("web-%s-public-%s-%s-%s", var.workload, var.env, var.region, var.instance)
-  repository_web_api  = format("webapi-%s-repository-%s-%s-%s", var.workload, var.env, var.region, var.instance)
+  mgmt_web_app_name       = format("web-%s-mgmt-%s-%s-%s", var.workload, var.env, var.region, var.instance)
+  admin_web_app_name      = format("web-%s-admin-%s-%s-%s", var.workload, var.env, var.region, var.instance)
+  public_web_app_name     = format("web-%s-public-%s-%s-%s", var.workload, var.env, var.region, var.instance)
+  repository_web_api_name = format("webapi-%s-repository-%s-%s-%s", var.workload, var.env, var.region, var.instance)
 
   // Key Vault
   key_vault_name = format("kv-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
@@ -55,6 +54,13 @@ locals {
 
   // SQL Database
   sql_database_name = "portal"
+
+  // AAD Groups
+  repository_service_writers = format("sg-%s-repo_service_writers-%s", var.workload, var.env)
+
+  // Repository API Application
+  repository_web_api_application_name = format("webapi-%s-repository-%s", var.workload, var.env)
+  repository_web_api_audience         = format("api://webapi-%s-repository-%s", var.workload, var.env)
 
   ## Azure Mgmt Resources
 

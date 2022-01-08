@@ -1,8 +1,13 @@
-﻿namespace XtremeIdiots.Portal.CommonLib.Events
+﻿namespace XtremeIdiots.Portal.CommonLib.Events;
+
+public class OnServerConnected
 {
-    public class OnServerConnected
+    public OnServerConnected(string id, string gameType)
     {
-        public string Id { get; set; }
-        public string GameType { get; set; }
+        Id = id;
+        GameType = gameType;
     }
+
+    public string Id { get; set; }
+    public string GameType { get; set; }
 }

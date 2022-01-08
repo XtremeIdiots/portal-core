@@ -1,6 +1,17 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Web;
+using XtremeIdiots.Portal.DataLib;
+
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddLogging();
+builder.Services.AddApplicationInsightsTelemetry();
+
+builder.Services.AddDbContext<PortalDbContext>(options =>
+    options.UseSqlServer(builder.Configuration["sql-connection-string"]));
+
 // Add services to the container.
+builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -18,6 +29,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

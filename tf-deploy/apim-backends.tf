@@ -35,10 +35,4 @@ resource "azurerm_api_management_backend" "repository_webapi_backend" {
 
   protocol = "http"
   url      = format("https://%s/api/", azurerm_app_service.repository_web_api.default_site_hostname)
-
-  credentials {
-    certificate = [
-      azurerm_api_management_certificate.apim_repository_client_cert.thumbprint
-    ]
-  }
 }

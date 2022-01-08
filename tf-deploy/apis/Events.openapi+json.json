@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.1",
     "info": {
-        "title": "Player Events",
+        "title": "Events",
         "description": "",
         "version": "1.0"
     },
@@ -48,6 +48,38 @@
                 "responses": {
                     "200": {
                         "description": "null"
+                    }
+                }
+            }
+        },
+        "/OnServerConnected": {
+            "post": {
+                "summary": "OnServerConnected",
+                "operationId": "OnServerConnected",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "id": "server-id",
+                                "gameType": "CallOfDuty2"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": null
+                    }
+                }
+            }
+        },
+        "/OnMapChange": {
+            "post": {
+                "summary": "OnMapChange",
+                "operationId": "OnMapChange",
+                "responses": {
+                    "200": {
+                        "description": null
                     }
                 }
             }
