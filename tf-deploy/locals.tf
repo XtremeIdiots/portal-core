@@ -63,7 +63,14 @@ locals {
   repository_web_api_audience         = format("api://webapi-%s-repository-%s", var.workload, var.env)
 
   // Management Web Application
-  mgmt_web_app_application_name       = format("web-%s-mgmt-%s", var.workload, var.env)
+  mgmt_web_app_application_name = format("web-%s-mgmt-%s", var.workload, var.env)
+
+  // Events Function App
+  events_function_app_application_name = format("fa-%s-events-%s", var.workload, var.env)
+  events_function_app_audience         = format("api://fa-%s-events-%s", var.workload, var.env)
+
+  // B3Bots Client App
+  b3bots_client_application_name = format("b3bots-client-%s", var.env)
 
   ## Azure Mgmt Resources
 
