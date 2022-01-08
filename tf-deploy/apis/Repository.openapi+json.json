@@ -9,6 +9,7 @@
         "/GameServer": {
             "get": {
                 "summary": "GetGameServer",
+                "description": "GetGameServer",
                 "operationId": "GetGameServer",
                 "parameters": [
                     {
@@ -21,12 +22,13 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": null
+                        "description": "null"
                     }
                 }
             },
             "post": {
                 "summary": "CreateGameServer",
+                "description": "CreateGameServer",
                 "operationId": "CreateGameServer",
                 "requestBody": {
                     "content": {
@@ -43,12 +45,13 @@
                 },
                 "responses": {
                     "200": {
-                        "description": null
+                        "description": "null"
                     }
                 }
             },
             "patch": {
                 "summary": "UpdateGameServer",
+                "description": "UpdateGameServer",
                 "operationId": "UpdateGameServer",
                 "requestBody": {
                     "content": {
@@ -65,7 +68,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": null
+                        "description": "null"
                     }
                 }
             }
