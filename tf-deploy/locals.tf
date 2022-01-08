@@ -62,6 +62,9 @@ locals {
   repository_web_api_application_name = format("webapi-%s-repository-%s", var.workload, var.env)
   repository_web_api_audience         = format("api://webapi-%s-repository-%s", var.workload, var.env)
 
+  // Management Web Application
+  mgmt_web_app_application_name       = format("web-%s-mgmt-%s", var.workload, var.env)
+
   ## Azure Mgmt Resources
 
   // Log Analytics

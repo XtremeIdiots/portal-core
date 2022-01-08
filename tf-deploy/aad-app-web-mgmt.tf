@@ -1,5 +1,5 @@
 resource "azuread_application" "mgmt_web_app_application" {
-  display_name     = local.mgmt_web_app_name
+  display_name     = local.mgmt_web_app_application_name
   owners           = [data.azuread_client_config.current.object_id]
   sign_in_audience = "AzureADMyOrg"
 
