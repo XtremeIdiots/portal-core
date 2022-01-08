@@ -17,6 +17,8 @@ resource "azurerm_api_management_api" "apim_repository" {
 locals {
   gsra_policy_1 = file("./policies/RepositoryPolicy.xml")
   gsra_policy_2 = replace(local.gsra_policy_1, "__backend_service_id__", azurerm_api_management_backend.repository_webapi_backend.name)
+  gsra_policy_3 = replace(local.gsra_policy_2, "__tenant_id__", data.azurerm_client_config.current.tenant_id)
+  gsra_policy_4 = replace(local.gsra_policy_3, "__audience__", local.repository_api_application_audience)
 }
 
 resource "azurerm_api_management_api_policy" "repository_api_policy" {
@@ -24,7 +26,7 @@ resource "azurerm_api_management_api_policy" "repository_api_policy" {
   api_management_name = azurerm_api_management.api_management.name
   resource_group_name = azurerm_resource_group.core_resource_group.name
 
-  xml_content = local.gsra_policy_2
+  xml_content = local.gsra_policy_4
 }
 
 resource "azurerm_api_management_api_diagnostic" "repository_api_diagnostic" {

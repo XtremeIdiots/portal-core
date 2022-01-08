@@ -13,6 +13,7 @@ locals {
   apim_admin_web_app_subscription_secret_name      = format("%s-admin-webapp-subscription-key", local.apim_name)
   apim_public_web_app_subscription_secret_name     = format("%s-public-webapp-subscription-key", local.apim_name)
   apim_repository_web_api_subscription_secret_name = format("%s-repository-webapi-subscription-key", local.apim_name)
+  b3bot_client_application_secret_name             = format("%s-b3bot-client-secret", local.b3bots_client_application_name)
 
   // App Insights
   app_insights_name                       = format("ai-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
@@ -59,11 +60,18 @@ locals {
   mgmt_web_app_users_group = format("sg-web-%s-mgmt-%s-users", var.workload, var.env)
 
   // Repository API Application
-  repository_web_api_application_name = format("webapi-%s-repository-%s", var.workload, var.env)
-  repository_web_api_audience         = format("api://webapi-%s-repository-%s", var.workload, var.env)
+  repository_api_application_name     = format("%s-repository-api-%s", var.workload, var.env)
+  repository_api_application_audience = format("api://%s-repository-api-%s", var.workload, var.env)
 
   // Management Web Application
-  mgmt_web_app_application_name       = format("web-%s-mgmt-%s", var.workload, var.env)
+  mgmt_web_app_application_name = format("web-%s-mgmt-%s", var.workload, var.env)
+
+  // Events Function App
+  events_api_application_name     = format("%s-events-api-%s", var.workload, var.env)
+  events_api_application_audience = format("api://%s-events-api-%s", var.workload, var.env)
+
+  // B3Bots Client App
+  b3bots_client_application_name = format("b3bots-client-%s", var.env)
 
   ## Azure Mgmt Resources
 

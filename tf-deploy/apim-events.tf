@@ -14,12 +14,19 @@ resource "azurerm_api_management_api" "apim_events" {
   }
 }
 
+locals {
+  events_policy_1 = file("./policies/EventsPolicy.xml")
+  events_policy_2 = replace(local.events_policy_1, "__backend_service_id__", azurerm_api_management_backend.events_funcapp_backend.name)
+  events_policy_3 = replace(local.events_policy_2, "__tenant_id__", data.azurerm_client_config.current.tenant_id)
+  events_policy_4 = replace(local.events_policy_3, "__audience__", local.events_api_application_audience)
+}
+
 resource "azurerm_api_management_api_policy" "events_api_policy" {
   api_name            = azurerm_api_management_api.apim_events.name
   api_management_name = azurerm_api_management.api_management.name
   resource_group_name = azurerm_resource_group.core_resource_group.name
 
-  xml_content = replace(file("./policies/EventsPolicy.xml"), "__backend_service_id__", azurerm_api_management_backend.events_funcapp_backend.name)
+  xml_content = local.events_policy_4
 }
 
 resource "azurerm_api_management_api_diagnostic" "events_api_diagnostic" {

@@ -27,6 +27,16 @@ resource "azurerm_function_app" "events_function_app" {
     min_tls_version = "1.2"
   }
 
+  auth_settings {
+    enabled          = true
+    default_provider = "AzureActiveDirectory"
+
+    active_directory {
+      client_id         = azuread_application.events_api_application.application_id
+      allowed_audiences = [local.events_api_application_audience]
+    }
+  }
+
   app_settings = {
     "APPINSIGHTS_INSTRUMENTATIONKEY" = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", local.key_vault_name, local.app_insights_instrumentation_key_secret)
     "WEBSITE_RUN_FROM_PACKAGE"       = 1

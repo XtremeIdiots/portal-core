@@ -11,6 +11,19 @@
                 "summary": "OnPlayerConnected",
                 "description": "OnPlayerConnected",
                 "operationId": "OnPlayerConnected",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "enum": [
+                                "Bearer ey..."
+                            ],
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -33,6 +46,19 @@
                 "summary": "OnChatMessage",
                 "description": "OnChatMessage",
                 "operationId": "OnChatMessage",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "enum": [
+                                "Bearer ey..."
+                            ],
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -55,7 +81,21 @@
         "/OnServerConnected": {
             "post": {
                 "summary": "OnServerConnected",
+                "description": "OnServerConnected",
                 "operationId": "OnServerConnected",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "enum": [
+                                "Bearer ey..."
+                            ],
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -68,7 +108,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": null
+                        "description": "null"
                     }
                 }
             }
@@ -76,10 +116,24 @@
         "/OnMapChange": {
             "post": {
                 "summary": "OnMapChange",
+                "description": "OnMapChange",
                 "operationId": "OnMapChange",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "enum": [
+                                "Bearer ey..."
+                            ],
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": null
+                        "description": "null"
                     }
                 }
             }

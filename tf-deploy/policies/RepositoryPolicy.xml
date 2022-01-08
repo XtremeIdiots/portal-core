@@ -13,6 +13,20 @@
         <base/>
         <set-backend-service backend-id="__backend_service_id__" />
         <cache-lookup vary-by-developer="false" vary-by-developer-groups="false" downstream-caching-type="none" />
+        <validate-jwt header-name="Authorization" failed-validation-httpcode="401" failed-validation-error-message="JWT validation was unsuccessful" require-expiration-time="true" require-scheme="Bearer" require-signed-tokens="true">
+            <openid-config url="https://login.microsoftonline.com/__tenant_id__/v2.0/.well-known/openid-configuration" />
+            <audiences>
+                <audience>__audience__</audience>
+            </audiences>
+            <issuers>
+                <issuer>https://sts.windows.net/__tenant_id__/</issuer>
+            </issuers>
+            <required-claims>
+                <claim name="roles" match="any">
+                    <value>ServiceAccount</value>
+                </claim>
+            </required-claims>
+        </validate-jwt>
     </inbound>
     <backend>
         <forward-request />
