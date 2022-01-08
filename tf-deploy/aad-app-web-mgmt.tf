@@ -17,7 +17,9 @@ resource "azuread_application" "mgmt_web_app_application" {
 }
 
 resource "azuread_service_principal" "mgmt_web_app_local_service_principal" {
-  application_id               = azuread_application.mgmt_web_app_application.application_id
+  application_id = azuread_application.mgmt_web_app_application.application_id
+  use_existing   = true
+  owners         = [data.azuread_client_config.current.object_id]
+
   app_role_assignment_required = true
-  owners                       = [data.azuread_client_config.current.object_id]
 }
