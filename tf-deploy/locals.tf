@@ -56,11 +56,14 @@ locals {
   sql_database_name = "portal"
 
   // AAD Groups
-  repository_service_writers = format("sg-%s-repo_service_writers-%s", var.workload, var.env)
+  mgmt_web_app_users_group = format("sg-web-%s-mgmt-%s-users", var.workload, var.env)
 
   // Repository API Application
   repository_web_api_application_name = format("webapi-%s-repository-%s", var.workload, var.env)
   repository_web_api_audience         = format("api://webapi-%s-repository-%s", var.workload, var.env)
+
+  // Management Web Application
+  mgmt_web_app_application_name       = format("web-%s-mgmt-%s", var.workload, var.env)
 
   ## Azure Mgmt Resources
 
