@@ -1,0 +1,5 @@
+subscription_id      = "e8ae2a77-9893-4a9a-a2eb-98e68ad8b94e"
+resource_group_name  = "rg-portal_tfstate-box-eastus-01"
+storage_account_name = "saportaltfboxeastus01"
+container_name       = "tfstate"
+key                  = "portal-core-box.tfstate"
