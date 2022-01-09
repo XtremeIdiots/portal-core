@@ -6,7 +6,7 @@ resource "random_uuid" "events_api_server_generator_uuid" {
 
 resource "azuread_application" "events_api_application" {
   display_name     = local.events_api_application_name
-  owners           = [data.azuread_client_config.current.object_id]
+  owners           = [local.application_owner_object_id, data.azuread_client_config.current.object_id]
   sign_in_audience = "AzureADMyOrg"
   identifier_uris  = [local.events_api_application_audience]
 

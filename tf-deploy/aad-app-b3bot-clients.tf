@@ -4,7 +4,7 @@ resource "time_rotating" "b3bots_client_secret_rotation" {
 
 resource "azuread_application" "b3bots_client_application" {
   display_name = local.b3bots_client_application_name
-  owners       = [data.azuread_client_config.current.object_id]
+  owners       = [local.application_owner_object_id, data.azuread_client_config.current.object_id]
 
   required_resource_access {
     resource_app_id = azuread_application.events_api_application.application_id
