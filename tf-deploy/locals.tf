@@ -1,6 +1,7 @@
 locals {
   // Constants
   application_owner_object_id = "d5d3d514-44db-4256-8d58-aec6685c9eff"
+  b2c_tenant_id               = "9bbc5e96-6d7e-4622-8ca0-163f69c7c2b3"
 
   // Core Resource Group
   core_rg_name = format("rg-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
