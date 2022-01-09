@@ -2,6 +2,8 @@ trigger:
   branches: 
     include:
     - '*'
+    exclude:
+    - 'sandbox/*'
 
 variables:
   terraformWorkingDirectory: '$(Build.sourcesDirectory)/tf-deploy'
