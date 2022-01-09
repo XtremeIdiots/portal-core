@@ -82,6 +82,9 @@ stages:
 
 - stage: Deploy
 
+  variables:
+  - group: b2c-tenant
+
   jobs:
   - template: jobs/terraform-plan-and-apply.yml@ado-pipeline-templates
     parameters:
@@ -94,6 +97,7 @@ stages:
       backendAzureRmKey: '$(backendAzureRmKey)'
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
       varFile: '$(varFile)'
+      additionalCommandOptions: '-var="b2c_tenant_client_id=$(client-id)" -var="b2c_tenant_client_secret=$(client-secret)"'
 
   - template: jobs/deploy-function-app.yml@ado-pipeline-templates
     parameters:

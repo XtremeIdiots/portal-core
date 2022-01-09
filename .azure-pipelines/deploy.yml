@@ -94,6 +94,9 @@ stages:
 
 - stage: Deploy
 
+  variables:
+  - group: b2c-tenant
+
   jobs:
   - ${{ if eq(parameters.skipTerraformDeploy, false) }}:
     - template: jobs/terraform-validate-and-plan.yml@ado-pipeline-templates
@@ -107,6 +110,7 @@ stages:
         backendAzureRmKey: '$(backendAzureRmKey)'
         environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
         varFile: '$(varFile)'
+        additionalCommandOptions: '-var="b2c_tenant_client_id=$(client-id)" -var="b2c_tenant_client_secret=$(client-secret)"'
 
   - ${{ if eq(parameters.skipTerraformDeploy, false) }}:
     - job: ReviewAndApproveTerraform
@@ -132,6 +136,7 @@ stages:
         backendAzureRmKey: '$(backendAzureRmKey)'
         environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
         varFile: '$(varFile)'
+        additionalCommandOptions: '-var="b2c_tenant_client_id=$(client-id)" -var="b2c_tenant_client_secret=$(client-secret)"'
 
   - ${{ if eq(parameters.skipArtifactDeploy, false) }}:
     - template: jobs/deploy-function-app.yml@ado-pipeline-templates
