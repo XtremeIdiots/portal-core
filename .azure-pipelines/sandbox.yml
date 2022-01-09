@@ -80,60 +80,51 @@ stages:
     parameters:
       projectName: events-func
       jobName: DeployEventsFunctionApp
-      dependsOn: TerraformPlanAndApply
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 
   - template: jobs/deploy-function-app.yml@ado-pipeline-templates
     parameters:
       projectName: ingest-func
       jobName: DeployIngestFunctionApp
-      dependsOn: TerraformPlanAndApply
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 
   - template: jobs/deploy-function-app.yml@ado-pipeline-templates
     parameters:
       projectName: repository-func
       jobName: DeployRepositoryFunctionApp
-      dependsOn: TerraformPlanAndApply
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 
   - template: jobs/deploy-function-app.yml@ado-pipeline-templates
     parameters:
       projectName: bansync-func
       jobName: DeployBanSyncFunctionApp
-      dependsOn: TerraformPlanAndApply
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 
   - template: jobs/deploy-web-app.yml@ado-pipeline-templates
     parameters: 
       projectName: 'mgmt-web'
       jobName: 'DeployMgmtWebApp'
-      dependsOn: TerraformPlanAndApply
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 
   - template: jobs/deploy-web-app.yml@ado-pipeline-templates
     parameters: 
       projectName: 'admin-web'
       jobName: 'DeployAdminWebApp'
-      dependsOn: TerraformPlanAndApply
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 
   - template: jobs/deploy-web-app.yml@ado-pipeline-templates
     parameters: 
       projectName: 'public-web'
       jobName: 'DeployPublicWebApp'
-      dependsOn: TerraformPlanAndApply
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 
   - template: jobs/deploy-web-app.yml@ado-pipeline-templates
     parameters: 
       projectName: 'repository-webapi'
       jobName: 'DeployRepositoryWebApi'
-      dependsOn: TerraformPlanAndApply
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
 
   - template: jobs/deploy-sql-database.yml@ado-pipeline-templates
     parameters:
       jobName: DeploySqlDatabase
-      dependsOn: TerraformPlanAndApply
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
