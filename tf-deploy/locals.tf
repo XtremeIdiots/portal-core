@@ -1,7 +1,8 @@
 locals {
   // Constants
-  application_owner_object_id = "d5d3d514-44db-4256-8d58-aec6685c9eff"
-  b2c_tenant_id               = "9bbc5e96-6d7e-4622-8ca0-163f69c7c2b3"
+  application_owner_object_id     = "d5d3d514-44db-4256-8d58-aec6685c9eff"
+  b2c_application_owner_object_id = "c87e7e37-8c54-4d70-9200-22754aea8669"
+  b2c_tenant_id                   = "9bbc5e96-6d7e-4622-8ca0-163f69c7c2b3"
 
   // Core Resource Group
   core_rg_name = format("rg-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
@@ -62,6 +63,9 @@ locals {
 
   // AAD Groups
   mgmt_web_app_users_group = format("sg-web-%s-mgmt-%s-users", var.workload, var.env)
+
+  // Admin Web Application
+  admin_web_application_name = format("%s-admin-web-%s", var.workload, var.env)
 
   // Repository API Application
   repository_api_application_name     = format("%s-repository-api-%s", var.workload, var.env)
