@@ -63,7 +63,8 @@ locals {
 
   // AAD Groups
   mgmt_web_app_users_group = format("sg-web-%s-mgmt-%s-users", var.workload, var.env)
-  sql_server_admins_group = format("sg-%s-users", local.sql_server_name)
+  sql_server_admins_group = format("sg-%s-admins", local.sql_server_name)
+  sql_portal_database_writers_group = format("sg-%s-%s-writers", local.sql_server_name, local.sql_database_name)
 
   // Admin Web Application
   admin_web_application_name = format("%s-admin-web-%s", var.workload, var.env)

@@ -9,3 +9,9 @@ resource "azuread_group" "sql_server_admins" {
   owners           = [local.application_owner_object_id, data.azuread_client_config.current.object_id]
   security_enabled = true
 }
+
+resource "azuread_group" "sql_portal_database_writers_group" {
+  display_name     = local.sql_portal_database_writers_group
+  owners           = [local.application_owner_object_id, data.azuread_client_config.current.object_id]
+  security_enabled = true
+}
