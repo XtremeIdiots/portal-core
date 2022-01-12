@@ -73,7 +73,7 @@
     <PostDeploy Include="Scripts\Script.PostDeploymentAccounts.sql" />
   </ItemGroup>
   <ItemGroup>
-    <SqlCmdVariable Include="Environment">
+    <SqlCmdVariable Include="env">
       <DefaultValue>dev</DefaultValue>
       <Value>$(SqlCmdVar__1)</Value>
     </SqlCmdVariable>
