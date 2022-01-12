@@ -13,6 +13,12 @@ resource "azurerm_mssql_server" "sql_server" {
   administrator_login          = local.sql_server_admin_username
   administrator_login_password = random_password.sql_server_admin_password.result
 
+  azuread_administrator {
+    login_username              = azuread_group.sql_server_admins.display_name
+    object_id                   = azuread_group.sql_server_admins.object_id
+    azuread_authentication_only = false // TODO: Set to true once managed identity permissions added
+  }
+
   public_network_access_enabled = true
 }
 
