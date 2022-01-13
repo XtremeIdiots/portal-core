@@ -160,4 +160,4 @@ stages:
       jobName: DeploySqlDatabase
       dependsOn: TerraformPlanAndApply
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
-      sqlCmdArgs: '-v env=box'
+      sqlCmdArgs: '/Variables:env=box'
