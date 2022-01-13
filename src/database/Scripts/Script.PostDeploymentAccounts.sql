@@ -10,9 +10,11 @@ Post-Deployment Script Template
 --------------------------------------------------------------------------------------
 */
 
+PRINT 'Environment Var: ' + $(env)
+
 IF (NOT EXISTS(SELECT * FROM sys.database_principals WHERE [name] = 'sg-sql-portal-' + $(env) + '-eastus-01-admins'))  
 BEGIN  
-	CREATE USER [sg-sql-portal-box-eastus-01-admins] FROM EXTERNAL PROVIDER
+	CREATE USER [sg-sql-portal-$(env)-eastus-01-admins] FROM EXTERNAL PROVIDER
 	ALTER ROLE [db_datawriter] ADD MEMBER [sg-sql-portal-$(env)-eastus-01-admins]
 	SELECT * FROM sys.database_principals WHERE [name] = 'sg-sql-portal-' + $(env) + '-eastus-01-admins'
 END  
