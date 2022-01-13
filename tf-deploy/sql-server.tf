@@ -19,6 +19,10 @@ resource "azurerm_mssql_server" "sql_server" {
     azuread_authentication_only = false // TODO: Set to true once managed identity permissions added
   }
 
+  identity {
+    type = "SystemAssigned"
+  }
+
   public_network_access_enabled = true
 }
 
