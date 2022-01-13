@@ -34,6 +34,8 @@ provider "azuread" {
 
 data "azurerm_client_config" "current" {}
 data "azuread_client_config" "current" {}
+data "azurerm_subscription" "current" {
+}
 
 resource "azurerm_resource_group" "core_resource_group" {
   name     = local.core_rg_name
