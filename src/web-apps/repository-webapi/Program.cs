@@ -8,7 +8,15 @@ builder.Services.AddLogging();
 builder.Services.AddApplicationInsightsTelemetry();
 
 builder.Services.AddDbContext<PortalDbContext>(options =>
-    options.UseSqlServer(builder.Configuration["sql-connection-string"]));
+    options.UseSqlServer(builder.Configuration["sql-connection-string"],
+        sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure(
+                3,
+                TimeSpan.FromSeconds(5),
+                null);
+        }
+    ));
 
 // Add services to the container.
 builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration);
