@@ -13,17 +13,18 @@ Post-Deployment Script Template
 PRINT 'Environment Var: $(env)'
 PRINT 'Environment Var: $(region)'
 PRINT 'Environment Var: $(instance)'
+PRINT 'Database Name (Predefined Var): $(DatabaseName)'
 
-IF (NOT EXISTS(SELECT * FROM sys.database_principals WHERE [name] = 'sg-sql-portal-$(env)-$(region)-$(instance)-readers'))  
+IF (NOT EXISTS(SELECT * FROM sys.database_principals WHERE [name] = 'sg-sql-portal-$(env)-$(region)-$(instance)-$(DatabaseName)-readers'))  
 BEGIN  
-	CREATE USER [sg-sql-portal-$(env)-$(region)-$(instance)-readers] FROM EXTERNAL PROVIDER
-	ALTER ROLE [db_datareader] ADD MEMBER [sg-sql-portal-$(env)-$(region)-$(instance)-readers]
-	SELECT * FROM sys.database_principals WHERE [name] = 'sg-sql-portal-$(env)-$(region)-$(instance)-readers'
+	CREATE USER [sg-sql-portal-$(env)-$(region)-$(instance)-$(DatabaseName)-readers] FROM EXTERNAL PROVIDER
+	ALTER ROLE [db_datareader] ADD MEMBER [sg-sql-portal-$(env)-$(region)-$(instance)-$(DatabaseName)-readers]
+	SELECT * FROM sys.database_principals WHERE [name] = 'sg-sql-portal-$(env)-$(region)-$(instance)-$(DatabaseName)-readers'
 END  
 
-IF (NOT EXISTS(SELECT * FROM sys.database_principals WHERE [name] = 'sg-sql-portal-$(env)-$(region)-$(instance)-writers'))  
+IF (NOT EXISTS(SELECT * FROM sys.database_principals WHERE [name] = 'sg-sql-portal-$(env)-$(region)-$(instance)-$(DatabaseName)-writers'))  
 BEGIN  
-	CREATE USER [sg-sql-portal-$(env)-$(region)-$(instance)-writers] FROM EXTERNAL PROVIDER
-	ALTER ROLE [db_datawriter] ADD MEMBER [sg-sql-portal-$(env)-$(region)-$(instance)-writers]
-	SELECT * FROM sys.database_principals WHERE [name] = 'sg-sql-portal-$(env)-$(region)-$(instance)-writers'
+	CREATE USER [sg-sql-portal-$(env)-$(region)-$(instance)-$(DatabaseName)-writers] FROM EXTERNAL PROVIDER
+	ALTER ROLE [db_datawriter] ADD MEMBER [sg-sql-portal-$(env)-$(region)-$(instance)-$(DatabaseName)-writers]
+	SELECT * FROM sys.database_principals WHERE [name] = 'sg-sql-portal-$(env)-$(region)-$(instance)-$(DatabaseName)-writers'
 END  
