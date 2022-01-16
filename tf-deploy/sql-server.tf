@@ -16,7 +16,7 @@ resource "azurerm_mssql_server" "sql_server" {
   azuread_administrator {
     login_username              = azuread_group.sql_server_admins.display_name
     object_id                   = azuread_group.sql_server_admins.object_id
-    azuread_authentication_only = false // TODO: Set to true once managed identity permissions added
+    azuread_authentication_only = true
   }
 
   identity {
@@ -30,7 +30,7 @@ resource "azurerm_mssql_firewall_rule" "azure_services_firewall_rule" {
   name             = "AllowAzureServices"
   server_id        = azurerm_mssql_server.sql_server.id
   start_ip_address = "0.0.0.0"
-  end_ip_address = "0.0.0.0"
+  end_ip_address   = "0.0.0.0"
 }
 
 resource "azurerm_mssql_firewall_rule" "dedicated_agent_pool_firewall_rule" {
