@@ -52,11 +52,12 @@ locals {
   service_bus_connection_string_secret = format("%s-connection-string", local.service_bus_name)
 
   // SQL Server
-  sql_server_name                  = format("sql-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
-  sql_server_admin_username        = format("%s-admin", local.sql_server_name)
-  sql_server_connstring_secret     = format("%s-connection-string", local.sql_server_name)
-  sql_server_admin_username_secret = format("%s-username", local.sql_server_name)
-  sql_server_admin_password_secret = format("%s-password", local.sql_server_name)
+  sql_server_name                       = format("sql-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
+  sql_server_admin_username             = format("%s-admin", local.sql_server_name)
+  sql_server_connstring_sqlauth_secret  = format("%s-sqlauth-connection-string", local.sql_server_name)
+  sql_server_connstring_identity_secret = format("%s-identity-connection-string", local.sql_server_name)
+  sql_server_admin_username_secret      = format("%s-username", local.sql_server_name)
+  sql_server_admin_password_secret      = format("%s-password", local.sql_server_name)
 
   // SQL Database
   sql_database_name = "portal"
