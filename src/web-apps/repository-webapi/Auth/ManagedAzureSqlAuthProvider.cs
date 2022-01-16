@@ -8,7 +8,7 @@ public class ManagedAzureSqlAuthProvider : SqlAuthenticationProvider
 {
     private static readonly string[] AzureSqlScopes =
     {
-        "https://database.windows.net//.default"
+        "https://database.windows.net/.default"
     };
 
     private static readonly TokenCredential Credential = new DefaultAzureCredential();
@@ -22,6 +22,6 @@ public class ManagedAzureSqlAuthProvider : SqlAuthenticationProvider
 
     public override bool IsSupported(SqlAuthenticationMethod authenticationMethod)
     {
-        return authenticationMethod.Equals(SqlAuthenticationMethod.ActiveDirectoryDeviceCodeFlow);
+        return authenticationMethod.Equals(SqlAuthenticationMethod.ActiveDirectoryMSI);
     }
 }
