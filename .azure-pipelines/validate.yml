@@ -2,6 +2,8 @@ trigger:
   branches: 
     include:
     - '*'
+    exclude:
+    - 'sandbox/*'
 
 variables:
   terraformWorkingDirectory: '$(Build.sourcesDirectory)/tf-deploy'
@@ -26,6 +28,9 @@ resources:
 stages:
 - stage: Validate
 
+  variables:
+  - group: b2c-tenant
+
   jobs:
   - template: jobs/terraform-validate-and-plan.yml@ado-pipeline-templates
     parameters:
@@ -37,6 +42,7 @@ stages:
       backendAzureRmKey: '$(backendAzureRmKey)'
       environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
       varFile: '$(varFile)'
+      additionalCommandOptions: '-var="b2c_tenant_client_id=$(client-id)" -var="b2c_tenant_client_secret=$(client-secret)"'
       
   - template: jobs/build-function-app.yml@ado-pipeline-templates
     parameters: 

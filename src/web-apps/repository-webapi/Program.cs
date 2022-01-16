@@ -1,6 +1,8 @@
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using XtremeIdiots.Portal.DataLib;
+using XtremeIdiots.Portal.RepositoryWebApi.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +10,19 @@ builder.Services.AddLogging();
 builder.Services.AddApplicationInsightsTelemetry();
 
 builder.Services.AddDbContext<PortalDbContext>(options =>
-    options.UseSqlServer(builder.Configuration["sql-connection-string"]));
+{
+    SqlAuthenticationProvider.SetProvider(
+        SqlAuthenticationMethod.ActiveDirectoryDeviceCodeFlow,
+        new ManagedAzureSqlAuthProvider());
+
+    options.UseSqlServer(builder.Configuration["sql-connection-string"], sqlOptions =>
+    {
+        sqlOptions.EnableRetryOnFailure(
+            3,
+            TimeSpan.FromSeconds(5),
+            null);
+    });
+});
 
 // Add services to the container.
 builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration);

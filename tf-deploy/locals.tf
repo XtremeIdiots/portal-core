@@ -1,4 +1,9 @@
 locals {
+  // Constants
+  application_owner_object_id     = "d5d3d514-44db-4256-8d58-aec6685c9eff"
+  b2c_application_owner_object_id = "c87e7e37-8c54-4d70-9200-22754aea8669"
+  b2c_tenant_id                   = "9bbc5e96-6d7e-4622-8ca0-163f69c7c2b3"
+
   // Core Resource Group
   core_rg_name = format("rg-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
 
@@ -47,17 +52,24 @@ locals {
   service_bus_connection_string_secret = format("%s-connection-string", local.service_bus_name)
 
   // SQL Server
-  sql_server_name                  = format("sql-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
-  sql_server_admin_username        = format("%s-admin", local.sql_server_name)
-  sql_server_connstring_secret     = format("%s-connection-string", local.sql_server_name)
-  sql_server_admin_username_secret = format("%s-username", local.sql_server_name)
-  sql_server_admin_password_secret = format("%s-password", local.sql_server_name)
+  sql_server_name                       = format("sql-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
+  sql_server_admin_username             = format("%s-admin", local.sql_server_name)
+  sql_server_connstring_sqlauth_secret  = format("%s-sqlauth-connection-string", local.sql_server_name)
+  sql_server_connstring_identity_secret = format("%s-identity-connection-string", local.sql_server_name)
+  sql_server_admin_username_secret      = format("%s-username", local.sql_server_name)
+  sql_server_admin_password_secret      = format("%s-password", local.sql_server_name)
 
   // SQL Database
   sql_database_name = "portal"
 
   // AAD Groups
-  mgmt_web_app_users_group = format("sg-web-%s-mgmt-%s-users", var.workload, var.env)
+  mgmt_web_app_users_group          = format("sg-web-%s-mgmt-%s-users", var.workload, var.env)
+  sql_server_admins_group           = format("sg-%s-admins", local.sql_server_name)
+  sql_portal_database_readers_group = format("sg-%s-%s-readers", local.sql_server_name, local.sql_database_name)
+  sql_portal_database_writers_group = format("sg-%s-%s-writers", local.sql_server_name, local.sql_database_name)
+
+  // Admin Web Application
+  admin_web_application_name = format("%s-admin-web-%s", var.workload, var.env)
 
   // Repository API Application
   repository_api_application_name     = format("%s-repository-api-%s", var.workload, var.env)

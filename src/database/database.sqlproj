@@ -57,14 +57,33 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
+    <Folder Include="Scripts" />
+    <Folder Include="Tables" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="Players.sql" />
-    <Build Include="GameServers.sql" />
-    <Build Include="GameServerEvents.sql" />
-    <Build Include="ChatMessages.sql" />
+    <Build Include="Tables\ChatMessages.sql" />
+    <Build Include="Tables\GameServerEvents.sql" />
+    <Build Include="Tables\GameServers.sql" />
+    <Build Include="Tables\Players.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="database.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Scripts\Script.PostDeploymentAccounts.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <SqlCmdVariable Include="env">
+      <DefaultValue>dev</DefaultValue>
+      <Value>$(SqlCmdVar__1)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="instance">
+      <DefaultValue>01</DefaultValue>
+      <Value>$(SqlCmdVar__3)</Value>
+    </SqlCmdVariable>
+    <SqlCmdVariable Include="region">
+      <DefaultValue>eastus</DefaultValue>
+      <Value>$(SqlCmdVar__2)</Value>
+    </SqlCmdVariable>
   </ItemGroup>
 </Project>
