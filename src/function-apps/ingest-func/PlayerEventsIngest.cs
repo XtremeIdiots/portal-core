@@ -26,7 +26,8 @@ public class PlayerEventsIngest
 
     [FunctionName("ProcessOnPlayerConnected")]
     public async Task ProcessOnPlayerConnected(
-        [ServiceBusTrigger("player_connected_queue", Connection = "service-bus-connection-string")] string myQueueItem,
+        [ServiceBusTrigger("player_connected_queue", Connection = "service-bus-connection-string")]
+        string myQueueItem,
         ILogger log)
     {
         OnPlayerConnected playerConnectedEvent;
@@ -71,7 +72,8 @@ public class PlayerEventsIngest
 
     [FunctionName("ProcessOnChatMessage")]
     public async Task ProcessOnChatMessage(
-        [ServiceBusTrigger("chat_message_queue", Connection = "service-bus-connection-string")] string myQueueItem,
+        [ServiceBusTrigger("chat_message_queue", Connection = "service-bus-connection-string")]
+        string myQueueItem,
         ILogger log)
     {
         OnChatMessage onChatMessage;
