@@ -14,8 +14,8 @@ builder.Services.AddDbContext<PortalDbContext>(options =>
     SqlAuthenticationProvider.SetProvider(
         SqlAuthenticationMethod.ActiveDirectoryDeviceCodeFlow,
         new ManagedAzureSqlAuthProvider());
-    var sqlConnection = new SqlConnection(builder.Configuration.GetConnectionString("sql-connection-string"));
-    options.UseSqlServer(sqlConnection, sqlOptions =>
+
+    options.UseSqlServer(builder.Configuration["sql-connection-string"], sqlOptions =>
     {
         sqlOptions.EnableRetryOnFailure(
             3,
