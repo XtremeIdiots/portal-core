@@ -26,6 +26,13 @@ resource "azurerm_mssql_server" "sql_server" {
   public_network_access_enabled = true
 }
 
+resource "azurerm_mssql_firewall_rule" "azure_services_firewall_rule" {
+  name             = "AllowAzureServices"
+  server_id        = azurerm_mssql_server.sql_server.id
+  start_ip_address = "0.0.0.0"
+  end_ip_address = "0.0.0.0"
+}
+
 resource "azurerm_mssql_firewall_rule" "dedicated_agent_pool_firewall_rule" {
   name             = "DedicatedAgentPool"
   server_id        = azurerm_mssql_server.sql_server.id
