@@ -17,10 +17,10 @@ builder.Services.AddDbContext<PortalDbContext>(options =>
 
     options.UseSqlServer(builder.Configuration["sql-connection-string"], sqlOptions =>
     {
-        //sqlOptions.EnableRetryOnFailure(
-        //    3,
-        //    TimeSpan.FromSeconds(5),
-        //    null);
+        sqlOptions.EnableRetryOnFailure(
+            3,
+            TimeSpan.FromSeconds(5),
+            null);
     });
 });
 
