@@ -11,9 +11,9 @@ builder.Services.AddApplicationInsightsTelemetry();
 
 builder.Services.AddDbContext<PortalDbContext>(options =>
 {
-    //SqlAuthenticationProvider.SetProvider(
-    //    SqlAuthenticationMethod.ActiveDirectoryDeviceCodeFlow,
-    //    new ManagedAzureSqlAuthProvider());
+    SqlAuthenticationProvider.SetProvider(
+        SqlAuthenticationMethod.ActiveDirectoryDeviceCodeFlow,
+        new ManagedAzureSqlAuthProvider());
 
     options.UseSqlServer(builder.Configuration["sql-connection-string"], sqlOptions =>
     {

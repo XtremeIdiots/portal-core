@@ -50,7 +50,7 @@ resource "azurerm_key_vault_secret" "sql_server_sqlauth_connection_string" {
 
 resource "azurerm_key_vault_secret" "sql_server_identity_connection_login" {
   name         = local.sql_server_connstring_identity_secret
-  value        = format("Server=tcp:%s,1433;Initial Catalog=%s;Persist Security Info=False;Authentication=Active Directory Managed Identity;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;", azurerm_mssql_server.sql_server.fully_qualified_domain_name, local.sql_database_name)
+  value        = format("Server=tcp:%s,1433;Initial Catalog=%s;Persist Security Info=False;Authentication=Active Directory Device Code Flow;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;", azurerm_mssql_server.sql_server.fully_qualified_domain_name, local.sql_database_name)
   key_vault_id = azurerm_key_vault.key_vault.id
 
   depends_on = [
