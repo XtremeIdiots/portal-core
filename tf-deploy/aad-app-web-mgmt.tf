@@ -1,3 +1,7 @@
+resource "time_rotating" "mgmt_web_app_secret_rotation" {
+  rotation_days = 365
+}
+
 resource "random_uuid" "mgmt_web_app_application_user_uuid" {
 }
 
@@ -40,4 +44,13 @@ resource "azuread_app_role_assignment" "mgmt_web_app_application_user_role_assig
   app_role_id         = random_uuid.mgmt_web_app_application_user_uuid.result
   principal_object_id = azuread_group.mgmt_web_app_users_group.object_id
   resource_object_id  = azuread_service_principal.mgmt_web_app_local_service_principal.object_id
+}
+
+resource "azuread_application_password" "mgmt_web_app_application_password" {
+  application_object_id = azuread_application.mgmt_web_app_application.object_id
+  display_name          = "Mgmt Web App"
+
+  rotate_when_changed = {
+    rotation = time_rotating.mgmt_web_app_secret_rotation.id
+  }
 }

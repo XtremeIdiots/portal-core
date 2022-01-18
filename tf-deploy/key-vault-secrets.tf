@@ -128,3 +128,14 @@ resource "azurerm_key_vault_secret" "b3bot_client_application_secret" {
     azurerm_key_vault_access_policy.principal_key_vault_access_policy
   ]
 }
+
+resource "azurerm_key_vault_secret" "mgmt_web_app_application_secret" {
+  name            = local.mgmt_web_app_application_secret_name
+  value           = azuread_application_password.mgmt_web_app_application_password.value
+  key_vault_id    = azurerm_key_vault.key_vault.id
+  expiration_date = azuread_application_password.mgmt_web_app_application_password.end_date
+
+  depends_on = [
+    azurerm_key_vault_access_policy.principal_key_vault_access_policy
+  ]
+}

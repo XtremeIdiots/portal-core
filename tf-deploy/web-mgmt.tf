@@ -23,5 +23,6 @@ resource "azurerm_app_service" "mgmt_web_app" {
     "apim-subscription-key"          = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", local.key_vault_name, local.apim_mgmt_web_app_subscription_secret_name)
     "AzureAd:TenantId"               = data.azurerm_client_config.current.tenant_id
     "AzureAd:ClientId"               = azuread_application.mgmt_web_app_application.application_id
+    "AzureAd:ClientSecret"           = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", local.key_vault_name, local.mgmt_web_app_application_secret_name)
   }
 }
