@@ -18,10 +18,10 @@ builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
             options.Cookie.IsEssential = true;
         }
     )
-    .EnableTokenAcquisitionToCallDownstreamApi(new[] {builder.Configuration["web-api-repository-scope"]})
+    .EnableTokenAcquisitionToCallDownstreamApi(new[] { builder.Configuration["web-api-repository-scope"] })
     .AddDownstreamWebApi("portal-repository-api-box", options =>
     {
-        options.BaseUrl = builder.Configuration["web-api-repository-url"];
+        options.BaseUrl = builder.Configuration["apim-base-url"];
         options.Scopes = builder.Configuration["web-api-repository-scope"];
     })
     .AddInMemoryTokenCaches();

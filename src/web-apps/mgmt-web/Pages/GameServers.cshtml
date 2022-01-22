@@ -1,4 +1,27 @@
 ﻿@page
 @model XtremeIdiots.Portal.MgmtWeb.Pages.GameServersModel
 @{
+    ViewData["Title"] = "Game Servers";
 }
+
+<h1>Game Servers</h1>
+
+<hr/>
+
+<table class="table-bordered">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Title</th>
+        <th>IP:Port</th>
+    </tr>
+    </thead>
+    @foreach (var gameServer in Model.GameServers)
+    {
+        <tr>
+            <td>@gameServer.Id</td>
+            <td>@gameServer.Title</td>
+            <td>@gameServer.IpAddress:@gameServer.QueryPort</td>
+        </tr>
+    }
+</table>
