@@ -7,7 +7,7 @@ namespace XtremeIdiots.Portal.RepositoryWebApi.Controllers
 {
     [ApiController]
     [Authorize(Roles = "ServiceAccount,MgmtWebAdminUser")]
-    [Route("api/GameServer")]
+    [Route("api/GameServers")]
     public class GameServersController : Controller
     {
         public GameServersController(PortalDbContext context)
