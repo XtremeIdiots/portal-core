@@ -8,7 +8,7 @@ using XtremeIdiots.Portal.DataLib;
 namespace XtremeIdiots.Portal.RepositoryWebApi.Controllers;
 
 [ApiController]
-[Authorize(Roles = "ServiceAccount")]
+[Authorize(Roles = "ServiceAccount,MgmtWebAdminUser")]
 [Route("api/GameServer")]
 public class GameServerController : ControllerBase
 {
