@@ -1,10 +1,7 @@
-resource "random_uuid" "repository_api_all_access_uuid" {
-}
-
-resource "random_uuid" "repository_api_games_admin_uuid" {
-}
-
 resource "random_uuid" "repository_api_service_account_uuid" {
+}
+
+resource "random_uuid" "repository_api_mgmtwebadminuser_uuid" {
 }
 
 resource "azuread_application" "repository_api_application" {
@@ -13,26 +10,6 @@ resource "azuread_application" "repository_api_application" {
   sign_in_audience = "AzureADMyOrg"
   identifier_uris  = [local.repository_api_application_audience]
 
-  api {
-    oauth2_permission_scope {
-      admin_consent_description  = "AllAccess"
-      admin_consent_display_name = "AllAccess"
-      enabled                    = true
-      id                         = random_uuid.repository_api_all_access_uuid.result
-      type                       = "Admin"
-      value                      = "AllAccess"
-    }
-
-    oauth2_permission_scope {
-      admin_consent_description  = "GamesAdmin"
-      admin_consent_display_name = "GamesAdmin"
-      enabled                    = true
-      id                         = random_uuid.repository_api_games_admin_uuid.result
-      type                       = "Admin"
-      value                      = "GamesAdmin"
-    }
-  }
-
   app_role {
     allowed_member_types = ["Application"]
     description          = "Service Accounts can access/manage all data aspects"
@@ -40,6 +17,15 @@ resource "azuread_application" "repository_api_application" {
     enabled              = true
     id                   = random_uuid.repository_api_service_account_uuid.result
     value                = "ServiceAccount"
+  }
+
+  app_role {
+    allowed_member_types = ["User"]
+    display_name         = "MgmtWebAdminUser"
+    description          = "Mgmt Web Admins can access/manage all data aspects"
+    enabled              = true
+    id                   = random_uuid.repository_api_mgmtwebadminuser_uuid.result
+    value                = "MgmtWebAdminUser"
   }
 }
 
@@ -51,5 +37,11 @@ resource "azuread_service_principal" "repository_api_application_service_princip
 resource "azuread_app_role_assignment" "repository_api_ingest_function_app_service_account_role_assingment" {
   app_role_id         = random_uuid.repository_api_service_account_uuid.result
   principal_object_id = azurerm_function_app.ingest_function_app.identity[0].principal_id
+  resource_object_id  = azuread_service_principal.repository_api_application_service_principal.object_id
+}
+
+resource "azuread_app_role_assignment" "repository_api_mgmtwebadminuser_user_role_assignment" {
+  app_role_id         = random_uuid.repository_api_mgmtwebadminuser_uuid.result
+  principal_object_id = azuread_group.mgmt_web_app_users_group.object_id
   resource_object_id  = azuread_service_principal.repository_api_application_service_principal.object_id
 }

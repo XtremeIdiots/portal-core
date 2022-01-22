@@ -24,5 +24,7 @@ resource "azurerm_app_service" "mgmt_web_app" {
     "AzureAd:TenantId"               = data.azurerm_client_config.current.tenant_id
     "AzureAd:ClientId"               = azuread_application.mgmt_web_app_application.application_id
     "AzureAd:ClientSecret"           = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", local.key_vault_name, local.mgmt_web_app_application_secret_name)
+    "web-api-repository-url"         = format("https://%s", azurerm_app_service.repository_web_api.default_site_hostname)
+    "web-api-repository-scope"       = format("%s/.default", local.repository_api_application_audience)
   }
 }

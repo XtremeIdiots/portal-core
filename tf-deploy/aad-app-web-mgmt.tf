@@ -28,7 +28,7 @@ resource "azuread_application" "mgmt_web_app_application" {
   app_role {
     allowed_member_types = ["User"]
     display_name         = "ApplicationUser"
-    description          = "Application users can access the management portal"
+    description          = "Application users can access the management website and perform all actions"
     enabled              = true
     id                   = random_uuid.mgmt_web_app_application_user_uuid.result
     value                = "ApplicationUser"

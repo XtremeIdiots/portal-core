@@ -24,6 +24,7 @@
             <required-claims>
                 <claim name="roles" match="any">
                     <value>ServiceAccount</value>
+                    <value>MgmtWebAdminUser</value>
                 </claim>
             </required-claims>
         </validate-jwt>
