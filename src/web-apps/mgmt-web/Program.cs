@@ -9,13 +9,24 @@ builder.Services.AddApplicationInsightsTelemetry();
 
 // Add services to the container.
 builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
+    .AddMicrosoftIdentityWebApp(
+        options => { builder.Configuration.Bind("AzureAd", options); },
+        options =>
+        {
+            options.Cookie.SameSite = SameSiteMode.None;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            options.Cookie.IsEssential = true;
+        }
+    )
+    .EnableTokenAcquisitionToCallDownstreamApi(new[] {builder.Configuration["web-api-repository-scope"]})
+    .AddDownstreamWebApi("portal-repository-api-box", options =>
+    {
+        options.BaseUrl = builder.Configuration["web-api-repository-url"];
+        options.Scopes = builder.Configuration["web-api-repository-scope"];
+    })
+    .AddInMemoryTokenCaches();
 
-builder.Services.AddAuthorization(options =>
-{
-    // By default, all incoming requests will be authorized according to the default policy.
-    options.FallbackPolicy = options.DefaultPolicy;
-});
+builder.Services.AddAuthorization(options => { options.FallbackPolicy = options.DefaultPolicy; });
 
 builder.Services.AddRazorPages(options =>
 {

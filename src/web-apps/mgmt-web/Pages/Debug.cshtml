@@ -1,0 +1,40 @@
+﻿@page
+@using System.Security.Claims
+@model XtremeIdiots.Portal.MgmtWeb.Pages.DebugModel
+@{
+    ViewData["Title"] = "Debug";
+}
+
+<h1>Debug Info</h1>
+
+<hr/>
+
+<h2>API Access Token</h2>
+
+<p>
+    @Model.AccessToken
+</p>
+
+<hr/>
+
+<h2>Claims</h2>
+
+@{
+    var claims = HttpContext.User.Identities.First().Claims.ToList();
+}
+
+<table class="table-bordered">
+    <thead>
+    <tr>
+        <th>Type</th>
+        <th>Value</th>
+    </tr>
+    </thead>
+    @foreach (var claim in claims)
+    {
+        <tr>
+            <td>@claim.Type</td>
+            <td>@claim.Value</td>
+        </tr>
+    }
+</table>
