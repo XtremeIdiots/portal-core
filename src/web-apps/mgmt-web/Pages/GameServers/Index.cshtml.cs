@@ -5,16 +5,16 @@ using Newtonsoft.Json;
 using RestSharp;
 using XtremeIdiots.Portal.DataLib;
 
-namespace XtremeIdiots.Portal.MgmtWeb.Pages;
+namespace XtremeIdiots.Portal.MgmtWeb.Pages.GameServers;
 
 [Authorize(Roles = "ApplicationUser")]
 [AuthorizeForScopes(ScopeKeySection = "web-api-repository-scope")]
-public class GameServersModel : PageModel
+public class IndexModel : PageModel
 {
     private readonly IConfiguration _configuration;
     private readonly ITokenAcquisition _tokenAcquisition;
 
-    public GameServersModel(IConfiguration configuration, ITokenAcquisition tokenAcquisition)
+    public IndexModel(IConfiguration configuration, ITokenAcquisition tokenAcquisition)
     {
         _configuration = configuration;
         _tokenAcquisition = tokenAcquisition;

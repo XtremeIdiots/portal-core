@@ -22,7 +22,7 @@ public class DebugModel : PageModel
 
     public async Task OnGet()
     {
-        string[] scopes = {_configuration["web-api-repository-scope"] };
+        string[] scopes = {_configuration["web-api-repository-scope"]};
         var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(scopes);
 
         // Use the access token to call a protected web API.

@@ -18,7 +18,7 @@ builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
             options.Cookie.IsEssential = true;
         }
     )
-    .EnableTokenAcquisitionToCallDownstreamApi(new[] { builder.Configuration["web-api-repository-scope"] })
+    .EnableTokenAcquisitionToCallDownstreamApi(new[] {builder.Configuration["web-api-repository-scope"]})
     .AddDownstreamWebApi("portal-repository-api-box", options =>
     {
         options.BaseUrl = builder.Configuration["apim-base-url"];
@@ -29,10 +29,11 @@ builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization(options => { options.FallbackPolicy = options.DefaultPolicy; });
 
 builder.Services.AddRazorPages(options =>
-{
-    options.Conventions.AllowAnonymousToPage("/Index");
-    options.Conventions.AllowAnonymousToPage("/Privacy");
-}).AddMicrosoftIdentityUI();
+    {
+        options.Conventions.AllowAnonymousToPage("/Index");
+        options.Conventions.AllowAnonymousToPage("/Privacy");
+    }).AddMicrosoftIdentityUI()
+    .AddRazorRuntimeCompilation();
 
 var app = builder.Build();
 
