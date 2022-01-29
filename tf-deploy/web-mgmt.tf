@@ -4,6 +4,8 @@ resource "azurerm_app_service" "mgmt_web_app" {
   resource_group_name = azurerm_resource_group.core_resource_group.name
   app_service_plan_id = azurerm_app_service_plan.web_app_service_plan.id
 
+  https_only = true
+
   identity {
     type = "SystemAssigned"
   }

@@ -16,7 +16,8 @@ resource "azurerm_function_app" "bansync_function_app" {
   storage_account_name       = azurerm_storage_account.bansync_function_app_storage_account.name
   storage_account_access_key = azurerm_storage_account.bansync_function_app_storage_account.primary_access_key
 
-  version = "~4"
+  version    = "~4"
+  https_only = true
 
   identity {
     type = "SystemAssigned"
