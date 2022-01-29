@@ -6,7 +6,7 @@ using XtremeIdiots.Portal.DataLib;
 namespace XtremeIdiots.Portal.RepositoryWebApi.Controllers;
 
 [ApiController]
-[Authorize(Roles = "ServiceAccount")]
+[Authorize(Roles = "ServiceAccount,MgmtWebAdminUser")]
 [Route("api/ChatMessage")]
 public class ChatMessageController : ControllerBase
 {

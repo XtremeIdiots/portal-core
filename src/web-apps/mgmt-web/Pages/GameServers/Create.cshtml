@@ -1,0 +1,53 @@
+﻿@page
+@using XtremeIdiots.Portal.MgmtWeb.Pages.GameServers
+@model CreateModel
+@{
+    ViewData["Title"] = "Create Game Server";
+}
+
+<h1>Create Game Server</h1>
+<hr/>
+
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="GameServerViewModel.Id" class="control-label"></label>
+                <input asp-for="GameServerViewModel.Id" class="form-control"/>
+                <span asp-validation-for="GameServerViewModel.Id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GameServerViewModel.Title" class="control-label"></label>
+                <input asp-for="GameServerViewModel.Title" class="form-control"/>
+                <span asp-validation-for="GameServerViewModel.Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GameServerViewModel.GameType" class="control-label"></label>
+                <input asp-for="GameServerViewModel.GameType" class="form-control"/>
+                <span asp-validation-for="GameServerViewModel.GameType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GameServerViewModel.IpAddress" class="control-label"></label>
+                <input asp-for="GameServerViewModel.IpAddress" class="form-control"/>
+                <span asp-validation-for="GameServerViewModel.IpAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GameServerViewModel.QueryPort" class="control-label"></label>
+                <input asp-for="GameServerViewModel.QueryPort" class="form-control"/>
+                <span asp-validation-for="GameServerViewModel.QueryPort" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

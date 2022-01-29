@@ -73,6 +73,18 @@
                 }
             }
         },
+        "/GameServers": {
+            "get": {
+                "summary": "GetGameServers",
+                "description": "GetGameServers",
+                "operationId": "GetGameServers",
+                "responses": {
+                    "200": {
+                        "description": "null"
+                    }
+                }
+            }
+        },
         "/Player": {
             "get": {
                 "summary": "GetPlayer",

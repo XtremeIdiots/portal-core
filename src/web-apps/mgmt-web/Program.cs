@@ -21,7 +21,7 @@ builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     .EnableTokenAcquisitionToCallDownstreamApi(new[] {builder.Configuration["web-api-repository-scope"]})
     .AddDownstreamWebApi("portal-repository-api-box", options =>
     {
-        options.BaseUrl = builder.Configuration["web-api-repository-url"];
+        options.BaseUrl = builder.Configuration["apim-base-url"];
         options.Scopes = builder.Configuration["web-api-repository-scope"];
     })
     .AddInMemoryTokenCaches();
@@ -29,10 +29,11 @@ builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization(options => { options.FallbackPolicy = options.DefaultPolicy; });
 
 builder.Services.AddRazorPages(options =>
-{
-    options.Conventions.AllowAnonymousToPage("/Index");
-    options.Conventions.AllowAnonymousToPage("/Privacy");
-}).AddMicrosoftIdentityUI();
+    {
+        options.Conventions.AllowAnonymousToPage("/Index");
+        options.Conventions.AllowAnonymousToPage("/Privacy");
+    }).AddMicrosoftIdentityUI()
+    .AddRazorRuntimeCompilation();
 
 var app = builder.Build();
 

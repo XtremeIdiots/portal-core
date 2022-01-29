@@ -1,0 +1,40 @@
+trigger:
+  branches:
+    include:
+    - 'sandbox/*'
+
+pr: none
+
+variables:
+  terraformWorkingDirectory: '$(Build.sourcesDirectory)/tf-deploy'
+  backendServiceArm: 'arm-portal-core-sandbox'
+  backendAzureRmResourceGroupName: 'rg-portal_tfstate-box-eastus-01'
+  backendAzureRmStorageAccountName: 'saportaltfboxeastus01'
+  backendAzureRmContainerName: 'tfstate'
+  backendAzureRmKey: 'portal-core-box.tfstate'
+  environmentServiceNameAzureRM: 'arm-portal-core-sandbox'
+  varFile: './../tf-vars/sandbox.tfvars'
+
+pool: Dedicated
+
+resources:
+  repositories:
+    - repository: ado-pipeline-templates
+      type: github
+      name: XtremeIdiots/ado-pipeline-templates
+      endpoint: XtremeIdiots
+
+stages:
+- stage: Destroy
+
+  jobs:
+  - template: jobs/terraform-destroy.yml@ado-pipeline-templates
+    parameters:
+      workingDirectory: '$(terraformWorkingDirectory)'
+      backendServiceArm: '$(backendServiceArm)'
+      backendAzureRmResourceGroupName: '$(backendAzureRmResourceGroupName)'
+      backendAzureRmStorageAccountName: '$(backendAzureRmStorageAccountName)'
+      backendAzureRmContainerName: '$(backendAzureRmContainerName)'
+      backendAzureRmKey: '$(backendAzureRmKey)'
+      environmentServiceNameAzureRM: '$(environmentServiceNameAzureRM)'
+      varFile: '$(varFile)'

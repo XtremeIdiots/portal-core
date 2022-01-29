@@ -1,0 +1,38 @@
+﻿@page
+@using XtremeIdiots.Portal.MgmtWeb.Pages.GameServers
+@model IndexModel
+@{
+    ViewData["Title"] = "Game Servers";
+}
+
+<h1>Game Servers</h1>
+
+<hr/>
+
+<p>
+    <a asp-page="/GameServers/Create">Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Title</th>
+        <th>IP:Port</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.GameServers)
+    {
+        <tr>
+            <td>@item.Id</td>
+            <td>@item.Title</td>
+            <td>@item.IpAddress:@item.QueryPort</td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
