@@ -15,7 +15,7 @@ resource "azuread_application" "mgmt_web_app_application" {
     redirect_uris = var.env == "box" ? [
       format("https://%s.azurewebsites.net/signin-oidc", local.mgmt_web_app_name),
       "https://localhost:7222/signin-oidc"
-    ] : [
+      ] : [
       format("https://%s.azurewebsites.net/signin-oidc", local.mgmt_web_app_name)
     ]
 
@@ -32,6 +32,15 @@ resource "azuread_application" "mgmt_web_app_application" {
     enabled              = true
     id                   = random_uuid.mgmt_web_app_application_user_uuid.result
     value                = "ApplicationUser"
+  }
+
+  required_resource_access {
+    resource_app_id = azuread_application.repository_api_application.application_id
+
+    resource_access {
+      id   = random_uuid.repository_api_mgmtwebadminuser_uuid.result
+      type = "Role"
+    }
   }
 }
 
