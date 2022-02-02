@@ -20,7 +20,7 @@ resource "azuread_application" "repository_api_application" {
   }
 
   app_role {
-    allowed_member_types = ["User"]
+    allowed_member_types = ["User", "Application"]
     display_name         = "MgmtWebAdminUser"
     description          = "Mgmt Web Admins can access/manage all data aspects"
     enabled              = true
