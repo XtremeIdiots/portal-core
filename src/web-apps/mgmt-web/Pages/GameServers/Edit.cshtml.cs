@@ -1,4 +1,5 @@
 using System.Net;
+using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -34,13 +35,20 @@ public class EditModel : PageModel
         if (gameServer == null)
             return NotFound();
 
+        var rconPasswordSecret = await GetGameServerSecret(id, $"{id}-rconpassword");
+        var ftpUsernameSecret = await GetGameServerSecret(id, $"{id}-ftpusername");
+        var ftpPasswordSecret = await GetGameServerSecret(id, $"{id}-ftppassword");
+
         GameServerViewModel = new GameServerViewModel
         {
             Id = gameServer.Id,
             Title = gameServer.Title,
             GameType = gameServer.GameType,
             IpAddress = gameServer.IpAddress,
-            QueryPort = gameServer.QueryPort
+            QueryPort = gameServer.QueryPort,
+            RconPassword = rconPasswordSecret?.Value,
+            FtpUsername = ftpUsernameSecret?.Value,
+            FtpPassword = ftpPasswordSecret?.Value
         };
 
         return Page();
@@ -61,6 +69,9 @@ public class EditModel : PageModel
         gameServer.QueryPort = GameServerViewModel.QueryPort;
 
         await UpdateGameServer(gameServer);
+        await UpdateGameServerSecret(id, $"{id}-rconpassword", GameServerViewModel.RconPassword);
+        await UpdateGameServerSecret(id, $"{id}-ftpusername", GameServerViewModel.FtpUsername);
+        await UpdateGameServerSecret(id, $"{id}-ftppassword", GameServerViewModel.FtpPassword);
 
         return RedirectToPage("Index");
     }
@@ -99,6 +110,43 @@ public class EditModel : PageModel
         request.AddHeader("Ocp-Apim-Subscription-Key", _configuration["apim-subscription-key"]);
         request.AddHeader("Authorization", $"Bearer {accessToken}");
         request.AddJsonBody(gameServer);
+
+        await client.ExecuteAsync(request);
+    }
+
+    private async Task<KeyVaultSecret?> GetGameServerSecret(string id, string secret)
+    {
+        var client = new RestClient(_configuration["apim-base-url"]);
+        var request = new RestRequest($"repository/GameServer/{id}/secrets/{secret}");
+
+        string[] scopes = {_configuration["web-api-repository-scope"]};
+        var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(scopes);
+
+        request.AddHeader("Ocp-Apim-Subscription-Key", _configuration["apim-subscription-key"]);
+        request.AddHeader("Authorization", $"Bearer {accessToken}");
+
+        var response = await client.ExecuteAsync(request);
+
+        if (response.IsSuccessful)
+            return JsonConvert.DeserializeObject<KeyVaultSecret>(response.Content);
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+            return null;
+
+        throw new Exception($"Failed to execute 'repository/GameServer/{id}/secrets/{secret}'");
+    }
+
+    private async Task UpdateGameServerSecret(string id, string secret, string? secretValue)
+    {
+        var client = new RestClient(_configuration["apim-base-url"]);
+        var request = new RestRequest($"repository/GameServer/{id}/secrets/{secret}", Method.Patch);
+
+        string[] scopes = {_configuration["web-api-repository-scope"]};
+        var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(scopes);
+
+        request.AddHeader("Ocp-Apim-Subscription-Key", _configuration["apim-subscription-key"]);
+        request.AddHeader("Authorization", $"Bearer {accessToken}");
+        request.AddBody(secretValue);
 
         await client.ExecuteAsync(request);
     }

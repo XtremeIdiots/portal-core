@@ -7,7 +7,6 @@ namespace XtremeIdiots.Portal.RepositoryWebApi.Controllers
 {
     [ApiController]
     [Authorize(Roles = "ServiceAccount,MgmtWebAdminUser")]
-    [Route("api/GameServers")]
     public class GameServersController : Controller
     {
         public GameServersController(PortalDbContext context)
@@ -17,7 +16,8 @@ namespace XtremeIdiots.Portal.RepositoryWebApi.Controllers
 
         public PortalDbContext Context { get; }
 
-        [HttpGet(Name = "GameServers")]
+        [HttpGet]
+        [Route("api/GameServers")]
         public async Task<IActionResult> GetGameServer()
         {
             var gameServers = await Context.GameServers.ToListAsync();

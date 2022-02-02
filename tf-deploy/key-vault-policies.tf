@@ -1,7 +1,29 @@
 resource "azurerm_key_vault_access_policy" "principal_key_vault_access_policy" {
   key_vault_id = azurerm_key_vault.key_vault.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = var.override_principal_object_id == "" ? data.azurerm_client_config.current.object_id : var.override_principal_object_id 
+  object_id    = var.override_principal_object_id == "" ? data.azurerm_client_config.current.object_id : var.override_principal_object_id
+
+  certificate_permissions = [
+    "Create",
+    "Delete",
+    "Get",
+    "List",
+    "Update"
+  ]
+
+  secret_permissions = [
+    "Get",
+    "List",
+    "Set",
+    "Delete",
+    "Recover"
+  ]
+}
+
+resource "azurerm_key_vault_access_policy" "principal_game_servers_key_vault_access_policy" {
+  key_vault_id = azurerm_key_vault.game_servers_key_vault.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = var.override_principal_object_id == "" ? data.azurerm_client_config.current.object_id : var.override_principal_object_id
 
   certificate_permissions = [
     "Create",
@@ -107,5 +129,16 @@ resource "azurerm_key_vault_access_policy" "repository_webapi_key_vault_access_p
 
   secret_permissions = [
     "Get"
+  ]
+}
+
+resource "azurerm_key_vault_access_policy" "repository_webapi_game_servers_key_vault_access_policy" {
+  key_vault_id = azurerm_key_vault.game_servers_key_vault.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = azurerm_app_service.repository_web_api.identity[0].principal_id
+
+  secret_permissions = [
+    "Get",
+    "Set"
   ]
 }

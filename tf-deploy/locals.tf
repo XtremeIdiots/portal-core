@@ -46,7 +46,8 @@ locals {
   repository_web_api_name = format("webapi-%s-repository-%s-%s-%s", var.workload, var.env, var.region, var.instance)
 
   // Key Vault
-  key_vault_name = format("kv-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)
+  key_vault_name              = format("kv-%s-%s-%s-%s", var.workload, var.env, var.region, "01")
+  game_servers_key_vault_name = format("kv-%s-%s-%s-%s", var.workload, var.env, var.region, "02")
 
   // Service Bus
   service_bus_name                     = format("sb-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)

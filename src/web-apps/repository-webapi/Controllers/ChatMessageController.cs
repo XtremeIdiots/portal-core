@@ -7,7 +7,6 @@ namespace XtremeIdiots.Portal.RepositoryWebApi.Controllers;
 
 [ApiController]
 [Authorize(Roles = "ServiceAccount,MgmtWebAdminUser")]
-[Route("api/ChatMessage")]
 public class ChatMessageController : ControllerBase
 {
     public ChatMessageController(PortalDbContext context)
@@ -17,7 +16,8 @@ public class ChatMessageController : ControllerBase
 
     public PortalDbContext Context { get; }
 
-    [HttpPost(Name = "ChatMessage")]
+    [HttpPost]
+    [Route("api/ChatMessage")]
     public async Task<IActionResult> CreateChatMessage()
     {
         var requestBody = await new StreamReader(Request.Body).ReadToEndAsync();

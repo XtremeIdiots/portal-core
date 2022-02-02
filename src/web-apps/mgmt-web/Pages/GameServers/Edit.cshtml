@@ -8,9 +8,11 @@
 <h1>Edit Game Server: @Model.GameServerViewModel.Title</h1>
 <hr/>
 
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
+<form method="post">
+
+    <div class="row">
+        <div class="col-md-4">
+
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="GameServerViewModel.Id"/>
 
@@ -34,13 +36,43 @@
                 <input asp-for="GameServerViewModel.QueryPort" class="form-control"/>
                 <span asp-validation-for="GameServerViewModel.QueryPort" class="text-danger"></span>
             </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+
+            <div class="form-group">
+                <label asp-for="GameServerViewModel.RconPassword" class="control-label"></label>
+                <input asp-for="GameServerViewModel.RconPassword" class="form-control"/>
+                <span asp-validation-for="GameServerViewModel.RconPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GameServerViewModel.FtpUsername" class="control-label"></label>
+                <input asp-for="GameServerViewModel.FtpUsername" class="form-control"/>
+                <span asp-validation-for="GameServerViewModel.FtpUsername" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GameServerViewModel.FtpPassword" class="control-label"></label>
+                <input asp-for="GameServerViewModel.FtpPassword" class="form-control"/>
+                <span asp-validation-for="GameServerViewModel.FtpPassword" class="text-danger"></span>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+
             <div class="form-group">
                 <input type="submit" value="Update" class="btn btn-primary"/>
             </div>
-        </form>
-    </div>
-</div>
 
+        </div>
+    </div>
+
+</form>
 <div>
     <a asp-page="Index">Back to List</a>
 </div>

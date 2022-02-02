@@ -22,6 +22,7 @@ resource "azurerm_app_service" "admin_web_app" {
     "APPINSIGHTS_INSTRUMENTATIONKEY" = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", local.key_vault_name, local.app_insights_instrumentation_key_secret)
     "WEBSITE_RUN_FROM_PACKAGE"       = 1
     "ASPNETCORE_ENVIRONMENT"         = var.env == "dev" ? "Development" : "Production"
+    "minTlsVersion"                  = "1.2"
     "apim-base-url"                  = azurerm_api_management.api_management.gateway_url
     "apim-subscription-key"          = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", local.key_vault_name, local.apim_admin_web_app_subscription_secret_name)
   }

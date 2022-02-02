@@ -13,4 +13,9 @@ public class GameServerViewModel
     [Required] [StringLength(50)] public string IpAddress { get; set; }
 
     public int QueryPort { get; set; }
+
+    // Game Server Secrets
+    public string? RconPassword { get; set; }
+    public string? FtpUsername { get; set; }
+    public string? FtpPassword { get; set; }
 }

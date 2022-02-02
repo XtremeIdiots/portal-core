@@ -9,7 +9,6 @@ namespace XtremeIdiots.Portal.RepositoryWebApi.Controllers;
 
 [ApiController]
 [Authorize(Roles = "ServiceAccount,MgmtWebAdminUser")]
-[Route("api/GameServer")]
 public class GameServerController : ControllerBase
 {
     public GameServerController(PortalDbContext context)
@@ -19,7 +18,8 @@ public class GameServerController : ControllerBase
 
     public PortalDbContext Context { get; }
 
-    [HttpGet(Name = "GameServer")]
+    [HttpGet]
+    [Route("api/GameServer")]
     public async Task<IActionResult> GetGameServer()
     {
         string id = Request.Query["id"];
@@ -33,7 +33,8 @@ public class GameServerController : ControllerBase
         return new OkObjectResult(gameServer);
     }
 
-    [HttpPost(Name = "GameServer")]
+    [HttpPost]
+    [Route("api/GameServer")]
     public async Task<IActionResult> CreateGameServer()
     {
         var requestBody = await new StreamReader(Request.Body).ReadToEndAsync();
@@ -65,7 +66,8 @@ public class GameServerController : ControllerBase
         return new OkObjectResult(gameServer);
     }
 
-    [HttpPatch(Name = "GameServer")]
+    [HttpPatch]
+    [Route("api/GameServer")]
     public async Task<IActionResult> UpdateGameServer()
     {
         var requestBody = await new StreamReader(Request.Body).ReadToEndAsync();

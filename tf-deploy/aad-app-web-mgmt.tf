@@ -12,7 +12,7 @@ resource "azuread_application" "mgmt_web_app_application" {
 
   web {
     logout_url = format("https://%s.azurewebsites.net/signout-oidc", local.mgmt_web_app_name)
-    redirect_uris = var.env == "box" ? [
+    redirect_uris = var.env == "box" || var.env == "dev" ? [
       format("https://%s.azurewebsites.net/signin-oidc", local.mgmt_web_app_name),
       "https://localhost:7222/signin-oidc"
       ] : [

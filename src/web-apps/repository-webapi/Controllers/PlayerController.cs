@@ -9,7 +9,6 @@ namespace XtremeIdiots.Portal.RepositoryWebApi.Controllers;
 
 [ApiController]
 [Authorize(Roles = "ServiceAccount,MgmtWebAdminUser")]
-[Route("api/Player")]
 public class PlayerController : ControllerBase
 {
     public PlayerController(ILogger<PlayerController> log, PortalDbContext context)
@@ -21,7 +20,8 @@ public class PlayerController : ControllerBase
     public PortalDbContext Context { get; }
     public ILogger<PlayerController> Log { get; }
 
-    [HttpGet(Name = "Player")]
+    [HttpGet]
+    [Route("api/Player")]
     public async Task<IActionResult> GetPlayer()
     {
         string id = Request.Query["id"];
@@ -52,7 +52,7 @@ public class PlayerController : ControllerBase
         }
     }
 
-    [HttpPost(Name = "Player")]
+    [Route("api/Player")]
     public async Task<IActionResult> CreatePlayer()
     {
         var requestBody = await new StreamReader(Request.Body).ReadToEndAsync();
@@ -87,7 +87,7 @@ public class PlayerController : ControllerBase
         return new OkObjectResult(player);
     }
 
-    [HttpPatch(Name = "Player")]
+    [Route("api/Player")]
     public async Task<IActionResult> UpdatePlayer()
     {
         var requestBody = await new StreamReader(Request.Body).ReadToEndAsync();
