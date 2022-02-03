@@ -234,6 +234,17 @@
                     }
                 }
             }
+        },
+        "/DataMaintenance/PruneChatMessages": {
+            "delete": {
+                "summary": "PruneChatMessages",
+                "operationId": "PruneChatMessages",
+                "responses": {
+                    "200": {
+                        "description": null
+                    }
+                }
+            }
         }
     },
     "components": {

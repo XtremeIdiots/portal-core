@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\data-lib\data-lib.csproj" />
+    <ProjectReference Include="..\..\repository-api-client\repository-api-client.csproj" />
   </ItemGroup>
 
 </Project>

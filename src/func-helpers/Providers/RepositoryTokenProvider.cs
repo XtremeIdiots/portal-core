@@ -1,14 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using Azure.Core;
+﻿using Azure.Core;
 using Azure.Identity;
 using Microsoft.Extensions.Logging;
 
-namespace XtremeIdiots.Portal.IngestFunc.Providers;
+namespace XtremeIdiots.Portal.FuncHelpers.Providers;
 
-internal class RepositoryTokenProvider : IRepositoryTokenProvider
+public class RepositoryTokenProvider : IRepositoryTokenProvider
 {
-    public RepositoryTokenProvider(ILogger<RepositoryTokenProvider> log)
+    public RepositoryTokenProvider(ILogger log)
     {
         Log = log;
     }
@@ -27,8 +25,6 @@ internal class RepositoryTokenProvider : IRepositoryTokenProvider
         {
             accessToken = await tokenCredential.GetTokenAsync(
                 new TokenRequestContext(new[] {$"{WebApiPortalApplicationAudience}/.default"}));
-
-            Log.LogInformation($"AccessToken: {accessToken.Token}");
         }
         catch (Exception ex)
         {

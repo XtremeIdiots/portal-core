@@ -139,3 +139,13 @@ resource "azurerm_key_vault_secret" "mgmt_web_app_application_secret" {
     azurerm_key_vault_access_policy.principal_key_vault_access_policy
   ]
 }
+
+resource "azurerm_key_vault_secret" "repository_funcapp_subscription_key" {
+  name         = local.apim_repository_funcapp_subscription_secret_name
+  value        = azurerm_api_management_subscription.repository_funcapp_subscription.primary_key
+  key_vault_id = azurerm_key_vault.key_vault.id
+
+  depends_on = [
+    azurerm_key_vault_access_policy.principal_key_vault_access_policy
+  ]
+}

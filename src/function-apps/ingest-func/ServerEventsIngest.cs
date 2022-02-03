@@ -1,32 +1,34 @@
 using System;
-using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using RestSharp;
 using XtremeIdiots.Portal.CommonLib.Events;
 using XtremeIdiots.Portal.DataLib;
-using XtremeIdiots.Portal.IngestFunc.Providers;
+using XtremeIdiots.Portal.FuncHelpers.Providers;
+using XtremeIdiots.Portal.RepositoryApiClient.GameServerApi;
 
 namespace XtremeIdiots.Portal.IngestFunc;
 
 public class ServerEventsIngest
 {
-    public ServerEventsIngest(IRepositoryTokenProvider repositoryTokenProvider)
-    {
-        RepositoryTokenProvider = repositoryTokenProvider;
-    }
+    private readonly IGameServerApiClient _gameServerApiClient;
+    private readonly ILogger _log;
+    private readonly IRepositoryTokenProvider _repositoryTokenProvider;
 
-    private IRepositoryTokenProvider RepositoryTokenProvider { get; }
-    private string ApimBaseUrl => Environment.GetEnvironmentVariable("apim-base-url");
-    private string ApimSubscriptionKey => Environment.GetEnvironmentVariable("apim-subscription-key");
+    public ServerEventsIngest(ILogger log,
+        IRepositoryTokenProvider repositoryTokenProvider,
+        IGameServerApiClient gameServerApiClient)
+    {
+        _log = log;
+        _repositoryTokenProvider = repositoryTokenProvider;
+        _gameServerApiClient = gameServerApiClient;
+    }
 
     [FunctionName("ProcessOnServerConnected")]
     public async Task ProcessOnServerConnected(
         [ServiceBusTrigger("server_connected_queue", Connection = "service-bus-connection-string")]
-        string myQueueItem,
-        ILogger log)
+        string myQueueItem)
     {
         OnServerConnected onServerConnected;
         try
@@ -35,14 +37,21 @@ public class ServerEventsIngest
         }
         catch (Exception ex)
         {
-            log.LogError(ex, "OnServerConnected was not in expected format");
+            _log.LogError(ex, "OnServerConnected was not in expected format");
             throw;
         }
 
-        log.LogInformation(
+        if (onServerConnected == null)
+            throw new Exception("OnServerConnected event was null");
+
+        if (string.IsNullOrWhiteSpace(onServerConnected.Id))
+            throw new Exception("OnServerConnected event contained null or empty 'onServerConnected'");
+
+        _log.LogInformation(
             $"OnServerConnected :: Id: '{onServerConnected.Id}', GameType: '{onServerConnected.GameType}'");
 
-        var existingServer = await GetGameServer(log, onServerConnected.Id);
+        var accessToken = await _repositoryTokenProvider.GetRepositoryAccessToken();
+        var existingServer = await _gameServerApiClient.GetGameServer(accessToken, onServerConnected.Id);
 
         if (existingServer == null)
         {
@@ -52,15 +61,14 @@ public class ServerEventsIngest
                 GameType = onServerConnected.GameType
             };
 
-            await CreateGameServer(log, gameServer);
+            await _gameServerApiClient.CreateGameServer(accessToken, gameServer);
         }
     }
 
     [FunctionName("ProcessOnMapChange")]
     public void ProcessOnMapChange(
         [ServiceBusTrigger("map_change_queue", Connection = "service-bus-connection-string")]
-        string myQueueItem,
-        ILogger log)
+        string myQueueItem)
     {
         OnMapChange onMapChange;
         try
@@ -69,43 +77,17 @@ public class ServerEventsIngest
         }
         catch (Exception ex)
         {
-            log.LogError(ex, "OnMapChange was not in expected format");
+            _log.LogError(ex, "OnMapChange was not in expected format");
             throw;
         }
 
-        log.LogInformation(
+        if (onMapChange == null)
+            throw new Exception("OnMapChange event was null");
+
+        if (string.IsNullOrWhiteSpace(onMapChange.ServerId))
+            throw new Exception("OnMapChange event contained null or empty 'ServerId'");
+
+        _log.LogInformation(
             $"ProcessOnMapChange :: GameName: '{onMapChange.GameName}', GameType: '{onMapChange.GameType}', MapName: '{onMapChange.MapName}'");
-    }
-
-    private async Task<GameServer> GetGameServer(ILogger log, string id)
-    {
-        var client = new RestClient(ApimBaseUrl);
-        var request = new RestRequest("repository/GameServer");
-        var accessToken = await RepositoryTokenProvider.GetRepositoryAccessToken();
-
-        request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
-        request.AddHeader("Authorization", $"Bearer {accessToken}");
-        request.AddParameter(new QueryParameter("id", id));
-
-        var response = await client.ExecuteAsync(request);
-
-        if (response.IsSuccessful)
-            return JsonConvert.DeserializeObject<GameServer>(response.Content);
-        if (response.StatusCode == HttpStatusCode.NotFound)
-            return null;
-        throw new Exception("Failed to execute 'repository/GameServer'");
-    }
-
-    private async Task CreateGameServer(ILogger log, GameServer gameServer)
-    {
-        var client = new RestClient(ApimBaseUrl);
-        var request = new RestRequest("repository/GameServer", Method.Post);
-        var accessToken = await RepositoryTokenProvider.GetRepositoryAccessToken();
-
-        request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
-        request.AddHeader("Authorization", $"Bearer {accessToken}");
-        request.AddJsonBody(gameServer);
-
-        await client.ExecuteAsync(request);
     }
 }

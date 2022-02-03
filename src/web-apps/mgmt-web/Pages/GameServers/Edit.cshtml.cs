@@ -1,13 +1,10 @@
-using System.Net;
-using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Identity.Web;
-using Newtonsoft.Json;
-using RestSharp;
-using XtremeIdiots.Portal.DataLib;
 using XtremeIdiots.Portal.MgmtWeb.ViewModels;
+using XtremeIdiots.Portal.RepositoryApiClient.GameServerApi;
+using XtremeIdiots.Portal.RepositoryApiClient.GameServerSecretApi;
 
 namespace XtremeIdiots.Portal.MgmtWeb.Pages.GameServers;
 
@@ -16,12 +13,20 @@ namespace XtremeIdiots.Portal.MgmtWeb.Pages.GameServers;
 public class EditModel : PageModel
 {
     private readonly IConfiguration _configuration;
+    private readonly IGameServerApiClient _gameServerApiClient;
+    private readonly IGameServerSecretApiClient _gameServerSecretApiClient;
     private readonly ITokenAcquisition _tokenAcquisition;
 
-    public EditModel(IConfiguration configuration, ITokenAcquisition tokenAcquisition)
+    public EditModel(
+        IConfiguration configuration,
+        ITokenAcquisition tokenAcquisition,
+        IGameServerApiClient gameServerApiClient,
+        IGameServerSecretApiClient gameServerSecretApiClient)
     {
         _configuration = configuration;
         _tokenAcquisition = tokenAcquisition;
+        _gameServerApiClient = gameServerApiClient;
+        _gameServerSecretApiClient = gameServerSecretApiClient;
     }
 
     [BindProperty] public GameServerViewModel GameServerViewModel { get; set; }
@@ -30,14 +35,17 @@ public class EditModel : PageModel
     {
         if (string.IsNullOrWhiteSpace(id)) return NotFound();
 
-        var gameServer = await GetGameServer(id);
+        string[] scopes = {_configuration["web-api-repository-scope"]};
+        var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(scopes);
+
+        var gameServer = await _gameServerApiClient.GetGameServer(accessToken, id);
 
         if (gameServer == null)
             return NotFound();
 
-        var rconPasswordSecret = await GetGameServerSecret(id, "rconpassword");
-        var ftpUsernameSecret = await GetGameServerSecret(id, "ftpusername");
-        var ftpPasswordSecret = await GetGameServerSecret(id, "ftppassword");
+        var rconPasswordSecret = await _gameServerSecretApiClient.GetGameServerSecret(accessToken, id, "rconpassword");
+        var ftpUsernameSecret = await _gameServerSecretApiClient.GetGameServerSecret(accessToken, id, "ftpusername");
+        var ftpPasswordSecret = await _gameServerSecretApiClient.GetGameServerSecret(accessToken, id, "ftppassword");
 
         GameServerViewModel = new GameServerViewModel
         {
@@ -58,7 +66,10 @@ public class EditModel : PageModel
     {
         if (!ModelState.IsValid) return Page();
 
-        var gameServer = await GetGameServer(id);
+        string[] scopes = {_configuration["web-api-repository-scope"]};
+        var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(scopes);
+
+        var gameServer = await _gameServerApiClient.GetGameServer(accessToken, id);
 
         if (gameServer == null)
             return NotFound();
@@ -68,86 +79,14 @@ public class EditModel : PageModel
         gameServer.IpAddress = GameServerViewModel.IpAddress;
         gameServer.QueryPort = GameServerViewModel.QueryPort;
 
-        await UpdateGameServer(gameServer);
-        await UpdateGameServerSecret(id, "rconpassword", GameServerViewModel.RconPassword);
-        await UpdateGameServerSecret(id, "ftpusername", GameServerViewModel.FtpUsername);
-        await UpdateGameServerSecret(id, "ftppassword", GameServerViewModel.FtpPassword);
+        await _gameServerApiClient.UpdateGameServer(accessToken, gameServer);
+        await _gameServerSecretApiClient.UpdateGameServerSecret(accessToken, id, "rconpassword",
+            GameServerViewModel.RconPassword);
+        await _gameServerSecretApiClient.UpdateGameServerSecret(accessToken, id, "ftpusername",
+            GameServerViewModel.FtpUsername);
+        await _gameServerSecretApiClient.UpdateGameServerSecret(accessToken, id, "ftppassword",
+            GameServerViewModel.FtpPassword);
 
         return RedirectToPage("Index");
-    }
-
-    private async Task<GameServer?> GetGameServer(string id)
-    {
-        var client = new RestClient(_configuration["apim-base-url"]);
-        var request = new RestRequest("repository/GameServer");
-
-        string[] scopes = {_configuration["web-api-repository-scope"]};
-        var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(scopes);
-
-        request.AddHeader("Ocp-Apim-Subscription-Key", _configuration["apim-subscription-key"]);
-        request.AddHeader("Authorization", $"Bearer {accessToken}");
-        request.AddParameter(new QueryParameter("id", id));
-
-        var response = await client.ExecuteAsync(request);
-
-        if (response.IsSuccessful)
-            return JsonConvert.DeserializeObject<GameServer>(response.Content);
-
-        if (response.StatusCode == HttpStatusCode.NotFound)
-            return null;
-
-        throw new Exception("Failed to execute 'repository/GameServer'");
-    }
-
-    private async Task UpdateGameServer(GameServer gameServer)
-    {
-        var client = new RestClient(_configuration["apim-base-url"]);
-        var request = new RestRequest("repository/GameServer", Method.Patch);
-
-        string[] scopes = {_configuration["web-api-repository-scope"]};
-        var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(scopes);
-
-        request.AddHeader("Ocp-Apim-Subscription-Key", _configuration["apim-subscription-key"]);
-        request.AddHeader("Authorization", $"Bearer {accessToken}");
-        request.AddJsonBody(gameServer);
-
-        await client.ExecuteAsync(request);
-    }
-
-    private async Task<KeyVaultSecret?> GetGameServerSecret(string id, string secret)
-    {
-        var client = new RestClient(_configuration["apim-base-url"]);
-        var request = new RestRequest($"repository/GameServer/{id}/secrets/{secret}");
-
-        string[] scopes = {_configuration["web-api-repository-scope"]};
-        var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(scopes);
-
-        request.AddHeader("Ocp-Apim-Subscription-Key", _configuration["apim-subscription-key"]);
-        request.AddHeader("Authorization", $"Bearer {accessToken}");
-
-        var response = await client.ExecuteAsync(request);
-
-        if (response.IsSuccessful)
-            return JsonConvert.DeserializeObject<KeyVaultSecret>(response.Content);
-
-        if (response.StatusCode == HttpStatusCode.NotFound)
-            return null;
-
-        throw new Exception($"Failed to execute 'repository/GameServer/{id}/secrets/{secret}'");
-    }
-
-    private async Task UpdateGameServerSecret(string id, string secret, string? secretValue)
-    {
-        var client = new RestClient(_configuration["apim-base-url"]);
-        var request = new RestRequest($"repository/GameServer/{id}/secrets/{secret}", Method.Post);
-
-        string[] scopes = {_configuration["web-api-repository-scope"]};
-        var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(scopes);
-
-        request.AddHeader("Ocp-Apim-Subscription-Key", _configuration["apim-subscription-key"]);
-        request.AddHeader("Authorization", $"Bearer {accessToken}");
-        request.AddBody(secretValue ?? "", "text/plain");
-
-        await client.ExecuteAsync(request);
     }
 }

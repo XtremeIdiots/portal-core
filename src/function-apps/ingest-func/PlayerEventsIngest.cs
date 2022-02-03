@@ -1,71 +1,83 @@
 using System;
-using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using RestSharp;
 using XtremeIdiots.Portal.CommonLib.Events;
 using XtremeIdiots.Portal.DataLib;
-using XtremeIdiots.Portal.IngestFunc.Providers;
+using XtremeIdiots.Portal.FuncHelpers.Providers;
+using XtremeIdiots.Portal.RepositoryApiClient.PlayersApi;
 
 namespace XtremeIdiots.Portal.IngestFunc;
 
 public class PlayerEventsIngest
 {
-    public PlayerEventsIngest(ILogger<PlayerEventsIngest> log, IRepositoryTokenProvider repositoryTokenProvider)
-    {
-        Log = log;
-        RepositoryTokenProvider = repositoryTokenProvider;
-    }
+    private readonly ILogger<PlayerEventsIngest> _log;
+    private readonly IPlayersApiClient _playersApiClient;
+    private readonly IRepositoryTokenProvider _repositoryTokenProvider;
 
-    public ILogger<PlayerEventsIngest> Log { get; }
-    private IRepositoryTokenProvider RepositoryTokenProvider { get; }
-    private string ApimBaseUrl => Environment.GetEnvironmentVariable("apim-base-url");
-    private string ApimSubscriptionKey => Environment.GetEnvironmentVariable("apim-subscription-key");
+    public PlayerEventsIngest(
+        ILogger<PlayerEventsIngest> log,
+        IRepositoryTokenProvider repositoryTokenProvider,
+        IPlayersApiClient playersApiClient)
+    {
+        _log = log;
+        _repositoryTokenProvider = repositoryTokenProvider;
+        _playersApiClient = playersApiClient;
+    }
 
     [FunctionName("ProcessOnPlayerConnected")]
     public async Task ProcessOnPlayerConnected(
         [ServiceBusTrigger("player_connected_queue", Connection = "service-bus-connection-string")]
-        string myQueueItem,
-        ILogger log)
+        string myQueueItem)
     {
-        OnPlayerConnected playerConnectedEvent;
+        OnPlayerConnected onPlayerConnected;
         try
         {
-            playerConnectedEvent = JsonConvert.DeserializeObject<OnPlayerConnected>(myQueueItem);
+            onPlayerConnected = JsonConvert.DeserializeObject<OnPlayerConnected>(myQueueItem);
         }
         catch (Exception ex)
         {
-            log.LogError(ex, "OnPlayerConnected was not in expected format");
+            _log.LogError(ex, "OnPlayerConnected was not in expected format");
             throw;
         }
 
-        log.LogInformation(
-            $"ProcessOnPlayerConnected :: Username: '{playerConnectedEvent.Username}', Guid: '{playerConnectedEvent.Guid}'");
+        if (onPlayerConnected == null)
+            throw new Exception("OnPlayerConnected event was null");
 
-        var existingPlayer = await GetPlayer(playerConnectedEvent.GameType, playerConnectedEvent.Guid);
+        if (string.IsNullOrWhiteSpace(onPlayerConnected.GameType))
+            throw new Exception("OnPlayerConnected event contained null or empty 'GameType'");
+
+        if (string.IsNullOrWhiteSpace(onPlayerConnected.Guid))
+            throw new Exception("OnPlayerConnected event contained null or empty 'Guid'");
+
+        _log.LogInformation(
+            $"ProcessOnPlayerConnected :: Username: '{onPlayerConnected.Username}', Guid: '{onPlayerConnected.Guid}'");
+
+        var accessToken = await _repositoryTokenProvider.GetRepositoryAccessToken();
+        var existingPlayer =
+            await _playersApiClient.GetPlayer(accessToken, onPlayerConnected.GameType, onPlayerConnected.Guid);
 
         if (existingPlayer == null)
         {
             var player = new Player
             {
-                GameType = playerConnectedEvent.GameType,
-                Guid = playerConnectedEvent.Guid,
-                Username = playerConnectedEvent.Username,
-                IpAddress = playerConnectedEvent.IpAddress
+                GameType = onPlayerConnected.GameType,
+                Guid = onPlayerConnected.Guid,
+                Username = onPlayerConnected.Username,
+                IpAddress = onPlayerConnected.IpAddress
             };
 
-            await CreatePlayer(player);
+            await _playersApiClient.CreatePlayer(accessToken, player);
         }
         else
         {
-            if (playerConnectedEvent.EventGeneratedUtc > existingPlayer.LastSeen)
+            if (onPlayerConnected.EventGeneratedUtc > existingPlayer.LastSeen)
             {
-                existingPlayer.Username = playerConnectedEvent.Username;
-                existingPlayer.IpAddress = playerConnectedEvent.IpAddress;
+                existingPlayer.Username = onPlayerConnected.Username;
+                existingPlayer.IpAddress = onPlayerConnected.IpAddress;
 
-                await UpdatePlayer(existingPlayer);
+                await _playersApiClient.UpdatePlayer(accessToken, existingPlayer);
             }
         }
     }
@@ -73,8 +85,7 @@ public class PlayerEventsIngest
     [FunctionName("ProcessOnChatMessage")]
     public async Task ProcessOnChatMessage(
         [ServiceBusTrigger("chat_message_queue", Connection = "service-bus-connection-string")]
-        string myQueueItem,
-        ILogger log)
+        string myQueueItem)
     {
         OnChatMessage onChatMessage;
         try
@@ -83,14 +94,25 @@ public class PlayerEventsIngest
         }
         catch (Exception ex)
         {
-            log.LogError(ex, "OnChatMessage was not in expected format");
+            _log.LogError(ex, "OnChatMessage was not in expected format");
             throw;
         }
 
-        log.LogInformation(
+        if (onChatMessage == null)
+            throw new Exception("OnChatMessage event was null");
+
+        if (string.IsNullOrWhiteSpace(onChatMessage.GameType))
+            throw new Exception("OnChatMessage event contained null or empty 'GameType'");
+
+        if (string.IsNullOrWhiteSpace(onChatMessage.Guid))
+            throw new Exception("OnChatMessage event contained null or empty 'Guid'");
+
+        _log.LogInformation(
             $"ProcessOnChatMessage :: Username: '{onChatMessage.Username}', Guid: '{onChatMessage.Guid}', Message: '{onChatMessage.Message}'");
 
-        var player = await GetPlayer(onChatMessage.GameType, onChatMessage.Guid);
+        var accessToken = await _repositoryTokenProvider.GetRepositoryAccessToken();
+
+        var player = await _playersApiClient.GetPlayer(accessToken, onChatMessage.GameType, onChatMessage.Guid);
 
         if (player != null)
         {
@@ -104,66 +126,7 @@ public class PlayerEventsIngest
                 Timestamp = onChatMessage.EventGeneratedUtc
             };
 
-            await CreateChatMessage(chatMessage);
+            await _playersApiClient.CreateChatMessage(accessToken, chatMessage);
         }
-    }
-
-    private async Task<Player> GetPlayer(string gameType, string guid)
-    {
-        var client = new RestClient(ApimBaseUrl);
-        var request = new RestRequest("repository/Player");
-        var accessToken = await RepositoryTokenProvider.GetRepositoryAccessToken();
-
-        request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
-        request.AddHeader("Authorization", $"Bearer {accessToken}");
-        request.AddParameter(new QueryParameter("gameType", gameType));
-        request.AddParameter(new QueryParameter("guid", guid));
-
-        var response = await client.ExecuteAsync(request);
-
-        if (response.IsSuccessful)
-            return JsonConvert.DeserializeObject<Player>(response.Content);
-        if (response.StatusCode == HttpStatusCode.NotFound)
-            return null;
-        throw new Exception("Failed to execute 'repository/Player'");
-    }
-
-    private async Task CreatePlayer(Player player)
-    {
-        var client = new RestClient(ApimBaseUrl);
-        var request = new RestRequest("repository/Player", Method.Post);
-        var accessToken = await RepositoryTokenProvider.GetRepositoryAccessToken();
-
-        request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
-        request.AddHeader("Authorization", $"Bearer {accessToken}");
-        request.AddJsonBody(player);
-
-        await client.ExecuteAsync(request);
-    }
-
-    private async Task UpdatePlayer(Player player)
-    {
-        var client = new RestClient(ApimBaseUrl);
-        var request = new RestRequest("repository/Player", Method.Patch);
-        var accessToken = await RepositoryTokenProvider.GetRepositoryAccessToken();
-
-        request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
-        request.AddHeader("Authorization", $"Bearer {accessToken}");
-        request.AddJsonBody(player);
-
-        await client.ExecuteAsync(request);
-    }
-
-    private async Task CreateChatMessage(ChatMessage chatMessage)
-    {
-        var client = new RestClient(ApimBaseUrl);
-        var request = new RestRequest("repository/ChatMessage", Method.Post);
-        var accessToken = await RepositoryTokenProvider.GetRepositoryAccessToken();
-
-        request.AddHeader("Ocp-Apim-Subscription-Key", ApimSubscriptionKey);
-        request.AddHeader("Authorization", $"Bearer {accessToken}");
-        request.AddJsonBody(chatMessage);
-
-        await client.ExecuteAsync(request);
     }
 }

@@ -29,6 +29,7 @@ namespace XtremeIdiots.Portal.DataLib
         [StringLength(50)]
         public string IpAddress { get; set; }
         public int QueryPort { get; set; }
+        public bool HasFtp { get; set; }
 
         [InverseProperty(nameof(ChatMessage.GameServer))]
         public virtual ICollection<ChatMessage> ChatMessages { get; set; }

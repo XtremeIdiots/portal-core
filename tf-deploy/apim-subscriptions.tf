@@ -45,3 +45,11 @@ resource "azurerm_api_management_subscription" "repository_web_api_subscription"
   state               = "active"
   allow_tracing       = false
 }
+
+resource "azurerm_api_management_subscription" "repository_funcapp_subscription" {
+  api_management_name = azurerm_api_management.api_management.name
+  resource_group_name = azurerm_api_management.api_management.resource_group_name
+  display_name        = "Repository Function App"
+  state               = "active"
+  allow_tracing       = false
+}

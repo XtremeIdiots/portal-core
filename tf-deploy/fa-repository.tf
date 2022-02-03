@@ -29,9 +29,12 @@ resource "azurerm_function_app" "repository_function_app" {
   }
 
   app_settings = {
-    "APPINSIGHTS_INSTRUMENTATIONKEY" = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", local.key_vault_name, local.app_insights_instrumentation_key_secret)
-    "WEBSITE_RUN_FROM_PACKAGE"       = 1
-    "sql-connection-string"          = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", local.key_vault_name, local.sql_server_connstring_identity_secret)
+    "APPINSIGHTS_INSTRUMENTATIONKEY"     = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", local.key_vault_name, local.app_insights_instrumentation_key_secret)
+    "WEBSITE_RUN_FROM_PACKAGE"           = 1
+    "sql-connection-string"              = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", local.key_vault_name, local.sql_server_connstring_identity_secret)
+    "apim-base-url"                      = azurerm_api_management.api_management.gateway_url,
+    "apim-subscription-key"              = format("@Microsoft.KeyVault(VaultName=%s;SecretName=%s)", local.key_vault_name, local.apim_repository_funcapp_subscription_secret_name)
+    "webapi-portal-application-audience" = local.repository_api_application_audience
   }
 }
 

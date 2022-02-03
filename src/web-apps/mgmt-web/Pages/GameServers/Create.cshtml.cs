@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Identity.Web;
-using RestSharp;
 using XtremeIdiots.Portal.DataLib;
 using XtremeIdiots.Portal.MgmtWeb.ViewModels;
+using XtremeIdiots.Portal.RepositoryApiClient.GameServerApi;
 
 namespace XtremeIdiots.Portal.MgmtWeb.Pages.GameServers;
 
@@ -13,12 +13,17 @@ namespace XtremeIdiots.Portal.MgmtWeb.Pages.GameServers;
 public class CreateModel : PageModel
 {
     private readonly IConfiguration _configuration;
+    private readonly IGameServerApiClient _gameServerApiClient;
     private readonly ITokenAcquisition _tokenAcquisition;
 
-    public CreateModel(IConfiguration configuration, ITokenAcquisition tokenAcquisition)
+    public CreateModel(
+        IConfiguration configuration,
+        ITokenAcquisition tokenAcquisition,
+        IGameServerApiClient gameServerApiClient)
     {
         _configuration = configuration;
         _tokenAcquisition = tokenAcquisition;
+        _gameServerApiClient = gameServerApiClient;
     }
 
     [BindProperty] public GameServerViewModel GameServerViewModel { get; set; }
@@ -40,23 +45,11 @@ public class CreateModel : PageModel
             QueryPort = GameServerViewModel.QueryPort
         };
 
-        await CreateGameServer(gameServer);
-
-        return RedirectToPage("./Index");
-    }
-
-    private async Task CreateGameServer(GameServer gameServer)
-    {
-        var client = new RestClient(_configuration["apim-base-url"]);
-        var request = new RestRequest("repository/GameServerViewModel", Method.Post);
-
         string[] scopes = {_configuration["web-api-repository-scope"]};
         var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(scopes);
 
-        request.AddHeader("Ocp-Apim-Subscription-Key", _configuration["apim-subscription-key"]);
-        request.AddHeader("Authorization", $"Bearer {accessToken}");
-        request.AddJsonBody(gameServer);
+        await _gameServerApiClient.CreateGameServer(accessToken, gameServer);
 
-        await client.ExecuteAsync(request);
+        return RedirectToPage("./Index");
     }
 }

@@ -1,50 +1,50 @@
 ﻿{
-  "CodeGenerationMode": 2,
-  "ContextClassName": "PortalDbContext",
-  "ContextNamespace": "",
-  "DefaultDacpacSchema": null,
-  "FilterSchemas": false,
-  "IncludeConnectionString": false,
-  "ModelNamespace": "",
-  "OutputContextPath": "",
-  "OutputPath": "",
-  "ProjectRootNamespace": "XtremeIdiots.Portal.DataLib",
-  "Schemas": null,
-  "SelectedHandlebarsLanguage": 0,
-  "SelectedToBeGenerated": 0,
-  "Tables": [
-    {
-      "Name": "[dbo].[ChatMessages]",
-      "ObjectType": 0
-    },
-    {
-      "Name": "[dbo].[GameServerEvents]",
-      "ObjectType": 0
-    },
-    {
-      "Name": "[dbo].[GameServers]",
-      "ObjectType": 0
-    },
-    {
-      "Name": "[dbo].[Players]",
-      "ObjectType": 0
-    }
-  ],
-  "UiHint": "..\\database\\database.sqlproj",
-  "UseBoolPropertiesWithoutDefaultSql": false,
-  "UseDatabaseNames": false,
-  "UseDbContextSplitting": false,
-  "UseFluentApiOnly": false,
-  "UseHandleBars": false,
-  "UseInflector": true,
-  "UseLegacyPluralizer": false,
-  "UseManyToManyEntity": false,
-  "UseNoConstructor": false,
-  "UseNoDefaultConstructor": false,
-  "UseNoNavigations": false,
-  "UseNoObjectFilter": false,
-  "UseNodaTime": false,
-  "UseNullableReferences": false,
-  "UseSchemaFolders": false,
-  "UseSpatial": false
+   "CodeGenerationMode": 2,
+   "ContextClassName": "PortalDbContext",
+   "ContextNamespace": "",
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": "",
+   "OutputContextPath": "",
+   "OutputPath": "",
+   "ProjectRootNamespace": "XtremeIdiots.Portal.DataLib",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "Name": "[dbo].[ChatMessages]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[GameServerEvents]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[GameServers]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Players]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": "..\\database\\database.sqlproj",
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": false,
+   "UseHandleBars": false,
+   "UseInflector": true,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoConstructor": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSchemaFolders": false,
+   "UseSpatial": false
 }

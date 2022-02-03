@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace XtremeIdiots.Portal.IngestFunc.Providers;
+﻿namespace XtremeIdiots.Portal.FuncHelpers.Providers;
 
 public interface IRepositoryTokenProvider
 {

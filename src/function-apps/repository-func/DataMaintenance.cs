@@ -1,26 +1,33 @@
-using System;
+using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using XtremeIdiots.Portal.DataLib;
+using XtremeIdiots.Portal.FuncHelpers.Providers;
+using XtremeIdiots.Portal.RepositoryApiClient.DataMaintenanceApi;
 
 namespace XtremeIdiots.Portal.RepositoryFunc;
 
 public class DataMaintenance
 {
-    public DataMaintenance(PortalDbContext context)
+    private readonly IDataMaintenanceApiClient _dataMaintenanceApiClient;
+    private readonly ILogger _log;
+    private readonly IRepositoryTokenProvider _repositoryTokenProvider;
+
+    public DataMaintenance(
+        ILogger log,
+        IRepositoryTokenProvider repositoryTokenProvider,
+        IDataMaintenanceApiClient dataMaintenanceApiClient)
     {
-        Context = context ?? throw new ArgumentNullException(nameof(context));
+        _log = log;
+        _repositoryTokenProvider = repositoryTokenProvider;
+        _dataMaintenanceApiClient = dataMaintenanceApiClient;
     }
 
-    public PortalDbContext Context { get; }
-
     [FunctionName("DataMaintenance")]
-    public void RunDataMaintenance([TimerTrigger("0 0 * * * *")] TimerInfo myTimer, ILogger log)
+    public async Task RunDataMaintenance([TimerTrigger("0 0 * * * *")] TimerInfo myTimer)
     {
-        log.LogInformation("Performing Data Maintenance");
+        _log.LogInformation("Performing Data Maintenance");
 
-        Context.Database.ExecuteSqlRawAsync(
-            $"DELETE FROM [dbo].[ChatMessages] WHERE [Timestamp] < CAST('{DateTime.UtcNow.AddMonths(-6):yyyy-MM-dd} 12:00:00' AS date)");
+        var accessToken = await _repositoryTokenProvider.GetRepositoryAccessToken();
+        await _dataMaintenanceApiClient.PruneChatMessages(accessToken);
     }
 }
