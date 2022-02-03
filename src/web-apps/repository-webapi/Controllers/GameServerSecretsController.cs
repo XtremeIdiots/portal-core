@@ -1,4 +1,5 @@
-﻿using Azure.Identity;
+﻿using Azure;
+using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,59 +29,55 @@ public class GameServerSecretsController : ControllerBase
         if (string.IsNullOrWhiteSpace(id)) return new BadRequestResult();
 
         var gameServer = await Context.GameServers.SingleOrDefaultAsync(gs => gs.Id == id);
-
         if (gameServer == null) return new BadRequestResult();
 
-        var client = new SecretClient(new Uri(_configuration["gameservers-keyvault-endpoint"]), new DefaultAzureCredential());
-        var secretValue = await client.GetSecretAsync(secret);
+        var client = new SecretClient(new Uri(_configuration["gameservers-keyvault-endpoint"]),
+            new DefaultAzureCredential());
 
-        if (secretValue == null) return new NotFoundResult();
+        try
+        {
+            var keyVaultResponse = await client.GetSecretAsync($"{id}-{secret}");
+            return new OkObjectResult(keyVaultResponse.Value);
+        }
+        catch (RequestFailedException ex)
+        {
+            if (ex.Status == 404)
+                return new NotFoundResult();
 
-        return new OkObjectResult(secretValue);
+            throw;
+        }
     }
 
     [HttpPost]
     [Route("api/GameServer/{id}/secrets/{secret}")]
-    public async Task<IActionResult> CreateGameServerSecret(string id, string secret)
+    public async Task<IActionResult> SetGameServerSecret(string id, string secret)
     {
         if (string.IsNullOrWhiteSpace(id)) return new BadRequestResult();
 
-        var secretValue = await new StreamReader(Request.Body).ReadToEndAsync();
-
-        if (string.IsNullOrWhiteSpace(secretValue)) return new BadRequestResult();
-
         var gameServer = await Context.GameServers.SingleOrDefaultAsync(gs => gs.Id == id);
-
         if (gameServer == null) return new BadRequestResult();
 
-        var client = new SecretClient(new Uri(_configuration["gameservers-keyvault-endpoint"]), new DefaultAzureCredential());
+        var client = new SecretClient(new Uri(_configuration["gameservers-keyvault-endpoint"]),
+            new DefaultAzureCredential());
 
-        var response = await client.SetSecretAsync(secret, secretValue);
+        var rawSecretValue = await new StreamReader(Request.Body).ReadToEndAsync();
 
-        return new OkObjectResult(response);
-    }
+        try
+        {
+            var keyVaultResponse = await client.GetSecretAsync($"{id}-{secret}");
 
-    [HttpPatch]
-    [Route("api/GameServer/{id}/secrets/{secret}")]
-    public async Task<IActionResult> UpdateGameServerSecret(string id, string secret)
-    {
-        if (string.IsNullOrWhiteSpace(id)) return new BadRequestResult();
+            if (keyVaultResponse.Value.Value != rawSecretValue)
+                keyVaultResponse = await client.SetSecretAsync($"{id}-{secret}", rawSecretValue);
 
-        var newSecretValue = await new StreamReader(Request.Body).ReadToEndAsync();
+            return new OkObjectResult(keyVaultResponse.Value);
+        }
+        catch (RequestFailedException ex)
+        {
+            if (ex.Status != 404)
+                throw;
+        }
 
-        if (string.IsNullOrWhiteSpace(newSecretValue)) return new BadRequestResult();
-
-        var gameServer = await Context.GameServers.SingleOrDefaultAsync(gs => gs.Id == id);
-
-        if (gameServer == null) return new BadRequestResult();
-
-        var client = new SecretClient(new Uri(_configuration["gameservers-keyvault-endpoint"]), new DefaultAzureCredential());
-        var secretValue = await client.GetSecretAsync(secret);
-
-        if (secretValue != null) return new BadRequestResult();
-
-        var response = await client.SetSecretAsync(secret, newSecretValue);
-
-        return new OkObjectResult(response);
+        var newSecretKeyVaultResponse = await client.SetSecretAsync($"{id}-{secret}", rawSecretValue);
+        return new OkObjectResult(newSecretKeyVaultResponse.Value);
     }
 }

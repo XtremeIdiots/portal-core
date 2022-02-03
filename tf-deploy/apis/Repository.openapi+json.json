@@ -195,14 +195,14 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": null
+                        "description": "null"
                     }
                 }
             },
             "post": {
-                "summary": "CreateGameServerSecret",
-                "description": "CreateGameServerSecret",
-                "operationId": "CreateGameServerSecret",
+                "summary": "SetGameServerSecret",
+                "description": "SetGameServerSecret",
+                "operationId": "SetGameServerSecret",
                 "parameters": [
                     {
                         "name": "id",
@@ -230,42 +230,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": null
-                    }
-                }
-            },
-            "patch": {
-                "summary": "UpdateGameServerSecret",
-                "description": "UpdateGameServerSecret",
-                "operationId": "UpdateGameServerSecret",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "secret",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "Authorization",
-                        "in": "header",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": null
+                        "description": "null"
                     }
                 }
             }

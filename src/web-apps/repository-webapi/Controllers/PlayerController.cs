@@ -52,6 +52,7 @@ public class PlayerController : ControllerBase
         }
     }
 
+    [HttpPost]
     [Route("api/Player")]
     public async Task<IActionResult> CreatePlayer()
     {
@@ -87,6 +88,7 @@ public class PlayerController : ControllerBase
         return new OkObjectResult(player);
     }
 
+    [HttpPatch]
     [Route("api/Player")]
     public async Task<IActionResult> UpdatePlayer()
     {
