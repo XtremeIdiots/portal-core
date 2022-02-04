@@ -19,7 +19,7 @@ public class GameServerSecretApiClient : IGameServerSecretApiClient
     public async Task<KeyVaultSecret?> GetGameServerSecret(string accessToken, string id, string secret)
     {
         var client = new RestClient(_apimBaseUrl);
-        var request = new RestRequest($"repository/GameServer/{id}/secrets/{secret}");
+        var request = new RestRequest($"repository/GameServer/{id}/secret/{secret}");
 
         request.AddHeader("Ocp-Apim-Subscription-Key", _apimSubscriptionKey);
         request.AddHeader("Authorization", $"Bearer {accessToken}");
@@ -32,13 +32,13 @@ public class GameServerSecretApiClient : IGameServerSecretApiClient
         if (response.StatusCode == HttpStatusCode.NotFound)
             return null;
 
-        throw new Exception($"Failed to execute 'repository/GameServer/{id}/secrets/{secret}'");
+        throw new Exception($"Failed to execute 'repository/GameServer/{id}/secret/{secret}'");
     }
 
     public async Task UpdateGameServerSecret(string accessToken, string id, string secret, string? secretValue)
     {
         var client = new RestClient(_apimBaseUrl);
-        var request = new RestRequest($"repository/GameServer/{id}/secrets/{secret}", Method.Post);
+        var request = new RestRequest($"repository/GameServer/{id}/secret/{secret}", Method.Post);
 
         request.AddHeader("Ocp-Apim-Subscription-Key", _apimSubscriptionKey);
         request.AddHeader("Authorization", $"Bearer {accessToken}");

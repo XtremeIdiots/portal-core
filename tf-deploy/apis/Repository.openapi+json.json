@@ -163,7 +163,7 @@
                 }
             }
         },
-        "/GameServer/{id}/secrets/{secret}": {
+        "/GameServer/{id}/secret/{name}": {
             "get": {
                 "summary": "GetGameServerSecret",
                 "description": "GetGameServerSecret",
@@ -178,7 +178,7 @@
                         }
                     },
                     {
-                        "name": "secret",
+                        "name": "name",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -213,7 +213,36 @@
                         }
                     },
                     {
-                        "name": "secret",
+                        "name": "name",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "null"
+                    }
+                }
+            }
+        },
+        "/GameServer/{id}/event/{name}": {
+            "post": {
+                "summary": "CreateGameServerEvent",
+                "description": "CreateGameServerEvent",
+                "operationId": "CreateGameServerEvent",
+                "parameters": [
+                    {
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {

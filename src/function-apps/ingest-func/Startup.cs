@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using XtremeIdiots.Portal.FuncHelpers.Providers;
 using XtremeIdiots.Portal.IngestFunc;
 using XtremeIdiots.Portal.RepositoryApiClient.GameServerApi;
+using XtremeIdiots.Portal.RepositoryApiClient.GameServerEventApi;
 using XtremeIdiots.Portal.RepositoryApiClient.PlayersApi;
 
 [assembly: FunctionsStartup(typeof(Startup))]
@@ -20,6 +21,8 @@ public class Startup : FunctionsStartup
             new PlayersApiClient(config["apim-base-url"], config["apim-subscription-key"]));
         builder.Services.AddSingleton<IGameServerApiClient, GameServerApiClient>(_ =>
             new GameServerApiClient(config["apim-base-url"], config["apim-subscription-key"]));
+        builder.Services.AddSingleton<IGameServerEventApiClient, GameServerEventApiClient>(_ =>
+            new GameServerEventApiClient(config["apim-base-url"], config["apim-subscription-key"]));
         builder.Services.AddLogging();
     }
 }

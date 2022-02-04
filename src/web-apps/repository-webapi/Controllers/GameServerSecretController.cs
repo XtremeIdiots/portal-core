@@ -10,11 +10,11 @@ namespace XtremeIdiots.Portal.RepositoryWebApi.Controllers;
 
 [ApiController]
 [Authorize(Roles = "ServiceAccount,MgmtWebAdminUser")]
-public class GameServerSecretsController : ControllerBase
+public class GameServerSecretController : ControllerBase
 {
     private readonly IConfiguration _configuration;
 
-    public GameServerSecretsController(PortalDbContext context, IConfiguration configuration)
+    public GameServerSecretController(PortalDbContext context, IConfiguration configuration)
     {
         _configuration = configuration;
         Context = context ?? throw new ArgumentNullException(nameof(context));
@@ -23,8 +23,8 @@ public class GameServerSecretsController : ControllerBase
     public PortalDbContext Context { get; }
 
     [HttpGet]
-    [Route("api/GameServer/{id}/secrets/{secret}")]
-    public async Task<IActionResult> GetGameServerSecret(string id, string secret)
+    [Route("api/GameServer/{id}/secret/{name}")]
+    public async Task<IActionResult> GetGameServerSecret(string id, string name)
     {
         if (string.IsNullOrWhiteSpace(id)) return new BadRequestResult();
 
@@ -36,7 +36,7 @@ public class GameServerSecretsController : ControllerBase
 
         try
         {
-            var keyVaultResponse = await client.GetSecretAsync($"{id}-{secret}");
+            var keyVaultResponse = await client.GetSecretAsync($"{id}-{name}");
             return new OkObjectResult(keyVaultResponse.Value);
         }
         catch (RequestFailedException ex)
@@ -49,8 +49,8 @@ public class GameServerSecretsController : ControllerBase
     }
 
     [HttpPost]
-    [Route("api/GameServer/{id}/secrets/{secret}")]
-    public async Task<IActionResult> SetGameServerSecret(string id, string secret)
+    [Route("api/GameServer/{id}/secret/{name}")]
+    public async Task<IActionResult> SetGameServerSecret(string id, string name)
     {
         if (string.IsNullOrWhiteSpace(id)) return new BadRequestResult();
 
@@ -64,10 +64,10 @@ public class GameServerSecretsController : ControllerBase
 
         try
         {
-            var keyVaultResponse = await client.GetSecretAsync($"{id}-{secret}");
+            var keyVaultResponse = await client.GetSecretAsync($"{id}-{name}");
 
             if (keyVaultResponse.Value.Value != rawSecretValue)
-                keyVaultResponse = await client.SetSecretAsync($"{id}-{secret}", rawSecretValue);
+                keyVaultResponse = await client.SetSecretAsync($"{id}-{name}", rawSecretValue);
 
             return new OkObjectResult(keyVaultResponse.Value);
         }
@@ -77,7 +77,7 @@ public class GameServerSecretsController : ControllerBase
                 throw;
         }
 
-        var newSecretKeyVaultResponse = await client.SetSecretAsync($"{id}-{secret}", rawSecretValue);
+        var newSecretKeyVaultResponse = await client.SetSecretAsync($"{id}-{name}", rawSecretValue);
         return new OkObjectResult(newSecretKeyVaultResponse.Value);
     }
 }

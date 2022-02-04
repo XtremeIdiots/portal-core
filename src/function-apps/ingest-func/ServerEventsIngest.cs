@@ -7,22 +7,26 @@ using XtremeIdiots.Portal.CommonLib.Events;
 using XtremeIdiots.Portal.DataLib;
 using XtremeIdiots.Portal.FuncHelpers.Providers;
 using XtremeIdiots.Portal.RepositoryApiClient.GameServerApi;
+using XtremeIdiots.Portal.RepositoryApiClient.GameServerEventApi;
 
 namespace XtremeIdiots.Portal.IngestFunc;
 
 public class ServerEventsIngest
 {
     private readonly IGameServerApiClient _gameServerApiClient;
+    private readonly IGameServerEventApiClient _gameServerEventApiClient;
     private readonly ILogger _log;
     private readonly IRepositoryTokenProvider _repositoryTokenProvider;
 
     public ServerEventsIngest(ILogger log,
         IRepositoryTokenProvider repositoryTokenProvider,
-        IGameServerApiClient gameServerApiClient)
+        IGameServerApiClient gameServerApiClient, 
+        IGameServerEventApiClient gameServerEventApiClient)
     {
         _log = log;
         _repositoryTokenProvider = repositoryTokenProvider;
         _gameServerApiClient = gameServerApiClient;
+        _gameServerEventApiClient = gameServerEventApiClient;
     }
 
     [FunctionName("ProcessOnServerConnected")]
@@ -66,7 +70,7 @@ public class ServerEventsIngest
     }
 
     [FunctionName("ProcessOnMapChange")]
-    public void ProcessOnMapChange(
+    public async Task ProcessOnMapChange(
         [ServiceBusTrigger("map_change_queue", Connection = "service-bus-connection-string")]
         string myQueueItem)
     {
@@ -89,5 +93,16 @@ public class ServerEventsIngest
 
         _log.LogInformation(
             $"ProcessOnMapChange :: GameName: '{onMapChange.GameName}', GameType: '{onMapChange.GameType}', MapName: '{onMapChange.MapName}'");
+
+        var gameServerEvent = new GameServerEvent
+        {
+            GameServerId = onMapChange.ServerId,
+            Timestamp = onMapChange.EventGeneratedUtc,
+            EventType = "MapChange",
+            EventData = JsonConvert.SerializeObject(onMapChange)
+        };
+
+        var accessToken = await _repositoryTokenProvider.GetRepositoryAccessToken();
+        await _gameServerEventApiClient.CreateGameServerEvent(accessToken, onMapChange.ServerId, gameServerEvent);
     }
 }
