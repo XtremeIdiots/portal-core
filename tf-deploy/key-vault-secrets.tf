@@ -149,3 +149,23 @@ resource "azurerm_key_vault_secret" "repository_funcapp_subscription_key" {
     azurerm_key_vault_access_policy.principal_key_vault_access_policy
   ]
 }
+
+resource "azurerm_key_vault_secret" "events_function_app_key" {
+  name         = local.events_function_app_key_secret_name
+  value        = data.azurerm_function_app_host_keys.events_function_app_host_key.master_key
+  key_vault_id = azurerm_key_vault.key_vault.id
+
+  depends_on = [
+    azurerm_key_vault_access_policy.principal_key_vault_access_policy
+  ]
+}
+
+resource "azurerm_key_vault_secret" "repository_function_app_key" {
+  name         = local.repository_function_app_key_secret_name
+  value        = data.azurerm_function_app_host_keys.repository_function_app_host_key.master_key
+  key_vault_id = azurerm_key_vault.key_vault.id
+
+  depends_on = [
+    azurerm_key_vault_access_policy.principal_key_vault_access_policy
+  ]
+}

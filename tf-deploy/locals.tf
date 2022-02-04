@@ -18,9 +18,11 @@ locals {
   apim_admin_web_app_subscription_secret_name      = format("%s-admin-webapp-subscription-key", local.apim_name)
   apim_public_web_app_subscription_secret_name     = format("%s-public-webapp-subscription-key", local.apim_name)
   apim_repository_web_api_subscription_secret_name = format("%s-repository-webapi-subscription-key", local.apim_name)
+  apim_repository_funcapp_subscription_secret_name = format("%s-repository-funcapp-subscription-key", local.apim_name)
   b3bot_client_application_secret_name             = format("%s-b3bot-client-secret", local.b3bots_client_application_name)
   mgmt_web_app_application_secret_name             = format("%s-client-secret", local.mgmt_web_app_name)
-  apim_repository_funcapp_subscription_secret_name = format("%s-repository-funcapp-subscription-key", local.apim_name)
+  events_function_app_key_secret_name              = format("%s-key", local.events_function_app_name)
+  repository_function_app_key_secret_name          = format("%s-key", local.repository_function_app_name)
 
   // App Insights
   app_insights_name                       = format("ai-%s-%s-%s-%s", var.workload, var.env, var.region, var.instance)

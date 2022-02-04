@@ -8,7 +8,7 @@ resource "azurerm_api_management_backend" "events_funcapp_backend" {
 
   credentials {
     query = {
-      "code" = data.azurerm_function_app_host_keys.events_function_app_host_key.master_key
+      "code" = "{{${local.events_function_app_key_secret_name}}}"
     }
   }
 }
@@ -23,7 +23,7 @@ resource "azurerm_api_management_backend" "repository_funcapp_backend" {
 
   credentials {
     query = {
-      "code" = data.azurerm_function_app_host_keys.repository_function_app_host_key.master_key
+      "code" = "{{${local.repository_function_app_key_secret_name}}}"
     }
   }
 }
