@@ -29,5 +29,6 @@ public class DataMaintenance
 
         var accessToken = await _repositoryTokenProvider.GetRepositoryAccessToken();
         await _dataMaintenanceApiClient.PruneChatMessages(accessToken);
+        await _dataMaintenanceApiClient.PruneGameServerEvents(accessToken);
     }
 }

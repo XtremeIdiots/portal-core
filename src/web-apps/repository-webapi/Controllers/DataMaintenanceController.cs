@@ -25,4 +25,14 @@ public class DataMaintenanceController : ControllerBase
 
         return new OkResult();
     }
+
+    [HttpDelete]
+    [Route("api/DataMaintenance/PruneGameServerEvents")]
+    public async Task<IActionResult> PruneGameServerEvents()
+    {
+        await Context.Database.ExecuteSqlRawAsync(
+            $"DELETE FROM [dbo].[GameServerEvents] WHERE [Timestamp] < CAST('{DateTime.UtcNow.AddMonths(-6):yyyy-MM-dd} 12:00:00' AS date)");
+
+        return new OkResult();
+    }
 }

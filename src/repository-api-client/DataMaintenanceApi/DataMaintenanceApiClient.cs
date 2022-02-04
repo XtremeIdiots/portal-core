@@ -23,4 +23,15 @@ public class DataMaintenanceApiClient : IDataMaintenanceApiClient
 
         await client.ExecuteAsync(request);
     }
+
+    public async Task PruneGameServerEvents(string accessToken)
+    {
+        var client = new RestClient(_apimBaseUrl);
+        var request = new RestRequest("repository/DataMaintenance/PruneGameServerEvents", Method.Delete);
+
+        request.AddHeader("Ocp-Apim-Subscription-Key", _apimSubscriptionKey);
+        request.AddHeader("Authorization", $"Bearer {accessToken}");
+
+        await client.ExecuteAsync(request);
+    }
 }

@@ -274,6 +274,17 @@
                     }
                 }
             }
+        },
+        "/DataMaintenance/PruneGameServerEvents": {
+            "delete": {
+                "summary": "PruneGameServerEvents",
+                "operationId": "PruneGameServerEvents",
+                "responses": {
+                    "200": {
+                        "description": null
+                    }
+                }
+            }
         }
     },
     "components": {
