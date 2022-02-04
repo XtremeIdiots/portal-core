@@ -2,36 +2,21 @@
 
 namespace XtremeIdiots.Portal.RepositoryApiClient.DataMaintenanceApi;
 
-public class DataMaintenanceApiClient : IDataMaintenanceApiClient
+public class DataMaintenanceApiClient : BaseApiClient, IDataMaintenanceApiClient
 {
-    private readonly string _apimBaseUrl;
-    private readonly string _apimSubscriptionKey;
-
     public DataMaintenanceApiClient(string apimBaseUrl, string apimSubscriptionKey)
+        : base(apimBaseUrl, apimSubscriptionKey)
     {
-        _apimBaseUrl = apimBaseUrl;
-        _apimSubscriptionKey = apimSubscriptionKey;
     }
 
     public async Task PruneChatMessages(string accessToken)
     {
-        var client = new RestClient(_apimBaseUrl);
-        var request = new RestRequest("repository/DataMaintenance/PruneChatMessages", Method.Delete);
-
-        request.AddHeader("Ocp-Apim-Subscription-Key", _apimSubscriptionKey);
-        request.AddHeader("Authorization", $"Bearer {accessToken}");
-
-        await client.ExecuteAsync(request);
+        await ExecuteAsync(CreateRequest("repository/DataMaintenance/PruneChatMessages", Method.Delete, accessToken));
     }
 
     public async Task PruneGameServerEvents(string accessToken)
     {
-        var client = new RestClient(_apimBaseUrl);
-        var request = new RestRequest("repository/DataMaintenance/PruneGameServerEvents", Method.Delete);
-
-        request.AddHeader("Ocp-Apim-Subscription-Key", _apimSubscriptionKey);
-        request.AddHeader("Authorization", $"Bearer {accessToken}");
-
-        await client.ExecuteAsync(request);
+        await ExecuteAsync(
+            CreateRequest("repository/DataMaintenance/PruneGameServerEvents", Method.Delete, accessToken));
     }
 }

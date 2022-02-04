@@ -5,26 +5,17 @@ using RestSharp;
 
 namespace XtremeIdiots.Portal.RepositoryApiClient.GameServerSecretApi;
 
-public class GameServerSecretApiClient : IGameServerSecretApiClient
+public class GameServerSecretApiClient : BaseApiClient, IGameServerSecretApiClient
 {
-    private readonly string _apimBaseUrl;
-    private readonly string _apimSubscriptionKey;
-
     public GameServerSecretApiClient(string apimBaseUrl, string apimSubscriptionKey)
+        : base(apimBaseUrl, apimSubscriptionKey)
     {
-        _apimBaseUrl = apimBaseUrl;
-        _apimSubscriptionKey = apimSubscriptionKey;
     }
 
     public async Task<KeyVaultSecret?> GetGameServerSecret(string accessToken, string id, string secret)
     {
-        var client = new RestClient(_apimBaseUrl);
-        var request = new RestRequest($"repository/GameServer/{id}/secret/{secret}");
-
-        request.AddHeader("Ocp-Apim-Subscription-Key", _apimSubscriptionKey);
-        request.AddHeader("Authorization", $"Bearer {accessToken}");
-
-        var response = await client.ExecuteAsync(request);
+        var request = CreateRequest($"repository/GameServer/{id}/secret/{secret}", Method.Get, accessToken);
+        var response = await ExecuteAsync(request);
 
         if (response.IsSuccessful && response.Content != null)
             return JsonConvert.DeserializeObject<KeyVaultSecret>(response.Content);
@@ -37,13 +28,9 @@ public class GameServerSecretApiClient : IGameServerSecretApiClient
 
     public async Task UpdateGameServerSecret(string accessToken, string id, string secret, string? secretValue)
     {
-        var client = new RestClient(_apimBaseUrl);
-        var request = new RestRequest($"repository/GameServer/{id}/secret/{secret}", Method.Post);
-
-        request.AddHeader("Ocp-Apim-Subscription-Key", _apimSubscriptionKey);
-        request.AddHeader("Authorization", $"Bearer {accessToken}");
+        var request = CreateRequest($"repository/GameServer/{id}/secret/{secret}", Method.Post, accessToken);
         request.AddBody(secretValue ?? "", "text/plain");
 
-        await client.ExecuteAsync(request);
+        await ExecuteAsync(request);
     }
 }

@@ -4,26 +4,17 @@ using XtremeIdiots.Portal.DataLib;
 
 namespace XtremeIdiots.Portal.RepositoryApiClient.GameServersApi;
 
-public class GameServersApiClient : IGameServersApiClient
+public class GameServersApiClient : BaseApiClient, IGameServersApiClient
 {
-    private readonly string _apimBaseUrl;
-    private readonly string _apimSubscriptionKey;
-
     public GameServersApiClient(string apimBaseUrl, string apimSubscriptionKey)
+        : base(apimBaseUrl, apimSubscriptionKey)
     {
-        _apimBaseUrl = apimBaseUrl;
-        _apimSubscriptionKey = apimSubscriptionKey;
     }
 
     public async Task<List<GameServer>?> GetGameServers(string accessToken)
     {
-        var client = new RestClient(_apimBaseUrl);
-        var request = new RestRequest("repository/GameServers");
-
-        request.AddHeader("Ocp-Apim-Subscription-Key", _apimSubscriptionKey);
-        request.AddHeader("Authorization", $"Bearer {accessToken}");
-
-        var response = await client.ExecuteAsync(request);
+        var request = CreateRequest("repository/GameServers", Method.Get, accessToken);
+        var response = await ExecuteAsync(request);
 
         if (response.IsSuccessful && response.Content != null)
             return JsonConvert.DeserializeObject<List<GameServer>>(response.Content);
