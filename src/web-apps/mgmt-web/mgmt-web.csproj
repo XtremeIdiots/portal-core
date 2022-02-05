@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\common-lib\common-lib.csproj" />
     <ProjectReference Include="..\..\data-lib\data-lib.csproj" />
     <ProjectReference Include="..\..\repository-api-client\repository-api-client.csproj" />
   </ItemGroup>

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Identity.Web;
+using XtremeIdiots.Portal.CommonLib.Constants;
 using XtremeIdiots.Portal.MgmtWeb.ViewModels;
 using XtremeIdiots.Portal.RepositoryApiClient.GameServersApi;
 using XtremeIdiots.Portal.RepositoryApiClient.GameServersSecretsApi;
@@ -43,9 +44,12 @@ public class EditModel : PageModel
         if (gameServer == null)
             return NotFound();
 
-        var rconPasswordSecret = await _gameServersSecretsApiClient.GetGameServerSecret(accessToken, id, "rconpassword");
-        var ftpUsernameSecret = await _gameServersSecretsApiClient.GetGameServerSecret(accessToken, id, "ftpusername");
-        var ftpPasswordSecret = await _gameServersSecretsApiClient.GetGameServerSecret(accessToken, id, "ftppassword");
+        var rconPasswordSecret =
+            await _gameServersSecretsApiClient.GetGameServerSecret(accessToken, id, SecretNames.RconPassword);
+        var ftpUsernameSecret =
+            await _gameServersSecretsApiClient.GetGameServerSecret(accessToken, id, SecretNames.FtpUsername);
+        var ftpPasswordSecret =
+            await _gameServersSecretsApiClient.GetGameServerSecret(accessToken, id, SecretNames.FtpPassword);
 
         GameServerViewModel = new GameServerViewModel
         {
@@ -80,11 +84,11 @@ public class EditModel : PageModel
         gameServer.QueryPort = GameServerViewModel.QueryPort;
 
         await _gameServersApiClient.UpdateGameServer(accessToken, gameServer);
-        await _gameServersSecretsApiClient.UpdateGameServerSecret(accessToken, id, "rconpassword",
+        await _gameServersSecretsApiClient.UpdateGameServerSecret(accessToken, id, SecretNames.RconPassword,
             GameServerViewModel.RconPassword);
-        await _gameServersSecretsApiClient.UpdateGameServerSecret(accessToken, id, "ftpusername",
+        await _gameServersSecretsApiClient.UpdateGameServerSecret(accessToken, id, SecretNames.FtpUsername,
             GameServerViewModel.FtpUsername);
-        await _gameServersSecretsApiClient.UpdateGameServerSecret(accessToken, id, "ftppassword",
+        await _gameServersSecretsApiClient.UpdateGameServerSecret(accessToken, id, SecretNames.FtpPassword,
             GameServerViewModel.FtpPassword);
 
         return RedirectToPage("Index");
