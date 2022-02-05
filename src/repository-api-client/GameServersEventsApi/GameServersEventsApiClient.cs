@@ -1,11 +1,11 @@
 ﻿using RestSharp;
 using XtremeIdiots.Portal.DataLib;
 
-namespace XtremeIdiots.Portal.RepositoryApiClient.GameServerEventApi;
+namespace XtremeIdiots.Portal.RepositoryApiClient.GameServersEventsApi;
 
-public class GameServerEventApiClient : BaseApiClient, IGameServerEventApiClient
+public class GameServersEventsApiClient : BaseApiClient, IGameServersEventsApiClient
 {
-    public GameServerEventApiClient(string apimBaseUrl, string apimSubscriptionKey)
+    public GameServersEventsApiClient(string apimBaseUrl, string apimSubscriptionKey)
         : base(apimBaseUrl, apimSubscriptionKey)
     {
     }

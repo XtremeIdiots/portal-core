@@ -7,9 +7,9 @@ namespace XtremeIdiots.Portal.RepositoryWebApi.Controllers;
 
 [ApiController]
 [Authorize(Roles = "ServiceAccount,MgmtWebAdminUser")]
-public class ChatMessageController : ControllerBase
+public class ChatMessagesController : ControllerBase
 {
-    public ChatMessageController(PortalDbContext context)
+    public ChatMessagesController(PortalDbContext context)
     {
         Context = context ?? throw new ArgumentNullException(nameof(context));
     }

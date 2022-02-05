@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using XtremeIdiots.Portal.CommonLib.Events;
 using XtremeIdiots.Portal.DataLib;
 using XtremeIdiots.Portal.FuncHelpers.Providers;
+using XtremeIdiots.Portal.RepositoryApiClient.ChatMessagesApi;
 using XtremeIdiots.Portal.RepositoryApiClient.PlayersApi;
 
 namespace XtremeIdiots.Portal.IngestFunc;
@@ -14,16 +15,19 @@ public class PlayerEventsIngest
 {
     private readonly ILogger<PlayerEventsIngest> _log;
     private readonly IPlayersApiClient _playersApiClient;
+    private readonly IChatMessagesApiClient _chatMessagesApiClient;
     private readonly IRepositoryTokenProvider _repositoryTokenProvider;
 
     public PlayerEventsIngest(
         ILogger<PlayerEventsIngest> log,
         IRepositoryTokenProvider repositoryTokenProvider,
-        IPlayersApiClient playersApiClient)
+        IPlayersApiClient playersApiClient,
+        IChatMessagesApiClient chatMessagesApiClient)
     {
         _log = log;
         _repositoryTokenProvider = repositoryTokenProvider;
         _playersApiClient = playersApiClient;
+        _chatMessagesApiClient = chatMessagesApiClient;
     }
 
     [FunctionName("ProcessOnPlayerConnected")]
@@ -126,7 +130,7 @@ public class PlayerEventsIngest
                 Timestamp = onChatMessage.EventGeneratedUtc
             };
 
-            await _playersApiClient.CreateChatMessage(accessToken, chatMessage);
+            await _chatMessagesApiClient.CreateChatMessage(accessToken, chatMessage);
         }
     }
 }

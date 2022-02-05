@@ -8,5 +8,4 @@ public interface IPlayersApiClient
     Task<Player?> GetPlayerByGameType(string accessToken, string gameType, string guid);
     Task CreatePlayer(string accessToken, Player player);
     Task UpdatePlayer(string accessToken, Player player);
-    Task CreateChatMessage(string accessToken, ChatMessage chatMessage);
 }

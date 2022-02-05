@@ -10,11 +10,11 @@ namespace XtremeIdiots.Portal.RepositoryWebApi.Controllers;
 
 [ApiController]
 [Authorize(Roles = "ServiceAccount,MgmtWebAdminUser")]
-public class GameServerSecretController : ControllerBase
+public class GameServersSecretsController : ControllerBase
 {
     private readonly IConfiguration _configuration;
 
-    public GameServerSecretController(PortalDbContext context, IConfiguration configuration)
+    public GameServersSecretsController(PortalDbContext context, IConfiguration configuration)
     {
         _configuration = configuration;
         Context = context ?? throw new ArgumentNullException(nameof(context));

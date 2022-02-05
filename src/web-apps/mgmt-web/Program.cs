@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
-using XtremeIdiots.Portal.RepositoryApiClient.GameServerApi;
 using XtremeIdiots.Portal.RepositoryApiClient.GameServersApi;
-using XtremeIdiots.Portal.RepositoryApiClient.GameServerSecretApi;
+using XtremeIdiots.Portal.RepositoryApiClient.GameServersSecretsApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,10 +39,8 @@ builder.Services.AddRazorPages(options =>
 
 builder.Services.AddSingleton<IGameServersApiClient, GameServersApiClient>(_ =>
     new GameServersApiClient(builder.Configuration["apim-base-url"], builder.Configuration["apim-subscription-key"]));
-builder.Services.AddSingleton<IGameServerApiClient, GameServerApiClient>(_ =>
-    new GameServerApiClient(builder.Configuration["apim-base-url"], builder.Configuration["apim-subscription-key"]));
-builder.Services.AddSingleton<IGameServerSecretApiClient, GameServerSecretApiClient>(_ =>
-    new GameServerSecretApiClient(builder.Configuration["apim-base-url"],
+builder.Services.AddSingleton<IGameServersSecretsApiClient, GameServersSecretsApiClient>(_ =>
+    new GameServersSecretsApiClient(builder.Configuration["apim-base-url"],
         builder.Configuration["apim-subscription-key"]));
 
 var app = builder.Build();

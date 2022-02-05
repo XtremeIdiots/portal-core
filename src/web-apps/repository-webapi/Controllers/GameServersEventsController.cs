@@ -7,9 +7,9 @@ namespace XtremeIdiots.Portal.RepositoryWebApi.Controllers;
 
 [ApiController]
 [Authorize(Roles = "ServiceAccount,MgmtWebAdminUser")]
-public class GameServerEventController : ControllerBase
+public class GameServersEventsController : ControllerBase
 {
-    public GameServerEventController(PortalDbContext context)
+    public GameServersEventsController(PortalDbContext context)
     {
         Context = context ?? throw new ArgumentNullException(nameof(context));
     }

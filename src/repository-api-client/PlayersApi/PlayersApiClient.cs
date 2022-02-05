@@ -52,12 +52,4 @@ public class PlayersApiClient : BaseApiClient, IPlayersApiClient
 
         await ExecuteAsync(request);
     }
-
-    public async Task CreateChatMessage(string accessToken, ChatMessage chatMessage)
-    {
-        var request = CreateRequest("repository/chat-messages", Method.Post, accessToken);
-        request.AddJsonBody(new List<ChatMessage> {chatMessage});
-
-        await ExecuteAsync(request);
-    }
 }

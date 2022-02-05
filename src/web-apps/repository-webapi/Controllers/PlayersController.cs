@@ -9,47 +9,37 @@ namespace XtremeIdiots.Portal.RepositoryWebApi.Controllers;
 
 [ApiController]
 [Authorize(Roles = "ServiceAccount,MgmtWebAdminUser")]
-public class PlayerController : ControllerBase
+public class PlayersController : ControllerBase
 {
-    public PlayerController(ILogger<PlayerController> log, PortalDbContext context)
+    public PlayersController(ILogger<PlayersController> log, PortalDbContext context)
     {
         Log = log ?? throw new ArgumentNullException(nameof(log));
         Context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
     public PortalDbContext Context { get; }
-    public ILogger<PlayerController> Log { get; }
+    public ILogger<PlayersController> Log { get; }
 
     [HttpGet]
-    [Route("api/players")]
-    public async Task<IActionResult> GetPlayer()
+    [Route("api/players/{playerId}")]
+    public async Task<IActionResult> GetPlayer(Guid playerId)
     {
-        string id = Request.Query["id"];
-        string gameType = Request.Query["gameType"];
-        string guid = Request.Query["guid"];
+        var player = await Context.Players.SingleOrDefaultAsync(p => p.Id == playerId);
 
-        if (!string.IsNullOrWhiteSpace(id))
-        {
-            if (!Guid.TryParse(id, out var idAsGuid)) return new BadRequestResult();
+        if (player == null) return new NotFoundResult();
 
-            var player = await Context.Players.SingleOrDefaultAsync(p => p.Id == idAsGuid);
+        return new OkObjectResult(player);
+    }
 
-            if (player == null) return new NotFoundResult();
+    [HttpGet]
+    [Route("api/players/by-game-type/{gameType}/{playerGuid}")]
+    public async Task<IActionResult> GetPlayerByGameType(string gameType, string playerGuid)
+    {
+        var player = await Context.Players.SingleOrDefaultAsync(p => p.GameType == gameType && p.Guid == playerGuid);
 
-            return new OkObjectResult(player);
-        }
-        else
-        {
-            if (string.IsNullOrWhiteSpace(gameType) || string.IsNullOrWhiteSpace(guid)) return new BadRequestResult();
+        if (player == null) return new NotFoundResult();
 
-            guid = guid.ToLower();
-
-            var player = await Context.Players.SingleOrDefaultAsync(p => p.GameType == gameType && p.Guid == guid);
-
-            if (player == null) return new NotFoundResult();
-
-            return new OkObjectResult(player);
-        }
+        return new OkObjectResult(player);
     }
 
     [HttpPost]

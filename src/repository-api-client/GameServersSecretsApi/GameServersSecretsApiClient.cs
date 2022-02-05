@@ -3,11 +3,11 @@ using Azure.Security.KeyVault.Secrets;
 using Newtonsoft.Json;
 using RestSharp;
 
-namespace XtremeIdiots.Portal.RepositoryApiClient.GameServerSecretApi;
+namespace XtremeIdiots.Portal.RepositoryApiClient.GameServersSecretsApi;
 
-public class GameServerSecretApiClient : BaseApiClient, IGameServerSecretApiClient
+public class GameServersSecretsApiClient : BaseApiClient, IGameServersSecretsApiClient
 {
-    public GameServerSecretApiClient(string apimBaseUrl, string apimSubscriptionKey)
+    public GameServersSecretsApiClient(string apimBaseUrl, string apimSubscriptionKey)
         : base(apimBaseUrl, apimSubscriptionKey)
     {
     }
