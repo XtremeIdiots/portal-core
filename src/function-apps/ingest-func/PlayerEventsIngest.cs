@@ -56,7 +56,7 @@ public class PlayerEventsIngest
 
         var accessToken = await _repositoryTokenProvider.GetRepositoryAccessToken();
         var existingPlayer =
-            await _playersApiClient.GetPlayer(accessToken, onPlayerConnected.GameType, onPlayerConnected.Guid);
+            await _playersApiClient.GetPlayerByGameType(accessToken, onPlayerConnected.GameType, onPlayerConnected.Guid);
 
         if (existingPlayer == null)
         {
@@ -112,7 +112,7 @@ public class PlayerEventsIngest
 
         var accessToken = await _repositoryTokenProvider.GetRepositoryAccessToken();
 
-        var player = await _playersApiClient.GetPlayer(accessToken, onChatMessage.GameType, onChatMessage.Guid);
+        var player = await _playersApiClient.GetPlayerByGameType(accessToken, onChatMessage.GameType, onChatMessage.Guid);
 
         if (player != null)
         {

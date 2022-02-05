@@ -21,7 +21,7 @@ public class PlayerController : ControllerBase
     public ILogger<PlayerController> Log { get; }
 
     [HttpGet]
-    [Route("api/Player")]
+    [Route("api/players")]
     public async Task<IActionResult> GetPlayer()
     {
         string id = Request.Query["id"];
@@ -53,16 +53,16 @@ public class PlayerController : ControllerBase
     }
 
     [HttpPost]
-    [Route("api/Player")]
+    [Route("api/players")]
     public async Task<IActionResult> CreatePlayer()
     {
         var requestBody = await new StreamReader(Request.Body).ReadToEndAsync();
 
-        Player player;
+        List<Player> players;
         try
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            player = JsonConvert.DeserializeObject<Player>(requestBody);
+            players = JsonConvert.DeserializeObject<List<Player>>(requestBody);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
         }
         catch (Exception ex)
@@ -70,27 +70,32 @@ public class PlayerController : ControllerBase
             return new BadRequestObjectResult(ex);
         }
 
-        if (player == null) return new BadRequestResult();
+        if (players == null) return new BadRequestResult();
 
-        var existingPlayer =
-            await Context.Players.SingleOrDefaultAsync(p => p.GameType == player.GameType && p.Guid == player.Guid);
-        if (existingPlayer != null) return new ConflictObjectResult(existingPlayer);
+        foreach (var player in players)
+        {
+            var existingPlayer =
+                await Context.Players.SingleOrDefaultAsync(p => p.GameType == player.GameType && p.Guid == player.Guid);
 
-        player.Username = player.Username.Trim();
-        player.Guid = player.Guid.ToLower().Trim();
+            if (existingPlayer != null) return new ConflictObjectResult(existingPlayer);
 
-        player.FirstSeen = DateTime.UtcNow;
-        player.LastSeen = DateTime.UtcNow;
+            player.Username = player.Username.Trim();
+            player.Guid = player.Guid.ToLower().Trim();
 
-        await Context.Players.AddAsync(player);
+            player.FirstSeen = DateTime.UtcNow;
+            player.LastSeen = DateTime.UtcNow;
+
+            await Context.Players.AddAsync(player);
+        }
+
         await Context.SaveChangesAsync();
 
-        return new OkObjectResult(player);
+        return new OkObjectResult(players);
     }
 
     [HttpPatch]
-    [Route("api/Player")]
-    public async Task<IActionResult> UpdatePlayer()
+    [Route("api/players/{playerId}")]
+    public async Task<IActionResult> UpdatePlayer(Guid playerId)
     {
         var requestBody = await new StreamReader(Request.Body).ReadToEndAsync();
 
@@ -107,6 +112,7 @@ public class PlayerController : ControllerBase
         }
 
         if (player == null) return new BadRequestResult();
+        if (player.Id != playerId) return new BadRequestResult();
 
         var playerToUpdate = await Context.Players.SingleOrDefaultAsync(p => p.Id == player.Id);
 

@@ -19,14 +19,12 @@ public class GameServerController : ControllerBase
     public PortalDbContext Context { get; }
 
     [HttpGet]
-    [Route("api/GameServer")]
-    public async Task<IActionResult> GetGameServer()
+    [Route("api/game-servers/{serverId}")]
+    public async Task<IActionResult> GetGameServer(string serverId)
     {
-        string id = Request.Query["id"];
+        if (string.IsNullOrWhiteSpace(serverId)) return new BadRequestResult();
 
-        if (string.IsNullOrWhiteSpace(id)) return new BadRequestResult();
-
-        var gameServer = await Context.GameServers.SingleOrDefaultAsync(gs => gs.Id == id);
+        var gameServer = await Context.GameServers.SingleOrDefaultAsync(gs => gs.Id == serverId);
 
         if (gameServer == null) return new NotFoundResult();
 
@@ -34,16 +32,16 @@ public class GameServerController : ControllerBase
     }
 
     [HttpPost]
-    [Route("api/GameServer")]
+    [Route("api/game-servers")]
     public async Task<IActionResult> CreateGameServer()
     {
         var requestBody = await new StreamReader(Request.Body).ReadToEndAsync();
 
-        GameServer gameServer;
+        List<GameServer> gameServers;
         try
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            gameServer = JsonConvert.DeserializeObject<GameServer>(requestBody);
+            gameServers = JsonConvert.DeserializeObject<List<GameServer>>(requestBody);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
         }
         catch (Exception ex)
@@ -51,24 +49,28 @@ public class GameServerController : ControllerBase
             return new BadRequestObjectResult(ex);
         }
 
-        if (gameServer == null) return new BadRequestResult();
+        if (gameServers == null) return new BadRequestResult();
 
-        var existingGameServer = await Context.GameServers.SingleOrDefaultAsync(gs => gs.Id == gameServer.Id);
-        if (existingGameServer != null) return new ConflictObjectResult(existingGameServer);
+        foreach (var gameServer in gameServers)
+        {
+            var existingGameServer = await Context.GameServers.SingleOrDefaultAsync(gs => gs.Id == gameServer.Id);
+            if (existingGameServer != null) return new ConflictObjectResult(existingGameServer);
 
-        if (string.IsNullOrWhiteSpace(gameServer.Title)) gameServer.Title = "to-be-updated";
+            if (string.IsNullOrWhiteSpace(gameServer.Title)) gameServer.Title = "to-be-updated";
 
-        if (string.IsNullOrWhiteSpace(gameServer.IpAddress)) gameServer.IpAddress = "127.0.0.1";
+            if (string.IsNullOrWhiteSpace(gameServer.IpAddress)) gameServer.IpAddress = "127.0.0.1";
 
-        await Context.GameServers.AddAsync(gameServer);
+            await Context.GameServers.AddAsync(gameServer);
+        }
+
         await Context.SaveChangesAsync();
 
-        return new OkObjectResult(gameServer);
+        return new OkObjectResult(gameServers);
     }
 
     [HttpPatch]
-    [Route("api/GameServer")]
-    public async Task<IActionResult> UpdateGameServer()
+    [Route("api/game-servers/{serverId}")]
+    public async Task<IActionResult> UpdateGameServer(string serverId)
     {
         var requestBody = await new StreamReader(Request.Body).ReadToEndAsync();
 
@@ -86,7 +88,9 @@ public class GameServerController : ControllerBase
 
         if (gameServer == null) return new BadRequestResult();
 
-        var gameServerToUpdate = await Context.GameServers.SingleOrDefaultAsync(gs => gs.Id == gameServer.Id);
+        if (gameServer.Id != serverId) return new BadRequestResult();
+
+            var gameServerToUpdate = await Context.GameServers.SingleOrDefaultAsync(gs => gs.Id == serverId);
 
         if (gameServerToUpdate == null) return new NotFoundResult();
 

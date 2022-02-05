@@ -14,8 +14,7 @@ public class GameServerApiClient : BaseApiClient, IGameServerApiClient
 
     public async Task<GameServer?> GetGameServer(string accessToken, string id)
     {
-        var request = CreateRequest("repository/GameServer", Method.Get, accessToken);
-        request.AddParameter(new QueryParameter("id", id));
+        var request = CreateRequest($"repository/game-servers/{id}", Method.Get, accessToken);
 
         var response = await ExecuteAsync(request);
 
@@ -23,20 +22,20 @@ public class GameServerApiClient : BaseApiClient, IGameServerApiClient
             return JsonConvert.DeserializeObject<GameServer>(response.Content);
         if (response.StatusCode == HttpStatusCode.NotFound)
             return null;
-        throw new Exception("Failed to execute 'repository/GameServer'");
+        throw new Exception($"Failed to execute 'repository/game-servers/{id}'");
     }
 
     public async Task CreateGameServer(string accessToken, GameServer gameServer)
     {
-        var request = CreateRequest("repository/GameServer", Method.Post, accessToken);
-        request.AddJsonBody(gameServer);
+        var request = CreateRequest("repository/game-servers", Method.Post, accessToken);
+        request.AddJsonBody(new List<GameServer> {gameServer});
 
         await ExecuteAsync(request);
     }
 
     public async Task UpdateGameServer(string accessToken, GameServer gameServer)
     {
-        var request = CreateRequest("repository/GameServer", Method.Patch, accessToken);
+        var request = CreateRequest($"repository/game-servers/{gameServer.Id}", Method.Patch, accessToken);
         request.AddJsonBody(gameServer);
 
         await ExecuteAsync(request);

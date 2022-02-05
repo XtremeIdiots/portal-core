@@ -17,8 +17,8 @@ public class GameServerEventController : ControllerBase
     public PortalDbContext Context { get; }
 
     [HttpPost]
-    [Route("api/GameServer/{id}/event")]
-    public async Task<IActionResult> CreateGameServerEvent(string id)
+    [Route("api/game-servers/{serverId}/event")]
+    public async Task<IActionResult> CreateGameServerEvent(string serverId)
     {
         var requestBody = await new StreamReader(Request.Body).ReadToEndAsync();
 
@@ -35,6 +35,7 @@ public class GameServerEventController : ControllerBase
         }
 
         if (gameServerEvent == null) return new BadRequestResult();
+        if (gameServerEvent.GameServerId !=  serverId) return new BadRequestResult();
 
         await Context.GameServerEvents.AddAsync(gameServerEvent);
         await Context.SaveChangesAsync();

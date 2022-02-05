@@ -17,7 +17,7 @@ namespace XtremeIdiots.Portal.RepositoryWebApi.Controllers
         public PortalDbContext Context { get; }
 
         [HttpGet]
-        [Route("api/GameServers")]
+        [Route("api/game-servers")]
         public async Task<IActionResult> GetGameServer()
         {
             var gameServers = await Context.GameServers.ToListAsync();

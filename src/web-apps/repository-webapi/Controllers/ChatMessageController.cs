@@ -17,16 +17,16 @@ public class ChatMessageController : ControllerBase
     public PortalDbContext Context { get; }
 
     [HttpPost]
-    [Route("api/ChatMessage")]
+    [Route("api/chat-messages")]
     public async Task<IActionResult> CreateChatMessage()
     {
         var requestBody = await new StreamReader(Request.Body).ReadToEndAsync();
 
-        ChatMessage chatMessage;
+        List<ChatMessage> chatMessages;
         try
         {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            chatMessage = JsonConvert.DeserializeObject<ChatMessage>(requestBody);
+            chatMessages = JsonConvert.DeserializeObject<List<ChatMessage>>(requestBody);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
         }
         catch (Exception ex)
@@ -34,11 +34,11 @@ public class ChatMessageController : ControllerBase
             return new BadRequestObjectResult(ex);
         }
 
-        if (chatMessage == null) return new BadRequestResult();
+        if (chatMessages == null) return new BadRequestResult();
 
-        await Context.ChatMessages.AddAsync(chatMessage);
+        await Context.ChatMessages.AddRangeAsync(chatMessages);
         await Context.SaveChangesAsync();
 
-        return new OkObjectResult(chatMessage);
+        return new OkObjectResult(chatMessages);
     }
 }

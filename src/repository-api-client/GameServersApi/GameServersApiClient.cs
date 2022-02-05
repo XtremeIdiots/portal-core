@@ -13,7 +13,7 @@ public class GameServersApiClient : BaseApiClient, IGameServersApiClient
 
     public async Task<List<GameServer>?> GetGameServers(string accessToken)
     {
-        var request = CreateRequest("repository/GameServers", Method.Get, accessToken);
+        var request = CreateRequest("repository/game-servers", Method.Get, accessToken);
         var response = await ExecuteAsync(request);
 
         if (response.IsSuccessful && response.Content != null)
@@ -22,6 +22,6 @@ public class GameServersApiClient : BaseApiClient, IGameServersApiClient
         if (response.ErrorException != null)
             throw response.ErrorException;
 
-        throw new Exception($"Failed to execute 'repository/GameServers' with '{response.StatusCode}'");
+        throw new Exception($"Failed to execute 'repository/game-servers' with '{response.StatusCode}'");
     }
 }

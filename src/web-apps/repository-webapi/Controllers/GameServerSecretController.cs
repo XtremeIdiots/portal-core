@@ -23,12 +23,12 @@ public class GameServerSecretController : ControllerBase
     public PortalDbContext Context { get; }
 
     [HttpGet]
-    [Route("api/GameServer/{id}/secret/{name}")]
-    public async Task<IActionResult> GetGameServerSecret(string id, string name)
+    [Route("api/game-servers/{serverId}/secret/{secretId}")]
+    public async Task<IActionResult> GetGameServerSecret(string serverId, string secretId)
     {
-        if (string.IsNullOrWhiteSpace(id)) return new BadRequestResult();
+        if (string.IsNullOrWhiteSpace(serverId)) return new BadRequestResult();
 
-        var gameServer = await Context.GameServers.SingleOrDefaultAsync(gs => gs.Id == id);
+        var gameServer = await Context.GameServers.SingleOrDefaultAsync(gs => gs.Id == serverId);
         if (gameServer == null) return new BadRequestResult();
 
         var client = new SecretClient(new Uri(_configuration["gameservers-keyvault-endpoint"]),
@@ -36,7 +36,7 @@ public class GameServerSecretController : ControllerBase
 
         try
         {
-            var keyVaultResponse = await client.GetSecretAsync($"{id}-{name}");
+            var keyVaultResponse = await client.GetSecretAsync($"{serverId}-{secretId}");
             return new OkObjectResult(keyVaultResponse.Value);
         }
         catch (RequestFailedException ex)
@@ -49,7 +49,7 @@ public class GameServerSecretController : ControllerBase
     }
 
     [HttpPost]
-    [Route("api/GameServer/{id}/secret/{name}")]
+    [Route("api/game-servers/{serverId}/secret/{secretId}")]
     public async Task<IActionResult> SetGameServerSecret(string id, string name)
     {
         if (string.IsNullOrWhiteSpace(id)) return new BadRequestResult();
