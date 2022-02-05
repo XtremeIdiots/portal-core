@@ -8,13 +8,9 @@ resource "azurerm_api_management_backend" "events_funcapp_backend" {
 
   credentials {
     query = {
-      "code" = "{{${local.events_function_app_key_secret_name}}}"
+      "code" = "{{${azurerm_api_management_named_value.events_function_app_key.name}}}"
     }
   }
-
-  depends_on = [
-    azurerm_api_management_named_value.events_function_app_key
-  ]
 }
 
 resource "azurerm_api_management_backend" "repository_funcapp_backend" {
@@ -27,13 +23,9 @@ resource "azurerm_api_management_backend" "repository_funcapp_backend" {
 
   credentials {
     query = {
-      "code" = "{{${local.repository_function_app_key_secret_name}}}"
+      "code" = "{{${azurerm_api_management_named_value.repository_function_app_key.name}}}"
     }
   }
-
-  depends_on = [
-    azurerm_api_management_named_value.repository_function_app_key
-  ]
 }
 
 resource "azurerm_api_management_backend" "repository_webapi_backend" {
