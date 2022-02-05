@@ -6,27 +6,23 @@ using Newtonsoft.Json;
 using XtremeIdiots.Portal.CommonLib.Events;
 using XtremeIdiots.Portal.DataLib;
 using XtremeIdiots.Portal.FuncHelpers.Providers;
-using XtremeIdiots.Portal.RepositoryApiClient.GameServersApi;
-using XtremeIdiots.Portal.RepositoryApiClient.GameServersEventsApi;
+using XtremeIdiots.Portal.RepositoryApiClient;
 
 namespace XtremeIdiots.Portal.IngestFunc;
 
 public class ServerEventsIngest
 {
-    private readonly IGameServersApiClient _gameServersApiClient;
-    private readonly IGameServersEventsApiClient _gameServersEventsApiClient;
     private readonly ILogger _log;
+    private readonly IRepositoryApiClient _repositoryApiClient;
     private readonly IRepositoryTokenProvider _repositoryTokenProvider;
 
     public ServerEventsIngest(ILogger log,
         IRepositoryTokenProvider repositoryTokenProvider,
-        IGameServersApiClient gameServersApiClient, 
-        IGameServersEventsApiClient gameServersEventsApiClient)
+        IRepositoryApiClient repositoryApiClient)
     {
         _log = log;
         _repositoryTokenProvider = repositoryTokenProvider;
-        _gameServersApiClient = gameServersApiClient;
-        _gameServersEventsApiClient = gameServersEventsApiClient;
+        _repositoryApiClient = repositoryApiClient;
     }
 
     [FunctionName("ProcessOnServerConnected")]
@@ -55,7 +51,7 @@ public class ServerEventsIngest
             $"OnServerConnected :: Id: '{onServerConnected.Id}', GameType: '{onServerConnected.GameType}'");
 
         var accessToken = await _repositoryTokenProvider.GetRepositoryAccessToken();
-        var existingServer = await _gameServersApiClient.GetGameServer(accessToken, onServerConnected.Id);
+        var existingServer = await _repositoryApiClient.GameServers.GetGameServer(accessToken, onServerConnected.Id);
 
         if (existingServer == null)
         {
@@ -65,7 +61,7 @@ public class ServerEventsIngest
                 GameType = onServerConnected.GameType
             };
 
-            await _gameServersApiClient.CreateGameServer(accessToken, gameServer);
+            await _repositoryApiClient.GameServers.CreateGameServer(accessToken, gameServer);
         }
     }
 
@@ -103,6 +99,7 @@ public class ServerEventsIngest
         };
 
         var accessToken = await _repositoryTokenProvider.GetRepositoryAccessToken();
-        await _gameServersEventsApiClient.CreateGameServerEvent(accessToken, onMapChange.ServerId, gameServerEvent);
+        await _repositoryApiClient.GameServersEvents.CreateGameServerEvent(accessToken, onMapChange.ServerId,
+            gameServerEvent);
     }
 }

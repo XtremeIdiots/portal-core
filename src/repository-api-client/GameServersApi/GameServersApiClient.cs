@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RestSharp;
 using XtremeIdiots.Portal.DataLib;
@@ -7,8 +8,7 @@ namespace XtremeIdiots.Portal.RepositoryApiClient.GameServersApi;
 
 public class GameServersApiClient : BaseApiClient, IGameServersApiClient
 {
-    public GameServersApiClient(string apimBaseUrl, string apimSubscriptionKey)
-        : base(apimBaseUrl, apimSubscriptionKey)
+    public GameServersApiClient(IOptions<RepositoryApiClientOptions> options) : base(options)
     {
     }
 

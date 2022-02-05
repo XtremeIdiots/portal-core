@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
-using XtremeIdiots.Portal.RepositoryApiClient.GameServersApi;
-using XtremeIdiots.Portal.RepositoryApiClient.GameServersSecretsApi;
+using XtremeIdiots.Portal.RepositoryApiClient;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var config = builder.Configuration;
 
 builder.Services.AddLogging();
 builder.Services.AddApplicationInsightsTelemetry();
@@ -12,7 +13,7 @@ builder.Services.AddApplicationInsightsTelemetry();
 // Add services to the container.
 builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApp(
-        options => { builder.Configuration.Bind("AzureAd", options); },
+        options => { config.Bind("AzureAd", options); },
         options =>
         {
             options.Cookie.SameSite = SameSiteMode.None;
@@ -23,8 +24,8 @@ builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     .EnableTokenAcquisitionToCallDownstreamApi()
     .AddDownstreamWebApi("portal-repository-api-box", options =>
     {
-        options.BaseUrl = builder.Configuration["apim-base-url"];
-        options.Scopes = builder.Configuration["web-api-repository-scope"];
+        options.BaseUrl = config["apim-base-url"];
+        options.Scopes = config["web-api-repository-scope"];
     })
     .AddInMemoryTokenCaches();
 
@@ -37,11 +38,11 @@ builder.Services.AddRazorPages(options =>
     }).AddMicrosoftIdentityUI()
     .AddRazorRuntimeCompilation();
 
-builder.Services.AddSingleton<IGameServersApiClient, GameServersApiClient>(_ =>
-    new GameServersApiClient(builder.Configuration["apim-base-url"], builder.Configuration["apim-subscription-key"]));
-builder.Services.AddSingleton<IGameServersSecretsApiClient, GameServersSecretsApiClient>(_ =>
-    new GameServersSecretsApiClient(builder.Configuration["apim-base-url"],
-        builder.Configuration["apim-subscription-key"]));
+builder.Services.AddRepositoryApiClient(options =>
+{
+    options.ApimBaseUrl = config["apim-base-url"];
+    options.ApimSubscriptionKey = config["apim-subscription-key"];
+});
 
 var app = builder.Build();
 

@@ -35,7 +35,7 @@ public class GameServersEventsController : ControllerBase
         }
 
         if (gameServerEvent == null) return new BadRequestResult();
-        if (gameServerEvent.GameServerId !=  serverId) return new BadRequestResult();
+        if (gameServerEvent.GameServerId != serverId) return new BadRequestResult();
 
         await Context.GameServerEvents.AddAsync(gameServerEvent);
         await Context.SaveChangesAsync();

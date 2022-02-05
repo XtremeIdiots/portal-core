@@ -1,7 +1,7 @@
 ﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using XtremeIdiots.Portal.FuncHelpers.Providers;
-using XtremeIdiots.Portal.RepositoryApiClient.DataMaintenanceApi;
+using XtremeIdiots.Portal.RepositoryApiClient;
 using XtremeIdiots.Portal.RepositoryFunc;
 
 [assembly: FunctionsStartup(typeof(Startup))]
@@ -15,8 +15,13 @@ public class Startup : FunctionsStartup
         var config = builder.GetContext().Configuration;
 
         builder.Services.AddSingleton<IRepositoryTokenProvider, RepositoryTokenProvider>();
-        builder.Services.AddSingleton<IDataMaintenanceApiClient, DataMaintenanceApiClient>(_ =>
-            new DataMaintenanceApiClient(config["apim-base-url"], config["apim-subscription-key"]));
+
+        builder.Services.AddRepositoryApiClient(options =>
+        {
+            options.ApimBaseUrl = config["apim-base-url"];
+            options.ApimSubscriptionKey = config["apim-subscription-key"];
+        });
+
         builder.Services.AddLogging();
     }
 }

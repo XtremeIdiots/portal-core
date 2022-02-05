@@ -2,24 +2,24 @@ using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using XtremeIdiots.Portal.FuncHelpers.Providers;
-using XtremeIdiots.Portal.RepositoryApiClient.DataMaintenanceApi;
+using XtremeIdiots.Portal.RepositoryApiClient;
 
 namespace XtremeIdiots.Portal.RepositoryFunc;
 
 public class DataMaintenance
 {
-    private readonly IDataMaintenanceApiClient _dataMaintenanceApiClient;
     private readonly ILogger _log;
+    private readonly IRepositoryApiClient _repositoryApiClient;
     private readonly IRepositoryTokenProvider _repositoryTokenProvider;
 
     public DataMaintenance(
         ILogger log,
         IRepositoryTokenProvider repositoryTokenProvider,
-        IDataMaintenanceApiClient dataMaintenanceApiClient)
+        IRepositoryApiClient repositoryApiClient)
     {
         _log = log;
         _repositoryTokenProvider = repositoryTokenProvider;
-        _dataMaintenanceApiClient = dataMaintenanceApiClient;
+        _repositoryApiClient = repositoryApiClient;
     }
 
     [FunctionName("DataMaintenance")]
@@ -28,7 +28,7 @@ public class DataMaintenance
         _log.LogInformation("Performing Data Maintenance");
 
         var accessToken = await _repositoryTokenProvider.GetRepositoryAccessToken();
-        await _dataMaintenanceApiClient.PruneChatMessages(accessToken);
-        await _dataMaintenanceApiClient.PruneGameServerEvents(accessToken);
+        await _repositoryApiClient.DataMaintenance.PruneChatMessages(accessToken);
+        await _repositoryApiClient.DataMaintenance.PruneGameServerEvents(accessToken);
     }
 }

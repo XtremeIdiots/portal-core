@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using Microsoft.Extensions.Options;
+using RestSharp;
 
 namespace XtremeIdiots.Portal.RepositoryApiClient;
 
@@ -6,11 +7,11 @@ public class BaseApiClient
 {
     private readonly string _apimSubscriptionKey;
 
-    public BaseApiClient(string apimBaseUrl, string apimSubscriptionKey)
+    public BaseApiClient(IOptions<RepositoryApiClientOptions> options)
     {
-        _apimSubscriptionKey = apimSubscriptionKey;
+        _apimSubscriptionKey = options.Value.ApimSubscriptionKey;
 
-        RestClient = new RestClient(apimBaseUrl);
+        RestClient = new RestClient(options.Value.ApimBaseUrl);
     }
 
     private RestClient RestClient { get; }

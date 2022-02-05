@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Identity.Web;
 using XtremeIdiots.Portal.DataLib;
 using XtremeIdiots.Portal.MgmtWeb.ViewModels;
-using XtremeIdiots.Portal.RepositoryApiClient.GameServersApi;
+using XtremeIdiots.Portal.RepositoryApiClient;
 
 namespace XtremeIdiots.Portal.MgmtWeb.Pages.GameServers;
 
@@ -13,17 +13,17 @@ namespace XtremeIdiots.Portal.MgmtWeb.Pages.GameServers;
 public class CreateModel : PageModel
 {
     private readonly IConfiguration _configuration;
-    private readonly IGameServersApiClient _gameServersApiClient;
+    private readonly IRepositoryApiClient _repositoryApiClient;
     private readonly ITokenAcquisition _tokenAcquisition;
 
     public CreateModel(
         IConfiguration configuration,
         ITokenAcquisition tokenAcquisition,
-        IGameServersApiClient gameServersApiClient)
+        IRepositoryApiClient repositoryApiClient)
     {
         _configuration = configuration;
         _tokenAcquisition = tokenAcquisition;
-        _gameServersApiClient = gameServersApiClient;
+        _repositoryApiClient = repositoryApiClient;
     }
 
     [BindProperty] public GameServerViewModel GameServerViewModel { get; set; }
@@ -48,7 +48,7 @@ public class CreateModel : PageModel
         string[] scopes = {_configuration["web-api-repository-scope"]};
         var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(scopes);
 
-        await _gameServersApiClient.CreateGameServer(accessToken, gameServer);
+        await _repositoryApiClient.GameServers.CreateGameServer(accessToken, gameServer);
 
         return RedirectToPage("./Index");
     }
